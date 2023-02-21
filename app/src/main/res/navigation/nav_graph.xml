@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.hasan.youtubedownloader.ui.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+
+        <action
+            android:id="@+id/action_homeFragment_to_categoryDownloadFragment"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out"
+            app:destination="@id/categoryDownloadFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_storageFolderFragment"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out"
+            app:destination="@id/storageFolderFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/categoryDownloadFragment"
+        android:name="com.hasan.youtubedownloader.ui.screens.CategoryDownloadFragment"
+        android:label="fragment_category_download"
+        tools:layout="@layout/fragment_category_download" />
+
+    <fragment
+        android:id="@+id/storageFolderFragment"
+        android:name="com.hasan.youtubedownloader.ui.screens.StorageFolderFragment"
+        android:label="fragment_storage_folder"
+        tools:layout="@layout/fragment_storage_folder" />
+</navigation>

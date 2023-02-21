@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+    <item android:id="@+id/categoryDownloadFragment"
+        android:title="@string/category_download"
+        android:icon="@android:drawable/sym_action_email"/>
+
+    <item android:id="@+id/storageFolderFragment"
+        android:title="@string/storage_folder"
+        android:icon="@android:drawable/sym_action_email"/>
+
+    </group>
+
+        <item android:title="@string/settings">
+
+            <menu>
+                <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/darkMode"
+                    android:title="@string/dark_mode"
+                    app:iconTint="@drawable/menu"
+                    app:actionViewClass="android.widget.Switch" />
+                </group>
+            </menu>
+
+        </item>
+
+</menu>
