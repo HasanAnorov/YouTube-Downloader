@@ -2,6 +2,10 @@ package com.hasan.youtubedownloader
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.widget.SwitchCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.commit
 import androidx.navigation.findNavController
@@ -42,5 +46,19 @@ class MainActivity : AppCompatActivity() {
 //        }
 
 
+//        val menuItem = findViewById<>().menu.findItem(R.id.darkMode)
+//        val switch_id = menuItem.actionView as SwitchCompat
+//        switch_id.isChecked = true
+//        switch_id.setOnClickListener {
+//            Toast.makeText(
+//                applicationContext,
+//                if (switch_id.isChecked) "is checked!!!" else "not checked!!!",
+//                Toast.LENGTH_SHORT
+//            ).show()
+//        }
+
+
     }
+
+
 }

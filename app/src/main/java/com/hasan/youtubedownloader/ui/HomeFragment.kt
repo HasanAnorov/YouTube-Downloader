@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentController
@@ -28,7 +29,7 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var drawer:DrawerLayout
-    private lateinit var navController: NavController
+    private lateinit var navView:NavigationView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,10 +39,11 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
         val view = binding.root
 
         drawer = binding.drawerLayout
-        val navView = binding.navView
+        navView = binding.navView
         navView.setNavigationItemSelectedListener(this)
 
 
+        //drawer toggling
         binding.contentToolbar.menu.setOnClickListener {
             if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)){
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -50,8 +52,30 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
             }
         }
 
+        val menuItem = binding.navView.menu.findItem(R.id.darkMode)
+        val switchDrawer = menuItem.actionView as SwitchCompat
+        switchDrawer.isChecked = true
+        switchDrawer.setOnClickListener {
+            Toast.makeText(
+                requireContext(),
+                if (switchDrawer.isChecked) "is checked!!!" else "not checked!!!",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        findNavController().addOnDestinationChangedListener{_,destination,_ ->
+            if (destination.id ==R.id.storageFolderFragment){
+                navView.menu.findItem(R.id.storageFolderFragment).isCheckable = false
+            }
+            if (destination.id ==R.id.categoryDownloadFragment){
+                navView.menu.findItem(R.id.categoryDownloadFragment).isCheckable = false
+            }
+        }
+
+
         return view
     }
+
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
@@ -60,13 +84,33 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
                 drawer.closeDrawer(GravityCompat.START)
             }
             R.id.categoryDownloadFragment ->{
-                //to do
                 findNavController().navigate(R.id.action_homeFragment_to_categoryDownloadFragment)
+
                 drawer.closeDrawer(GravityCompat.START)
             }
             R.id.darkMode ->{
-                Toast.makeText(requireContext(), "click", Toast.LENGTH_SHORT).show()
+                //ignore this
+//                val switch_id = item.actionView as SwitchCompat
+//                switch_id.isChecked = true
+//                switch_id.setOnClickListener {
+//                    Toast.makeText(
+//                        requireContext(),
+//                        if (switch_id.isChecked) "is checked!!!" else "not checked!!!",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
             }
+//            else ->{
+//                val switch_id = item.actionView as SwitchCompat
+//                switch_id.isChecked = true
+//                switch_id.setOnClickListener {
+//                    Toast.makeText(
+//                        requireContext(),
+//                        if (switch_id.isChecked) "is checked!!!" else "not checked!!!",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+//            }
         }
         return true
     }
