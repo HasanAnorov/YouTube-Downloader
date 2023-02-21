@@ -3,7 +3,7 @@
     <style name="Theme.YouTubeDownloader" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -13,4 +13,13 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+    
+    <style name="YouTubeDownloaderButton">
+        <item name="android:background">@color/backgroundColor</item>
+    </style>
+    
+    <style name="YouTubeDownloaderButton.Strong">
+        <item name="android:textStyle">bold</item>
+    </style>
+    
 </resources>

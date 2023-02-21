@@ -1,5 +1,6 @@
 package com.hasan.youtubedownloader
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -29,6 +30,15 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
 
+        // status bar text color
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            window.decorView.systemUiVisibility =(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or  View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
+        }
+
+        //status bar color
+        window.statusBarColor = getColor(R.color.white)
+        window.navigationBarColor = getColor(R.color.white)
+
 //        appBarConfiguration = AppBarConfiguration(navController.graph)
 //        setupActionBarWithNavController(navController,appBarConfiguration)
 
@@ -57,8 +67,12 @@ class MainActivity : AppCompatActivity() {
 //            ).show()
 //        }
 
-
     }
 
+    fun changeStatusBarColorToNight(){
+        //status bar color
+        window.statusBarColor = getColor(R.color.textColor)
+        window.navigationBarColor = getColor(R.color.textColor)
+    }
 
 }

@@ -1,24 +1,19 @@
 package com.hasan.youtubedownloader.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.FragmentController
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
 import com.google.android.material.navigation.NavigationView
+import com.hasan.youtubedownloader.MainActivity
 import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.databinding.FragmentHomeBinding
 
@@ -52,17 +47,22 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
             }
         }
 
+        //handling switch on drawer
         val menuItem = binding.navView.menu.findItem(R.id.darkMode)
         val switchDrawer = menuItem.actionView as SwitchCompat
-        switchDrawer.isChecked = true
+        //switchDrawer.isChecked = true
         switchDrawer.setOnClickListener {
-            Toast.makeText(
-                requireContext(),
-                if (switchDrawer.isChecked) "is checked!!!" else "not checked!!!",
-                Toast.LENGTH_SHORT
-            ).show()
+            if (switchDrawer.isChecked){
+                Toast.makeText(requireContext(), "false", Toast.LENGTH_SHORT).show()
+                (activity as MainActivity).changeStatusBarColorToNight()
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }else{
+                Toast.makeText(requireContext(), "true", Toast.LENGTH_SHORT).show()
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
         }
 
+        //can be done in menu -> item, but use it for better experience
         findNavController().addOnDestinationChangedListener{_,destination,_ ->
             if (destination.id ==R.id.storageFolderFragment){
                 navView.menu.findItem(R.id.storageFolderFragment).isCheckable = false
@@ -71,8 +71,6 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
                 navView.menu.findItem(R.id.categoryDownloadFragment).isCheckable = false
             }
         }
-
-
         return view
     }
 
