@@ -1,21 +1,22 @@
 package com.hasan.youtubedownloader.ui
 
+import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.navigation.NavigationView
-import com.hasan.youtubedownloader.MainActivity
 import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.databinding.FragmentHomeBinding
+import com.hasan.youtubedownloader.utils.PreferenceHelper
+
 
 const val TAG = "HOME_FRAGMENT"
 
@@ -37,7 +38,6 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
         navView = binding.navView
         navView.setNavigationItemSelectedListener(this)
 
-
         //drawer toggling
         binding.contentToolbar.menu.setOnClickListener {
             if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)){
@@ -50,14 +50,52 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
         //handling switch on drawer
         val menuItem = binding.navView.menu.findItem(R.id.darkMode)
         val switchDrawer = menuItem.actionView as SwitchCompat
+        val window: Window = requireActivity().window
+
+        /** checking current UI theme mode
+//        when (requireContext().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+//            Configuration.UI_MODE_NIGHT_NO -> {
+//                switchDrawer.isChecked = false
+//            }
+//            Configuration.UI_MODE_NIGHT_YES -> {
+//                // clear FLAG_TRANSLUCENT_STATUS flag:
+//                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+//                // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+//                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+//                // finally change the color
+//                //window.decorView.systemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+//                window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.statusBarNightColor)
+//                window.navigationBarColor = ContextCompat.getColor(requireContext(),R.color.statusBarNightColor)
+//
+//                switchDrawer.isChecked = true
+//            }
+//        }
+        */
+
+        if (PreferenceHelper.isLight(requireContext())){
+            switchDrawer.isChecked = false
+        }else{
+            // clear FLAG_TRANSLUCENT_STATUS flag:
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+
+            window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.statusBarNightColor)
+            window.navigationBarColor = ContextCompat.getColor(requireContext(),R.color.statusBarNightColor)
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            switchDrawer.isChecked = true
+        }
+
         //switchDrawer.isChecked = true
         switchDrawer.setOnClickListener {
             if (switchDrawer.isChecked){
-                Toast.makeText(requireContext(), "false", Toast.LENGTH_SHORT).show()
-                (activity as MainActivity).changeStatusBarColorToNight()
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            }else{
                 Toast.makeText(requireContext(), "true", Toast.LENGTH_SHORT).show()
+                PreferenceHelper.setThemeMode(requireContext(),false)
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+
+            }else{
+                Toast.makeText(requireContext(), "false", Toast.LENGTH_SHORT).show()
+                PreferenceHelper.setThemeMode(requireContext(),true)
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
@@ -71,9 +109,9 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
                 navView.menu.findItem(R.id.categoryDownloadFragment).isCheckable = false
             }
         }
+
         return view
     }
-
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
@@ -88,27 +126,7 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
             }
             R.id.darkMode ->{
                 //ignore this
-//                val switch_id = item.actionView as SwitchCompat
-//                switch_id.isChecked = true
-//                switch_id.setOnClickListener {
-//                    Toast.makeText(
-//                        requireContext(),
-//                        if (switch_id.isChecked) "is checked!!!" else "not checked!!!",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
             }
-//            else ->{
-//                val switch_id = item.actionView as SwitchCompat
-//                switch_id.isChecked = true
-//                switch_id.setOnClickListener {
-//                    Toast.makeText(
-//                        requireContext(),
-//                        if (switch_id.isChecked) "is checked!!!" else "not checked!!!",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//            }
         }
         return true
     }

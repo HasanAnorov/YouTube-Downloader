@@ -69,10 +69,4 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun changeStatusBarColorToNight(){
-        //status bar color
-        window.statusBarColor = getColor(R.color.textColor)
-        window.navigationBarColor = getColor(R.color.textColor)
-    }
-
 }

@@ -11,6 +11,9 @@
     //for dark mode
     <color name="backgroundColor">#FFFFFFFF</color>
     <color name="textColor">#073042</color>
+
+    <color name="statusBarNightColor">#073042</color>
+    <color name="transparent">#00000000</color>
     
 <!--    <color name="red">#F44336</color>-->
 <!--    <color name="dark_red">#C3352B</color>-->
