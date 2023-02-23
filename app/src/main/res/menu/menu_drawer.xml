@@ -21,8 +21,7 @@
                 <item
                     android:id="@+id/darkMode"
                     app:actionViewClass="androidx.appcompat.widget.SwitchCompat"
-                    android:title="@string/dark_mode"
-                    app:iconTint="@drawable/menu" />
+                    android:title="@string/dark_mode" />
                 </group>
             </menu>
 

@@ -13,7 +13,6 @@
         android:layout_height="match_parent"
         app:navGraph = "@navigation/nav_graph"
         app:defaultNavHost = "true"
-        app:itemBackground = "@drawable/menu"
         android:name="androidx.navigation.fragment.NavHostFragment"/>
 
 

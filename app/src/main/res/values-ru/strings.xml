@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">YouTube Downloader</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Привет, пустой фрагмент</string>
+    <string name="category_download">Категория скачать</string>
+    <string name="dark_mode">Темный режим</string>
+    <string name="storage_folder">Папка хранения</string>
+    <string name="settings">Настройки</string>
+    <string name="social_downloader">Социальный загрузчик</string>
+    <string name="hello">Привет</string>
+
+</resources>
