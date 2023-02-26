@@ -8,4 +8,7 @@
     <string name="settings">Settings</string>
     <string name="social_downloader">Social Downloader</string>
     <string name="hello">Hello</string>
+    <string name="paste_link_here">Paste link here ...</string>
+    <string name="history_by_applications">History By Applications</string>
+    <string name="_31_files">31 files</string>
 </resources>

@@ -1,27 +1,24 @@
-package com.hasan.youtubedownloader
+package com.hasan.youtubedownloader.ui.activities
 
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
-import androidx.appcompat.widget.SwitchCompat
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.commit
-import androidx.navigation.findNavController
+import android.view.ViewTreeObserver
+import androidx.activity.viewModels
+import androidx.core.splashscreen.SplashScreen
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
+import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.databinding.ActivityMainBinding
-import com.hasan.youtubedownloader.ui.screens.StorageFolderFragment
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    //private lateinit var appBarConfiguration: AppBarConfiguration
+    private val viewModel:MainVideModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
