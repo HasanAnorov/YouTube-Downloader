@@ -1,26 +1,24 @@
 package com.hasan.youtubedownloader.ui.screens
 
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import android.view.*
-import android.view.View.OnTouchListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.android.material.navigation.NavigationView
 import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.databinding.FragmentHomeBinding
 import com.hasan.youtubedownloader.ui.adapters.HomeAdapter
-import com.hasan.youtubedownloader.ui.models.ItemApplication
+import com.hasan.youtubedownloader.ui.models.ItemDownload
 import com.hasan.youtubedownloader.utils.PreferenceHelper
-import com.hasan.youtubedownloader.utils.hideKeyboard
 
 const val TAG = "HOME_FRAGMENT"
 
@@ -44,18 +42,30 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
         navView = binding.navView
         navView.setNavigationItemSelectedListener(this)
 
-        val dotsIndicator = binding.dotsIndicator
+        //val dotsIndicator = binding.dotsIndicator
         val recyclerView = binding.recyclerView
-        val adapter = HomeAdapter(arrayListOf<ItemApplication>(
-            ItemApplication(R.drawable.download),
-            ItemApplication(R.drawable.download),
-            ItemApplication(R.drawable.download),
-            ItemApplication(R.drawable.download),
-            ItemApplication(R.drawable.download),
-            ItemApplication(R.drawable.download)
-        ))
+        val adapter = HomeAdapter(arrayListOf<ItemDownload>(
+            ItemDownload(R.drawable.images),
+            ItemDownload(R.drawable.images),
+            ItemDownload(R.drawable.images),
+            ItemDownload(R.drawable.images),
+            ItemDownload(R.drawable.images),
+            ItemDownload(R.drawable.images)
+        )){
+            //recycler item click
+            ViewCompat.setTransitionName(it.image,"item_image")
+            val playFragment = PlayFragment()
+            childFragmentManager.commit {
+                setCustomAnimations()
+                addSharedElement(it.image,"item_image")
+                replace(R.id.nav_host_fragment,playFragment)
+                addToBackStack(null)
+            }
+
+            Toast.makeText(requireContext(), "click", Toast.LENGTH_SHORT).show()
+        }
         recyclerView.adapter = adapter
-        dotsIndicator.attachTo(recyclerView)
+        //dotsIndicator.attachTo(recyclerView)
 
         //drawer toggling
         binding.contentToolbar.menu.setOnClickListener {

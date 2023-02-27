@@ -6,11 +6,11 @@
 
     <item android:id="@+id/categoryDownloadFragment"
         android:title="@string/category_download"
-        android:icon="@android:drawable/sym_action_email"/>
+        android:icon="@drawable/folders"/>
 
     <item android:id="@+id/storageFolderFragment"
         android:title="@string/storage_folder"
-        android:icon="@android:drawable/sym_action_email"/>
+        android:icon="@drawable/hosting"/>
 
     </group>
 

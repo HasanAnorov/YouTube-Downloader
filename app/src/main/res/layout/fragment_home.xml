@@ -47,6 +47,7 @@
                     android:padding="12dp"
                     android:maxLines="1"
                     android:inputType="text"
+                    android:fontFamily="@font/custom"
                     android:layout_height="wrap_content"
                     android:hint="@string/paste_link_here"
                     android:drawableStart="@drawable/baseline_insert_link_24"
@@ -102,8 +103,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="@string/history_by_applications"/>
+                    android:fontFamily="@font/custom"
+                    android:text="@string/downloads_history"/>
 
                 <TextView
                     android:id="@+id/downloads_count"
@@ -111,7 +112,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/_31_files"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:fontFamily="sans-serif-medium"
+                    android:fontFamily="@font/custom"
                     android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -124,13 +125,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <androidx.viewpager2.widget.ViewPager2
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView"
                     android:layout_marginTop="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="10dp"
+                    android:orientation="vertical"
+                    tools:listitem="@layout/item_download"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
             </FrameLayout>

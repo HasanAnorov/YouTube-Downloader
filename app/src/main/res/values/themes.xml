@@ -14,8 +14,6 @@
         <!-- Customize your theme here. -->
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
 
-
-
     </style>
     
     <style name="YouTubeDownloaderButton">
@@ -24,6 +22,11 @@
     
     <style name="YouTubeDownloaderButton.Strong">
         <item name="android:textStyle">bold</item>
+    </style>
+
+
+    <style name="DrawerItemStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/custom_b</item>
     </style>
     
 </resources>
