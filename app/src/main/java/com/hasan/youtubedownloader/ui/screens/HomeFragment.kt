@@ -1,17 +1,21 @@
 package com.hasan.youtubedownloader.ui.screens
 
 import android.content.res.Configuration
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.navigation.NavigationView
 import com.hasan.youtubedownloader.R
@@ -45,24 +49,32 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
         //val dotsIndicator = binding.dotsIndicator
         val recyclerView = binding.recyclerView
         val adapter = HomeAdapter(arrayListOf<ItemDownload>(
-            ItemDownload(R.drawable.images),
-            ItemDownload(R.drawable.images),
-            ItemDownload(R.drawable.images),
-            ItemDownload(R.drawable.images),
-            ItemDownload(R.drawable.images),
-            ItemDownload(R.drawable.images)
-        )){
+            ItemDownload(R.drawable.images,"1"),
+            ItemDownload(R.drawable.images,"2"),
+            ItemDownload(R.drawable.images,"3"),
+            ItemDownload(R.drawable.images,"4"),
+            ItemDownload(R.drawable.images,"5"),
+            ItemDownload(R.drawable.images,"6")
+        )){ _, image ->
+
+           //val image = BitmapFactory.decodeResource(requireContext().resources,it.image) as ImageView
             //recycler item click
-//            ViewCompat.setTransitionName(it.image,"item_image")
+//            ViewCompat.setTransitionName(image,"item_image")
 //            val playFragment = PlayFragment()
 //            childFragmentManager.commit {
-//                setCustomAnimations()
-//                addSharedElement(it.image,"item_image")
+//                setReorderingAllowed(true)
+//                //setCustomAnimations(R.anim.slide_out,R.anim.slide_in)
+//                addSharedElement(image,"hero_image")
 //                replace(R.id.nav_host_fragment,playFragment)
 //                addToBackStack(null)
 //            }
+            val extras = FragmentNavigatorExtras(image to "hero_image")
+            findNavController().navigate(R.id.action_homeFragment_to_playFragment,
+            null,
+            null,
+            extras)
 
-            Toast.makeText(requireContext(), "click", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(requireContext(), "click", Toast.LENGTH_SHORT).show()
         }
         recyclerView.adapter = adapter
         //dotsIndicator.attachTo(recyclerView)

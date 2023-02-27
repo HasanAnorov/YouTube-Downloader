@@ -25,6 +25,9 @@
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/slide_out"
             app:destination="@id/storageFolderFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_playFragment"
+            app:destination="@id/playFragment" />
     </fragment>
 
     <fragment
@@ -38,4 +41,9 @@
         android:name="com.hasan.youtubedownloader.ui.screens.StorageFolderFragment"
         android:label="fragment_storage_folder"
         tools:layout="@layout/fragment_storage_folder" />
+    <fragment
+        android:id="@+id/playFragment"
+        android:name="com.hasan.youtubedownloader.ui.screens.PlayFragment"
+        android:label="fragment_play"
+        tools:layout="@layout/fragment_play" />
 </navigation>

@@ -8,11 +8,10 @@
     android:layout_height="wrap_content">
 
 <androidx.cardview.widget.CardView
-    android:id="@+id/item_application"
+    android:id="@+id/video"
     android:clickable="true"
     android:focusable="true"
     app:layout_constraintTop_toTopOf="parent"
-
     android:layout_width="match_parent"
     app:cardCornerRadius="24dp"
     android:layout_height="220dp">
@@ -29,7 +28,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/item_application"
+        app:layout_constraintTop_toBottomOf="@id/video"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginBottom="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
