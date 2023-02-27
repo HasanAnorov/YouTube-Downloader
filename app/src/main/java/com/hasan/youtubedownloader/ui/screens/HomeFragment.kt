@@ -53,14 +53,14 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
             ItemDownload(R.drawable.images)
         )){
             //recycler item click
-            ViewCompat.setTransitionName(it.image,"item_image")
-            val playFragment = PlayFragment()
-            childFragmentManager.commit {
-                setCustomAnimations()
-                addSharedElement(it.image,"item_image")
-                replace(R.id.nav_host_fragment,playFragment)
-                addToBackStack(null)
-            }
+//            ViewCompat.setTransitionName(it.image,"item_image")
+//            val playFragment = PlayFragment()
+//            childFragmentManager.commit {
+//                setCustomAnimations()
+//                addSharedElement(it.image,"item_image")
+//                replace(R.id.nav_host_fragment,playFragment)
+//                addToBackStack(null)
+//            }
 
             Toast.makeText(requireContext(), "click", Toast.LENGTH_SHORT).show()
         }
