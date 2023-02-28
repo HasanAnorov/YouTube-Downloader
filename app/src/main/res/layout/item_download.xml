@@ -14,12 +14,12 @@
     app:layout_constraintTop_toTopOf="parent"
     android:layout_width="match_parent"
     app:cardCornerRadius="24dp"
-    android:layout_height="220dp">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/iv_Video"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="240dp"
         android:layout_gravity="center"
         android:scaleType="centerCrop"
         android:src="@drawable/images" />

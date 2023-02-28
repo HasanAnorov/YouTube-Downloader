@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.commit
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestListener
@@ -28,8 +29,8 @@ class HomeAdapter(var applicationList:ArrayList<ItemDownload>, val itemClick :(v
                 .into(binding.ivVideo)
 
             //binding.ivApplication.setImageResource(application.image)
+            //ViewCompat.setTransitionName(binding.ivVideo,"item_image")
 
-            ViewCompat.setTransitionName(binding.ivVideo,"item_image")
 
             binding.video.setOnClickListener {
                 itemClick.invoke(download,binding.ivVideo)

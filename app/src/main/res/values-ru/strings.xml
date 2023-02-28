@@ -10,5 +10,10 @@
     <string name="settings">Настройки</string>
     <string name="social_downloader">Социальный загрузчик</string>
     <string name="hello">Привет</string>
+    <string name="paste_link_here">Вставьте сюда ссылку…</string>
+    <string name="history_by_applications">История по приложениям</string>
+    <string name="_31_files">31 файл</string>
+    <string name="khasan_anorov">Хасан Аноров</string>
+    <string name="downloads_history">История загрузок</string>
 
 </resources>
