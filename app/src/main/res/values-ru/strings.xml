@@ -16,4 +16,8 @@
     <string name="khasan_anorov">Хасан Аноров</string>
     <string name="downloads_history">История загрузок</string>
 
+    <string name="notification_channel_name">YouTube Downloader</string>
+    <string name="new_downloaded_video">Новое загруженное видео</string>
+    <string name="new_videos_text">У вас есть новые видео в YouTube Downloader.</string>
+
 </resources>

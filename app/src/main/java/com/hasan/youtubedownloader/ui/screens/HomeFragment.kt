@@ -1,9 +1,16 @@
 package com.hasan.youtubedownloader.ui.screens
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.transition.TransitionSet
 import android.view.*
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
@@ -12,6 +19,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionManager
@@ -19,7 +27,7 @@ import com.google.android.material.navigation.NavigationView
 import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.databinding.FragmentHomeBinding
 import com.hasan.youtubedownloader.ui.adapters.HomeAdapter
-import com.hasan.youtubedownloader.ui.models.ItemDownload
+import com.hasan.youtubedownloader.models.ItemDownload
 import com.hasan.youtubedownloader.utils.PreferenceHelper
 
 const val TAG = "HOME_FRAGMENT"
@@ -32,6 +40,9 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
     private lateinit var navView:NavigationView
     private lateinit var switchDrawer:SwitchCompat
     private lateinit var window:Window
+
+    //video link
+    private var command: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,11 +67,14 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
             ItemDownload(R.drawable.images,"6")
         )){ itemDownload, image ->
 
+//            childFragmentManager.commit {
+//                setReorderingAllowed(true)
+//            }
             ViewCompat.setTransitionName(image,"item_image")
             val extras = FragmentNavigatorExtras(image to "hero_image")
             //why is that ?
             val bundle = Bundle()
-                bundle.putInt("image",itemDownload.image)
+            bundle.putInt("image",itemDownload.image)
             findNavController().navigate(R.id.action_homeFragment_to_playFragment,
             bundle,
             null,
@@ -128,20 +142,22 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
             }
         }
 
+        binding.cardDownload.setOnClickListener {
+            command = binding.etPasteLinkt.text.toString()
+            if(isStoragePermissionGranted() && !command.isNullOrBlank()){
+                startCommand(command!!)
+            }
+        }
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-//        parentFragment?.also { parentFragment ->
-//            NewsTransitioner.setupFirstFragment(parentFragment)
-//            parentFragment.postponeEnterTransition()
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//        postponeEnterTransition()
+//        (view.parent as? ViewGroup)?.doOnPreDraw {
+//            startPostponedEnterTransition()
 //        }
-        postponeEnterTransition()
-        (view.parent as? ViewGroup)?.doOnPreDraw {
-            startPostponedEnterTransition()
-        }
-    }
+//    }
 
     private fun setSystemTheme(){
         //checking current UI theme mode
@@ -184,6 +200,67 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
             }
         }
         return true
+    }
+
+    private fun startCommand(command: String) {
+        val workTag = CommandWorker.commandWorkTag
+        val workManager = WorkManager.getInstance(activity?.applicationContext!!)
+        val state =
+            workManager.getWorkInfosByTag(workTag).get()?.getOrNull(0)?.state
+        val running = state === WorkInfo.State.RUNNING || state === WorkInfo.State.ENQUEUED
+        if (running) {
+            Toast.makeText(
+                context,
+                R.string.command_already_running,
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+        val workData = workDataOf(
+            commandKey to command
+        )
+        val workRequest = OneTimeWorkRequestBuilder<CommandWorker>()
+            .addTag(workTag)
+            .setInputData(workData)
+            .build()
+
+        workManager.enqueueUniqueWork(
+            workTag,
+            ExistingWorkPolicy.KEEP,
+            workRequest
+        )
+        Toast.makeText(
+            context,
+            R.string.command_queued,
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+//    private fun isStoragePermissionGranted(): Boolean {
+//        return if (ContextCompat.checkSelfPermission(
+//                requireContext(),
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE
+//            ) == PackageManager.PERMISSION_GRANTED
+//        ) {
+//            true
+//        } else {
+//            requestPermissions(
+//                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+//                1
+//            )
+//            false
+//        }
+//    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            startCommand(command!!)
+        }
     }
 
     override fun onDestroyView() {

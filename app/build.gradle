@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.hasan.youtubedownloader"
-        minSdk 24
+        minSdk 21
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -70,6 +70,14 @@ dependencies {
     //glide
     implementation 'com.github.bumptech.glide:glide:4.15.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.15.0'
+
+    //YT downloader
+//    implementation 'com.github.yausername.youtubedl-android:library:0.14.+'
+//    implementation 'com.github.yausername.youtubedl-android:ffmpeg:0.14.+' // Optional
+//    implementation 'com.github.yausername.youtubedl-android:aria2c:0.14.+' // Optional
+
+    //work manager
+    implementation "android.arch.work:work-runtime:1.0.1"
 
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'

@@ -8,6 +8,7 @@ import android.view.ViewTreeObserver
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.ActivityNavigator
 import androidx.navigation.fragment.NavHostFragment
 import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.databinding.ActivityMainBinding
@@ -64,6 +65,11 @@ class MainActivity : AppCompatActivity() {
 //            ).show()
 //        }
 
+    }
+
+    override fun finish() {
+        super.finish()
+        ActivityNavigator.applyPopAnimationsToPendingTransition(this)
     }
 
 }

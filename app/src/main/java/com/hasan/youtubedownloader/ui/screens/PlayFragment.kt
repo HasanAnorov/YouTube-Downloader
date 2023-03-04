@@ -17,12 +17,30 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.databinding.FragmentPlayBinding
+import com.hasan.youtubedownloader.utils.ChangeOutlineRadiusTransition
 
 class PlayFragment : Fragment() {
 
     private var _binding : FragmentPlayBinding? = null
     private val binding get() = _binding!!
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val animation = TransitionInflater.from(requireContext())
+            .inflateTransition(android.R.transition.move)
+        sharedElementEnterTransition = animation
+        sharedElementEnterTransition = animation
+
+//        TransitionSet().apply {
+//            addTransition(ChangeImageTransform())
+//            addTransition(ChangeBounds())
+//            addTransition(ChangeTransform())
+//            addTransition(
+//                ChangeOutlineRadiusTransition(animationRadiusData.startRadius,
+//                animationRadiusData.endRadius)
+//            ) // add this Transition
+//        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,19 +57,6 @@ class PlayFragment : Fragment() {
         ViewCompat.setTransitionName(heroImageView,"hero_image")
 
         val image = arguments?.getInt("image")
-
-        val animation = TransitionInflater.from(requireContext())
-            .inflateTransition(android.R.transition.move)
-        sharedElementEnterTransition = animation
-//        sharedElementReturnTransition = TransitionSet().apply {
-//            addTransition(ChangeImageTransform())
-//            addTransition(ChangeBounds())
-//            addTransition(ChangeTransform())
-//            addTransition(ChangeOutlineRadiusTransition(animationRadiusData.startRadius,
-//                animationRadiusData.endRadius)) // add this Transition
-//        }
-
-        //startPostponedEnterTransition()
 
         Glide.with(this)
             .load(image)
@@ -76,17 +81,11 @@ class PlayFragment : Fragment() {
                     startPostponedEnterTransition()
                     return false
                 }
-
             })
             .into(binding.ivVideo)
-
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-
-
 }

@@ -13,4 +13,8 @@
     <string name="_31_files">31 files</string>
     <string name="khasan_anorov">Khasan Anorov</string>
     <string name="downloads_history">Downloads History</string>
+    
+    <string name="notification_channel_name">YouTube Downloader</string>
+    <string name="new_downloaded_video">New Downloaded Video</string>
+    <string name="new_videos_text">You have new videos in YouTube Downloader.</string>
 </resources>
