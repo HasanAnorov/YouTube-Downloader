@@ -3,11 +3,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>-->
+    <permission android:name="com.hasan.youtubedownloader.PRIVATE"
+        android:protectionLevel="signature"/>
 
+    <uses-permission android:name="com.hasan.youtubedownloader.PRIVATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
+        android:extractNativeLibs="true"
+        android:requestLegacyExternalStorage="true"
         android:name=".DownloaderApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -27,6 +33,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name=".work.NotificationReceiver"
+            android:permission="com.hasan.youtubedownloader.PRIVATE"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.hasan.youtubedownloader.SHOW_NOTIFICATION"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

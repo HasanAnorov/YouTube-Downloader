@@ -1,9 +1,13 @@
 package com.hasan.youtubedownloader.work
 
+import android.Manifest
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.os.bundleOf
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -33,9 +37,21 @@ class CommandWorker(val context: Context,params:WorkerParameters):Worker(context
             .build()
 
         val notificationManager = NotificationManagerCompat.from(context)
-        notificationManager.notify(0,notification)
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationManager.notify(0,notification)
+            context.sendBroadcast(Intent(ACTION_SHOW_NOTIFICATION), CUSTOM_PRIVATE_PERMISSION)
+        }else{
+            Toast.makeText(context, "You will not be notified", Toast.LENGTH_SHORT).show()
+        }
 
         return Result.success()
+    }
+
+    companion object{
+        const val ACTION_SHOW_NOTIFICATION = "com.hasan.youtubedownloader.SHOW_NOTIFICATION"
+        const val CUSTOM_PRIVATE_PERMISSION = "com.hasan.youtubedownloader.PRIVATE"
     }
 
 

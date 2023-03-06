@@ -5,34 +5,34 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.transition.TransitionSet
 import android.view.*
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
-import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import androidx.transition.TransitionManager
 import com.google.android.material.navigation.NavigationView
 import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.databinding.FragmentHomeBinding
 import com.hasan.youtubedownloader.ui.adapters.HomeAdapter
 import com.hasan.youtubedownloader.models.ItemDownload
 import com.hasan.youtubedownloader.utils.PreferenceHelper
+import com.hasan.youtubedownloader.work.CommandWorker
 
 const val TAG = "HOME_FRAGMENT"
 
 class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener {
+
+    companion object{
+        const val STORAGE_REQUEST_CODE = 1
+        const val NOTIFICATION_REQUEST_CODE = 2
+    }
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -55,8 +55,6 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
         navView = binding.navView
         navView.setNavigationItemSelectedListener(this)
 
-
-        //val dotsIndicator = binding.dotsIndicator
         val recyclerView = binding.recyclerView
         val adapter = HomeAdapter(arrayListOf<ItemDownload>(
             ItemDownload(R.drawable.images,"1"),
@@ -67,9 +65,6 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
             ItemDownload(R.drawable.images,"6")
         )){ itemDownload, image ->
 
-//            childFragmentManager.commit {
-//                setReorderingAllowed(true)
-//            }
             ViewCompat.setTransitionName(image,"item_image")
             val extras = FragmentNavigatorExtras(image to "hero_image")
             //why is that ?
@@ -80,8 +75,8 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
             null,
             extras)
         }
+
         recyclerView.adapter = adapter
-        //dotsIndicator.attachTo(recyclerView)
 
         //drawer toggling
         binding.contentToolbar.menu.setOnClickListener {
@@ -118,7 +113,6 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
             }
         }
 
-        //switchDrawer.isChecked = true
         switchDrawer.setOnClickListener {
             if (switchDrawer.isChecked){
                 //Toast.makeText(requireContext(), "true", Toast.LENGTH_SHORT).show()
@@ -145,12 +139,93 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
         binding.cardDownload.setOnClickListener {
             command = binding.etPasteLinkt.text.toString()
             if(isStoragePermissionGranted() && !command.isNullOrBlank()){
-                startCommand(command!!)
+                //startCommand(command!!)
             }
         }
+
         return view
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun requestNotificationPermission():Boolean{
+        return if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            true
+        } else {
+            requestPermissions(
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS  ),
+                NOTIFICATION_REQUEST_CODE
+            )
+            false
+        }
+    }
+
+    private fun isStoragePermissionGranted(): Boolean {
+        return if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            true
+        } else {
+            requestPermissions(
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                STORAGE_REQUEST_CODE
+            )
+            false
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == STORAGE_REQUEST_CODE && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            //startCommand(command!!)
+        }
+    }
+
+//    private fun startCommand(command: String) {
+//        val workTag = CommandWorker.commandWorkTag
+//        val workManager = WorkManager.getInstance(activity?.applicationContext!!)
+//        val state =
+//            workManager.getWorkInfosByTag(workTag).get()?.getOrNull(0)?.state
+//        val running = state === WorkInfo.State.RUNNING || state === WorkInfo.State.ENQUEUED
+//        if (running) {
+//            Toast.makeText(
+//                context,
+//                R.string.command_already_running,
+//                Toast.LENGTH_LONG
+//            ).show()
+//            return
+//        }
+//        val workData = workDataOf(
+//            commandKey to command
+//        )
+//        val workRequest = OneTimeWorkRequestBuilder<CommandWorker>()
+//            .addTag(workTag)
+//            .setInputData(workData)
+//            .build()
+//
+//        workManager.enqueueUniqueWork(
+//            workTag,
+//            ExistingWorkPolicy.KEEP,
+//            workRequest
+//        )
+//        Toast.makeText(
+//            context,
+//            R.string.command_queued,
+//            Toast.LENGTH_LONG
+//        ).show()
+//    }
+
+    /**
 //    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 //        super.onViewCreated(view, savedInstanceState)
 //        postponeEnterTransition()
@@ -158,6 +233,7 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
 //            startPostponedEnterTransition()
 //        }
 //    }
+    */
 
     private fun setSystemTheme(){
         //checking current UI theme mode
@@ -200,67 +276,6 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
             }
         }
         return true
-    }
-
-    private fun startCommand(command: String) {
-        val workTag = CommandWorker.commandWorkTag
-        val workManager = WorkManager.getInstance(activity?.applicationContext!!)
-        val state =
-            workManager.getWorkInfosByTag(workTag).get()?.getOrNull(0)?.state
-        val running = state === WorkInfo.State.RUNNING || state === WorkInfo.State.ENQUEUED
-        if (running) {
-            Toast.makeText(
-                context,
-                R.string.command_already_running,
-                Toast.LENGTH_LONG
-            ).show()
-            return
-        }
-        val workData = workDataOf(
-            commandKey to command
-        )
-        val workRequest = OneTimeWorkRequestBuilder<CommandWorker>()
-            .addTag(workTag)
-            .setInputData(workData)
-            .build()
-
-        workManager.enqueueUniqueWork(
-            workTag,
-            ExistingWorkPolicy.KEEP,
-            workRequest
-        )
-        Toast.makeText(
-            context,
-            R.string.command_queued,
-            Toast.LENGTH_LONG
-        ).show()
-    }
-
-//    private fun isStoragePermissionGranted(): Boolean {
-//        return if (ContextCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.WRITE_EXTERNAL_STORAGE
-//            ) == PackageManager.PERMISSION_GRANTED
-//        ) {
-//            true
-//        } else {
-//            requestPermissions(
-//                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-//                1
-//            )
-//            false
-//        }
-//    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 1 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            startCommand(command!!)
-        }
     }
 
     override fun onDestroyView() {

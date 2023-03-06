@@ -7,17 +7,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.animation.core.animateIntOffsetAsState
 import androidx.core.view.ViewCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.databinding.FragmentPlayBinding
-import com.hasan.youtubedownloader.utils.ChangeOutlineRadiusTransition
 
 class PlayFragment : Fragment() {
 
