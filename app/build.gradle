@@ -1,7 +1,8 @@
+
+
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-
 }
 // no longer supported - apply plugin: 'kotlin-android-extensions'
 
@@ -21,7 +22,6 @@ android {
         ndk {
             abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
         }
-
     }
 
     buildTypes {
@@ -48,14 +48,10 @@ android {
         jvmTarget = '1.8'
     }
 
-
-
     buildFeatures{
         viewBinding = true
     }
 }
-
-
 
 dependencies {
 
@@ -83,4 +79,5 @@ dependencies {
 //    implementation 'com.github.yausername.youtubedl-android:library:0.14.+'
 //    implementation 'com.github.yausername.youtubedl-android:ffmpeg:0.14.+' // Optional
 //    implementation 'com.github.yausername.youtubedl-android:aria2c:0.14.+'
+
 }

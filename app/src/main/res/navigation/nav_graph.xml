@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_homeFragment_to_playFragment"
             app:destination="@id/playFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_settingsFragment2"
+            app:destination="@id/settingsFragment" />
     </fragment>
 
     <fragment
@@ -48,4 +51,9 @@
         tools:layout="@layout/fragment_play" >
 
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.hasan.youtubedownloader.ui.screens.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

@@ -1,6 +1,8 @@
 package com.hasan.youtubedownloader.ui.screens
 
 import android.Manifest
+import android.annotation.TargetApi
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
@@ -17,6 +19,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.databinding.FragmentHomeBinding
@@ -27,7 +30,7 @@ import com.hasan.youtubedownloader.work.CommandWorker
 
 const val TAG = "HOME_FRAGMENT"
 
-class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener {
+class HomeFragment : Fragment(){
 
     companion object{
         const val STORAGE_REQUEST_CODE = 1
@@ -37,7 +40,7 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var drawer:DrawerLayout
-    private lateinit var navView:NavigationView
+    //private lateinit var navView:NavigationView
     private lateinit var switchDrawer:SwitchCompat
     private lateinit var window:Window
 
@@ -50,10 +53,10 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val view = binding.root
+        val bottomNavView = binding.bottomNav
+        bottomNavView.setupWithNavController(findNavController())
 
-        drawer = binding.drawerLayout
-        navView = binding.navView
-        navView.setNavigationItemSelectedListener(this)
+        //navView.setNavigationItemSelectedListener(this)
 
         val recyclerView = binding.recyclerView
         val adapter = HomeAdapter(arrayListOf<ItemDownload>(
@@ -79,71 +82,80 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
         recyclerView.adapter = adapter
 
         //drawer toggling
-        binding.contentToolbar.menu.setOnClickListener {
-            if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)){
-                binding.drawerLayout.closeDrawer(GravityCompat.START)
-            }else {
-                binding.drawerLayout.openDrawer(GravityCompat.START)
-            }
-        }
+//        binding.contentToolbar.menu.setOnClickListener {
+//            if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)){
+//                binding.drawerLayout.closeDrawer(GravityCompat.START)
+//            }else {
+//                binding.drawerLayout.openDrawer(GravityCompat.START)
+//            }
+//        }
 
         //handling switch on drawer
-        val menuItem = binding.navView.menu.findItem(R.id.darkMode)
-        switchDrawer = menuItem.actionView as SwitchCompat
+        //val menuItem = binding.navView.menu.findItem(R.id.darkMode)
+//        switchDrawer = menuItem.actionView as SwitchCompat
         window = requireActivity().window
 
-        when(PreferenceHelper.isLight(requireContext())){
-            PreferenceHelper.INITIAL ->{
-                setSystemTheme()
-            }
-            PreferenceHelper.DARK ->{
-                // clear FLAG_TRANSLUCENT_STATUS flag:
-                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-                // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+//        when(PreferenceHelper.isLight(requireContext())){
+//            PreferenceHelper.INITIAL ->{
+//                setSystemTheme()
+//            }
+//            PreferenceHelper.DARK ->{
+//                // clear FLAG_TRANSLUCENT_STATUS flag:
+//                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+//                // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+//                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+//
+//                window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.statusBarNightColor)
+//                window.navigationBarColor = ContextCompat.getColor(requireContext(),R.color.statusBarNightColor)
+//                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+//                switchDrawer.isChecked = true
+//            }
+//            PreferenceHelper.LIGHT ->{
+//                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+//                switchDrawer.isChecked = false
+//            }
+//        }
 
-                window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.statusBarNightColor)
-                window.navigationBarColor = ContextCompat.getColor(requireContext(),R.color.statusBarNightColor)
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                switchDrawer.isChecked = true
-            }
-            PreferenceHelper.LIGHT ->{
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                switchDrawer.isChecked = false
-            }
-        }
-
-        switchDrawer.setOnClickListener {
-            if (switchDrawer.isChecked){
-                //Toast.makeText(requireContext(), "true", Toast.LENGTH_SHORT).show()
-                PreferenceHelper.setThemeMode(requireContext(),PreferenceHelper.DARK)
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-
-            }else{
-                //Toast.makeText(requireContext(), "false", Toast.LENGTH_SHORT).show()
-                PreferenceHelper.setThemeMode(requireContext(),PreferenceHelper.LIGHT)
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-        }
+//        switchDrawer.setOnClickListener {
+//            if (switchDrawer.isChecked){
+//                //Toast.makeText(requireContext(), "true", Toast.LENGTH_SHORT).show()
+//                PreferenceHelper.setThemeMode(requireContext(),PreferenceHelper.DARK)
+//                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+//
+//            }else{
+//                //Toast.makeText(requireContext(), "false", Toast.LENGTH_SHORT).show()
+//                PreferenceHelper.setThemeMode(requireContext(),PreferenceHelper.LIGHT)
+//                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+//            }
+//        }
 
         //can be done in menu -> item, but use it for better experience
-        findNavController().addOnDestinationChangedListener{_,destination,_ ->
-            if (destination.id ==R.id.storageFolderFragment){
-                navView.menu.findItem(R.id.storageFolderFragment).isCheckable = false
-            }
-            if (destination.id ==R.id.categoryDownloadFragment){
-                navView.menu.findItem(R.id.categoryDownloadFragment).isCheckable = false
-            }
-        }
+//        findNavController().addOnDestinationChangedListener{_,destination,_ ->
+//            if (destination.id ==R.id.storageFolderFragment){
+//                navView.menu.findItem(R.id.storageFolderFragment).isCheckable = false
+//            }
+//            if (destination.id ==R.id.categoryDownloadFragment){
+//                navView.menu.findItem(R.id.categoryDownloadFragment).isCheckable = false
+//            }
+//        }
 
-        binding.cardDownload.setOnClickListener {
-            command = binding.etPasteLinkt.text.toString()
+        binding.contentToolbar.cardDownload.setOnClickListener {
+            command = binding.contentToolbar.etPasteLinkt.text.toString()
             if(isStoragePermissionGranted() && !command.isNullOrBlank()){
                 //startCommand(command!!)
             }
         }
+        setStatusBarGradiant(requireActivity())
 
         return view
+    }
+
+    fun setStatusBarGradiant(activity: Activity) {
+        val background = ContextCompat.getDrawable(activity, R.drawable.content_toolbar_background)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+
+        window.statusBarColor = ContextCompat.getColor(activity,android.R.color.transparent)
+        window.setBackgroundDrawable(background)
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -260,23 +272,23 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
 
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.storageFolderFragment ->{
-                findNavController().navigate(R.id.action_homeFragment_to_storageFolderFragment)
-                drawer.closeDrawer(GravityCompat.START)
-            }
-            R.id.categoryDownloadFragment ->{
-                findNavController().navigate(R.id.action_homeFragment_to_categoryDownloadFragment)
-
-                drawer.closeDrawer(GravityCompat.START)
-            }
-            R.id.darkMode ->{
-                //ignore this
-            }
-        }
-        return true
-    }
+//    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+//        when(item.itemId){
+//            R.id.storageFolderFragment ->{
+//                findNavController().navigate(R.id.action_homeFragment_to_storageFolderFragment)
+//                drawer.closeDrawer(GravityCompat.START)
+//            }
+//            R.id.categoryDownloadFragment ->{
+//                findNavController().navigate(R.id.action_homeFragment_to_categoryDownloadFragment)
+//
+//                drawer.closeDrawer(GravityCompat.START)
+//            }
+//            R.id.darkMode ->{
+//                //ignore this
+//            }
+//        }
+//        return true
+//    }
 
     override fun onDestroyView() {
         super.onDestroyView()

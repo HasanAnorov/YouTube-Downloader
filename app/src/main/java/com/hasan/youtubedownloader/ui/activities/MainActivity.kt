@@ -1,11 +1,16 @@
 package com.hasan.youtubedownloader.ui.activities
 
+import android.annotation.TargetApi
+import android.app.Activity
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.Window
+import android.view.WindowManager
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.ActivityNavigator
@@ -64,8 +69,8 @@ class MainActivity : AppCompatActivity() {
 //                Toast.LENGTH_SHORT
 //            ).show()
 //        }
-
     }
+
 
     override fun finish() {
         super.finish()
