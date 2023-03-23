@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <dimen name="margin_0_1x">1dp</dimen>
+    <dimen name="margin_0_5x">2dp</dimen>
+    <dimen name="margin_0_75x">3dp</dimen>
+    <dimen name="margin_x">4dp</dimen>
+    <dimen name="margin_1_2x">5dp</dimen>
+    <dimen name="margin_1_5x">6dp</dimen>
+    <dimen name="margin_2x">8dp</dimen>
+    <dimen name="margin_2_5x">10dp</dimen>
+    <dimen name="margin_3x">12dp</dimen>
+    <dimen name="margin_3_5x">15dp</dimen>
+    <dimen name="margin_4x">16dp</dimen>
+    <dimen name="margin_4_5x">17dp</dimen>
+    <dimen name="margin_5x">20dp</dimen>
+    <dimen name="margin_6x">24dp</dimen>
+    <dimen name="margin_7x">28dp</dimen>
+    <dimen name="margin_7_5x">30dp</dimen>
+    <dimen name="margin_8x">32dp</dimen>
+    <dimen name="margin_8x_">-32dp</dimen>
+    <dimen name="margin_9x">36dp</dimen>
+    <dimen name="margin_10x">40dp</dimen>
+    <dimen name="margin_11x">44dp</dimen>
+    <dimen name="margin_12x">48dp</dimen>
+    <dimen name="margin_13x">52dp</dimen>
+    <dimen name="margin_14x">56dp</dimen>
+    <dimen name="margin_15x">60dp</dimen>
+    <dimen name="margin_16x">64dp</dimen>
+    <dimen name="margin_17x">68dp</dimen>
+    <dimen name="margin_18x">72dp</dimen>
+    <dimen name="margin_30x">120dp</dimen>
+
+    <dimen name="divider_height">1dp</dimen>
+
+    <dimen name="icon_size_small">20dp</dimen>
+    <dimen name="icon_size_normal">24dp</dimen>
+    <dimen name="icon_size_big">28dp</dimen>
+    <dimen name="icon_size_large">32dp</dimen>
+    <dimen name="icon_size_xlarge">36dp</dimen>
+    <dimen name="icon_size_xxlarge">40dp</dimen>
+
+    <dimen name="pin_logo_size">100dp</dimen>
+    <dimen name="navbar_height">56dp</dimen>
+    <dimen name="toolbar_height">72dp</dimen>
+    <dimen name="otp_size">60dp</dimen>
+
+    <dimen name="line_width">60dp</dimen>
+    <dimen name="line_height">4dp</dimen>
+
+    <dimen name="text_size_xxx_small">12sp</dimen>
+    <dimen name="text_size_xx_small">15sp</dimen>
+    <dimen name="text_size_x_small">17sp</dimen>
+    <dimen name="text_size_small">18sp</dimen>
+    <dimen name="text_size_little">20sp</dimen>
+    <dimen name="text_size_x_little">21sp</dimen>
+    <dimen name="text_size_medium">24sp</dimen>
+    <dimen name="text_size_header">27sp</dimen>
+    <dimen name="text_size_large">28sp</dimen>
+    <dimen name="text_size_x_large">32sp</dimen>
+    <dimen name="text_size_xx_large">36sp</dimen>
+    <dimen name="text_size_xx_splash_title">42sp</dimen>
+    <dimen name="text_size_default">14sp</dimen>
+    <dimen name="size_category_height">45dp</dimen>
+
+    <dimen name="line_horizontal_width">40dp</dimen>
+    <dimen name="line_horizontal_height">4dp</dimen>
+
+
+</resources>

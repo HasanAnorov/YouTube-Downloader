@@ -4,9 +4,8 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.view.ViewTreeObserver
 import androidx.activity.viewModels
-import androidx.core.splashscreen.SplashScreen
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.ActivityNavigator
 import androidx.navigation.fragment.NavHostFragment
@@ -24,8 +23,7 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
 
         // status bar text color
@@ -34,8 +32,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         //status bar color
-        window.statusBarColor = getColor(R.color.white)
-        window.navigationBarColor = getColor(R.color.white)
+        window.statusBarColor = ContextCompat.getColor(this,R.color.white)
+        window.navigationBarColor = ContextCompat.getColor(this,R.color.white)
 
 //        appBarConfiguration = AppBarConfiguration(navController.graph)
 //        setupActionBarWithNavController(navController,appBarConfiguration)

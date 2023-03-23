@@ -4,9 +4,9 @@
 
     <group android:checkableBehavior="single">
 
-    <item android:id="@+id/categoryDownloadFragment"
-        android:title="@string/category_download"
-        android:icon="@drawable/folders"/>
+        <item android:id="@+id/categoryDownloadFragment"
+            android:title="@string/category_download"
+            android:icon="@drawable/folders"/>
 
     <item android:id="@+id/storageFolderFragment"
         android:title="@string/storage_folder"

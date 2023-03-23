@@ -1,6 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <!-- Base application theme. -->
     <style name="Theme.YouTubeDownloader" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/white</item>
@@ -15,6 +17,9 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowContentTransitions">true</item>
 
+        <item name="colorSurface">@color/white_av</item>
+        <item name="colorSurfaceVariant">@color/white_min</item>
+
     </style>
     
     <style name="YouTubeDownloaderButton">
@@ -24,7 +29,6 @@
     <style name="YouTubeDownloaderButton.Strong">
         <item name="android:textStyle">bold</item>
     </style>
-
 
     <style name="DrawerItemStyle" parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/custom_b</item>

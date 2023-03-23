@@ -7,17 +7,26 @@
     android:layout_height="?actionBarSize"
     android:background="@color/backgroundColor">
 
-    <ImageView
-        android:id="@+id/menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/btn_menu"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="@dimen/margin_4x"
+        style="@style/Widget.App.Card"
         android:layout_gravity="center_vertical"
-        android:scaleType="center"
-        android:padding="10dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/category" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:cardBackgroundColor="@color/white"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Oval">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_gravity="center"
+            android:layout_width="@dimen/margin_5x"
+            android:layout_height="@dimen/margin_4x"
+            android:src="@drawable/category"/>
+
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/title"
@@ -25,18 +34,9 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_marginStart="8dp"
-        android:fontFamily="@font/custom_b"
         android:gravity="center_vertical"
         android:text="@string/social_downloader"
         android:textColor="@color/textColor"
         android:textSize="18sp" />
-
-    <ImageView
-        android:id="@+id/notifications"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_gravity="end|center_vertical"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/bell" />
 
 </FrameLayout>

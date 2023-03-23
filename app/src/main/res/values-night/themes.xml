@@ -11,7 +11,10 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/backgroundColor</item>
-        <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowContentTransitions">true</item>
+
+        <item name="colorSurface">@color/white_av</item>
+        <item name="colorSurfaceVariant">@color/white_min</item>
+
     </style>
 </resources>

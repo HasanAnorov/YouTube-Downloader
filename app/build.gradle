@@ -60,7 +60,7 @@ android {
 dependencies {
 
     //work manager
-    implementation "androidx.work:work-runtime:2.8.0"
+    implementation "androidx.work:work-runtime:2.8.1"
 
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -80,7 +80,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.15.0'
 
     //YT downloader library
-//    implementation 'com.github.yausername.youtubedl-android:library:0.14.+'
-//    implementation 'com.github.yausername.youtubedl-android:ffmpeg:0.14.+' // Optional
-//    implementation 'com.github.yausername.youtubedl-android:aria2c:0.14.+'
+    implementation 'com.github.yausername.youtubedl-android:library:-SNAPSHOT'
+    implementation 'com.github.yausername.youtubedl-android:ffmpeg:-SNAPSHOT' // Optional
+    implementation 'com.github.yausername.youtubedl-android:aria2c:-SNAPSHOT' // Optional
 }

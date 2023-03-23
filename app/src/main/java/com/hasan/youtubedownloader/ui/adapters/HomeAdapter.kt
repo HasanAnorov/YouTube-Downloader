@@ -29,10 +29,10 @@ class HomeAdapter(var applicationList:ArrayList<ItemDownload>, val itemClick :(v
                 .load(download.image)
                 .centerCrop()
                 .placeholder(R.drawable.video)
-                .into(binding.ivVideo)
+                .into(binding.imageView)
 
-            binding.ivVideo.setOnClickListener {
-                itemClick.invoke(download,binding.ivVideo)
+            binding.imageView.setOnClickListener {
+                itemClick.invoke(download,binding.imageView)
             }
         }
     }

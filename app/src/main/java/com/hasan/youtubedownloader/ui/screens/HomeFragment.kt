@@ -6,7 +6,6 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
@@ -23,7 +22,6 @@ import com.hasan.youtubedownloader.databinding.FragmentHomeBinding
 import com.hasan.youtubedownloader.ui.adapters.HomeAdapter
 import com.hasan.youtubedownloader.models.ItemDownload
 import com.hasan.youtubedownloader.utils.PreferenceHelper
-import com.hasan.youtubedownloader.work.CommandWorker
 
 const val TAG = "HOME_FRAGMENT"
 
@@ -79,7 +77,7 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
         recyclerView.adapter = adapter
 
         //drawer toggling
-        binding.contentToolbar.menu.setOnClickListener {
+        binding.contentToolbar.btnMenu.setOnClickListener {
             if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)){
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
             }else {
@@ -277,6 +275,7 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
         }
         return true
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
