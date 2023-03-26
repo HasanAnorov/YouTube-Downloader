@@ -17,4 +17,10 @@
     <string name="notification_channel_name">YouTube Downloader</string>
     <string name="new_downloaded_video">New Downloaded Video</string>
     <string name="new_videos_text">You have new videos in YouTube Downloader.</string>
+
+    <string name="command_is_already_running">A command is already running</string>
+    <string name="command_queued">Command queued. Check notification for progress</string>
+
+    <string name="command_noti_title">yt-dlp command</string>
+
 </resources>

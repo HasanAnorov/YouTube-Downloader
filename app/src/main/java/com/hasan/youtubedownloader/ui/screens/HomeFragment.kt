@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
@@ -16,21 +17,19 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.work.*
 import com.google.android.material.navigation.NavigationView
 import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.databinding.FragmentHomeBinding
 import com.hasan.youtubedownloader.ui.adapters.HomeAdapter
 import com.hasan.youtubedownloader.models.ItemDownload
 import com.hasan.youtubedownloader.utils.PreferenceHelper
+import com.hasan.youtubedownloader.work.CommandWorker
+import com.hasan.youtubedownloader.work.CommandWorker.Companion.commandKey
 
 const val TAG = "HOME_FRAGMENT"
 
 class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener {
-
-    companion object{
-        const val STORAGE_REQUEST_CODE = 1
-        const val NOTIFICATION_REQUEST_CODE = 2
-    }
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -137,11 +136,46 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
         binding.cardDownload.setOnClickListener {
             command = binding.etPasteLinkt.text.toString()
             if(isStoragePermissionGranted() && !command.isNullOrBlank()){
-                //startCommand(command!!)
+                startCommand(command!!)
             }
         }
 
         return view
+    }
+
+    private fun startCommand(command: String) {
+        val workTag = CommandWorker.commandWorkTag
+        val workManager = WorkManager.getInstance(activity?.applicationContext!!)
+        val state = workManager.getWorkInfosByTag(workTag).get()?.getOrNull(0)?.state
+        val running = state === WorkInfo.State.RUNNING || state === WorkInfo.State.ENQUEUED
+        if (running) {
+            Toast.makeText(
+                context,
+                R.string.command_is_already_running,
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
+        /** think about it later*/
+        val workData = workDataOf(
+            commandKey to command
+        )
+        val workRequest = OneTimeWorkRequestBuilder<CommandWorker>()
+            .addTag(workTag)
+            .setInputData(workData)
+            .build()
+
+        workManager.enqueueUniqueWork(
+            workTag,
+            ExistingWorkPolicy.KEEP,
+            workRequest
+        )
+        Toast.makeText(
+            context,
+            R.string.command_queued,
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -185,43 +219,9 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == STORAGE_REQUEST_CODE && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            //startCommand(command!!)
+            startCommand(command!!)
         }
     }
-
-//    private fun startCommand(command: String) {
-//        val workTag = CommandWorker.commandWorkTag
-//        val workManager = WorkManager.getInstance(activity?.applicationContext!!)
-//        val state =
-//            workManager.getWorkInfosByTag(workTag).get()?.getOrNull(0)?.state
-//        val running = state === WorkInfo.State.RUNNING || state === WorkInfo.State.ENQUEUED
-//        if (running) {
-//            Toast.makeText(
-//                context,
-//                R.string.command_already_running,
-//                Toast.LENGTH_LONG
-//            ).show()
-//            return
-//        }
-//        val workData = workDataOf(
-//            commandKey to command
-//        )
-//        val workRequest = OneTimeWorkRequestBuilder<CommandWorker>()
-//            .addTag(workTag)
-//            .setInputData(workData)
-//            .build()
-//
-//        workManager.enqueueUniqueWork(
-//            workTag,
-//            ExistingWorkPolicy.KEEP,
-//            workRequest
-//        )
-//        Toast.makeText(
-//            context,
-//            R.string.command_queued,
-//            Toast.LENGTH_LONG
-//        ).show()
-//    }
 
     /**
 //    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -276,10 +276,14 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
         return true
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        const val STORAGE_REQUEST_CODE = 1
+        const val NOTIFICATION_REQUEST_CODE = 2
     }
 
 }

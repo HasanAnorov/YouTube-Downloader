@@ -20,4 +20,9 @@
     <string name="new_downloaded_video">Новое загруженное видео</string>
     <string name="new_videos_text">У вас есть новые видео в YouTube Downloader.</string>
 
+    <string name="command_is_already_running">Команда уже запущена</string>
+    <string name="command_queued">Команда поставлена в очередь. Проверьте уведомление о прогрессе</string>
+    <string name="command_noti_title">yt-dlp command</string>
+
+
 </resources>
