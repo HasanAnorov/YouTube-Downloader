@@ -12,40 +12,32 @@
         tools:layout="@layout/fragment_home" >
 
         <action
-            android:id="@+id/action_homeFragment_to_categoryDownloadFragment"
-            app:enterAnim="@anim/slide_in"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/slide_out"
-            app:destination="@id/categoryDownloadFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_storageFolderFragment"
-            app:enterAnim="@anim/slide_in"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/slide_out"
-            app:destination="@id/storageFolderFragment" />
-        <action
             android:id="@+id/action_homeFragment_to_playFragment"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out"
             app:destination="@id/playFragment" />
+
+        <action
+            android:id="@+id/action_homeFragment_to_downloadsFragment2"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out"
+            app:destination="@id/downloadsFragment" />
+
     </fragment>
 
-    <fragment
-        android:id="@+id/categoryDownloadFragment"
-        android:name="com.hasan.youtubedownloader.ui.screens.CategoryDownloadFragment"
-        android:label="fragment_category_download"
-        tools:layout="@layout/fragment_category_download" />
-
-    <fragment
-        android:id="@+id/storageFolderFragment"
-        android:name="com.hasan.youtubedownloader.ui.screens.StorageFolderFragment"
-        android:label="fragment_storage_folder"
-        tools:layout="@layout/fragment_storage_folder" />
     <fragment
         android:id="@+id/playFragment"
         android:name="com.hasan.youtubedownloader.ui.screens.PlayFragment"
         android:label="fragment_play"
-        tools:layout="@layout/fragment_play" >
+        tools:layout="@layout/fragment_play"/>
 
-    </fragment>
+    <fragment
+        android:id="@+id/downloadsFragment"
+        android:name="com.hasan.youtubedownloader.ui.screens.DownloadsFragment"
+        android:label="fragment_downloads"
+        tools:layout="@layout/fragment_downloads" />
 </navigation>

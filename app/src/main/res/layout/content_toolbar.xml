@@ -16,9 +16,7 @@
         android:layout_gravity="center_vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:cardBackgroundColor="@color/white"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Oval">
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:layout_gravity="center"

@@ -33,5 +33,9 @@
     <style name="DrawerItemStyle" parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/custom_b</item>
     </style>
+
+    <style name="NavigationItemNoRipple">
+        <item name="android:colorControlHighlight">@android:color/transparent</item>
+    </style>
     
 </resources>

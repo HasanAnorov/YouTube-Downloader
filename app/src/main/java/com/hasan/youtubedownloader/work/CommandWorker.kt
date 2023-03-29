@@ -38,7 +38,7 @@ class CommandWorker(val context: Context,params:WorkerParameters):Worker(context
         val pendingIntent = NavDeepLinkBuilder(context)
             .setComponentName(MainActivity::class.java)
             .setGraph(R.navigation.nav_graph)
-            .setDestination(R.id.storageFolderFragment)
+            .setDestination(R.id.downloadsFragment)
             .createPendingIntent()
 
         val notificationId =id.hashCode()

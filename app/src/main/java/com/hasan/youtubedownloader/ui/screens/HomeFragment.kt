@@ -125,11 +125,8 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
 
         //can be done in menu -> item, but use it for better experience
         findNavController().addOnDestinationChangedListener{_,destination,_ ->
-            if (destination.id ==R.id.storageFolderFragment){
-                navView.menu.findItem(R.id.storageFolderFragment).isCheckable = false
-            }
-            if (destination.id ==R.id.categoryDownloadFragment){
-                navView.menu.findItem(R.id.categoryDownloadFragment).isCheckable = false
+            if (destination.id ==R.id.downloadsFragment){
+                navView.menu.findItem(R.id.downloadsFragment).isCheckable = false
             }
         }
 
@@ -260,13 +257,8 @@ class HomeFragment : Fragment(),NavigationView.OnNavigationItemSelectedListener 
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.storageFolderFragment ->{
-                findNavController().navigate(R.id.action_homeFragment_to_storageFolderFragment)
-                drawer.closeDrawer(GravityCompat.START)
-            }
-            R.id.categoryDownloadFragment ->{
-                findNavController().navigate(R.id.action_homeFragment_to_categoryDownloadFragment)
-
+            R.id.downloadsFragment ->{
+                findNavController().navigate(R.id.downloadsFragment)
                 drawer.closeDrawer(GravityCompat.START)
             }
             R.id.darkMode ->{
