@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textViewTitle"
+        style="@style/TextAppearance.App.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_4x"
+        android:layout_marginTop="@dimen/margin_4x"
+        android:text="@string/app_theme" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardViewLight"
+        style="@style/Widget.App.Card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_4x"
+        android:layout_marginTop="@dimen/margin_7_5x"
+        app:cardBackgroundColor="?colorOnPrimary">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.App.Card"
+                android:layout_width="@dimen/margin_14x"
+                android:layout_height="@dimen/margin_14x"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Oval">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="@dimen/margin_6x"
+                    android:layout_height="@dimen/margin_6x"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/margin_1_5x"
+                    app:srcCompat="@drawable/ic_sun"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textViewLight"
+                style="@style/TextAppearance.App.SubTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/margin_3x"
+                android:layout_weight="1"
+                android:text="@string/light_theme"
+                android:textColor="?colorSecondary" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="@dimen/icon_size_normal"
+                android:layout_height="@dimen/icon_size_normal"
+                android:layout_gravity="center"
+                android:id="@+id/imageViewLight"
+                app:srcCompat="@drawable/ic_tick"
+                app:tint="?colorSecondary"
+                />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardViewNight"
+        style="@style/Widget.App.Card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_4x"
+        android:layout_marginTop="@dimen/margin_3_5x"
+        app:cardBackgroundColor="?colorOnPrimary">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.App.Card"
+                android:layout_width="@dimen/margin_14x"
+                android:layout_height="@dimen/margin_14x"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Oval"
+                >
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="@dimen/margin_6x"
+                    android:layout_height="@dimen/margin_6x"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/margin_1_5x"
+                    app:srcCompat="@drawable/ic_moon"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textViewNight"
+                style="@style/TextAppearance.App.SubTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/margin_3x"
+                android:layout_weight="1"
+                android:text="@string/night_theme"
+                android:textColor="?colorSecondary" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="@dimen/icon_size_normal"
+                android:layout_height="@dimen/icon_size_normal"
+                android:id="@+id/imageViewNight"
+                android:layout_gravity="center"
+                app:tint="?colorSecondary"
+                app:srcCompat="@drawable/ic_tick" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardViewDefault"
+        style="@style/Widget.App.Card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_4x"
+        android:layout_marginTop="@dimen/margin_3_5x"
+        app:cardBackgroundColor="?colorOnPrimary">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.App.Card"
+                android:layout_width="@dimen/margin_14x"
+                android:layout_height="@dimen/margin_14x"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Oval"
+                >
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="@dimen/margin_6x"
+                    android:layout_height="@dimen/margin_6x"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/margin_1_5x"
+                    app:srcCompat="@drawable/ic_cube"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textViewDefault"
+                style="@style/TextAppearance.App.SubTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/margin_3x"
+                android:layout_weight="1"
+                android:text="@string/system_theme"
+                android:textColor="?colorSecondary" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageViewDefault"
+                android:layout_width="@dimen/icon_size_normal"
+                android:layout_height="@dimen/icon_size_normal"
+                android:layout_gravity="center"
+                app:tint="?colorSecondary"
+                app:srcCompat="@drawable/ic_tick" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_7_5x" />
+
+</LinearLayout>

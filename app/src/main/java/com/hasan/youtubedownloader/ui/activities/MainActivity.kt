@@ -32,11 +32,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         //status bar color
-        window.statusBarColor = ContextCompat.getColor(this,R.color.white)
-        window.navigationBarColor = ContextCompat.getColor(this,R.color.white)
-
-//        appBarConfiguration = AppBarConfiguration(navController.graph)
-//        setupActionBarWithNavController(navController,appBarConfiguration)
+//        window.statusBarColor = ContextCompat.getColor(this,R.color.white)
+//        window.navigationBarColor = ContextCompat.getColor(this,R.color.white)
 
         //added to Navigation instead
 //        val fragment = StorageFolderFragment()
@@ -49,18 +46,6 @@ class MainActivity : AppCompatActivity() {
 //            )
 //            replace(R.id.nav_host_fragment,fragment)
 //            addToBackStack(null)
-//        }
-
-
-//        val menuItem = findViewById<>().menu.findItem(R.id.darkMode)
-//        val switch_id = menuItem.actionView as SwitchCompat
-//        switch_id.isChecked = true
-//        switch_id.setOnClickListener {
-//            Toast.makeText(
-//                applicationContext,
-//                if (switch_id.isChecked) "is checked!!!" else "not checked!!!",
-//                Toast.LENGTH_SHORT
-//            ).show()
 //        }
 
     }

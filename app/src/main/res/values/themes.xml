@@ -8,24 +8,27 @@
         <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondary">@color/main_text_color</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+
+        <item name="colorSurface">@color/white_av</item>
+        <item name="colorSurfaceVariant">@color/white_min</item>
+
+
         <!-- Customize your theme here. -->
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowContentTransitions">true</item>
 
-        <item name="colorSurface">@color/white_av</item>
-        <item name="colorSurfaceVariant">@color/white_min</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheet</item>
+        <item name="errorTextColor">?colorError</item>
 
     </style>
     
     <style name="YouTubeDownloaderButton">
         <item name="android:background">@color/backgroundColor</item>
     </style>
-    
+
     <style name="YouTubeDownloaderButton.Strong">
         <item name="android:textStyle">bold</item>
     </style>

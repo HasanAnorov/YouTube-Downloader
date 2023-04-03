@@ -24,5 +24,16 @@
     <string name="command_queued">Команда поставлена в очередь. Проверьте уведомление о прогрессе</string>
     <string name="command_noti_title">yt-dlp command</string>
 
+    <string name="downloads">Загрузки</string>
+    <string name="home">Дом</string>
+
+    <string name="about_app">О приложении</string>
+    <string name="app_theme">Тема приложения</string>
+    <string name="language">Русский</string>
+
+    <string name="light_theme">Светлая тема</string>
+    <string name="night_theme">Ночная тема</string>
+    <string name="system_theme">Тема устройства</string>
+
 
 </resources>

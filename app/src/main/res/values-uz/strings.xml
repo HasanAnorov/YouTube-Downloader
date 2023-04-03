@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">YouTube Downloader</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -22,14 +24,15 @@
     <string name="command_queued">Command queued. Check notification for progress</string>
 
     <string name="command_noti_title">yt-dlp command</string>
-    <string name="downloads">Downloads</string>
+    <string name="downloads">Yuklanganlar</string>
     <string name="home">Home</string>
-    <string name="about_app">About App</string>
-    <string name="app_theme">App Theme</string>
-    <string name="language">English</string>
 
-    <string name="light_theme">Light Theme</string>
-    <string name="night_theme">Night Theme</string>
-    <string name="system_theme">Device\'s Theme</string>
+    <string name="about_app">О приложении</string>
+    <string name="app_theme">Тема приложения</string>
+    <string name="language">Русский</string>
+
+    <string name="light_theme">Kunduzgi rejim</string>
+    <string name="night_theme">Tungi reji</string>
+    <string name="system_theme">Qurilmadan kelib chiqib</string>
 
 </resources>
