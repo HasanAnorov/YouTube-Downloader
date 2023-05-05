@@ -31,7 +31,6 @@ import com.yausername.youtubedl_android.YoutubeDLException
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import java.io.File
 
-
 const val TAG = "HOME_FRAGMENT"
 
 class HomeFragment : Fragment() {
@@ -43,7 +42,7 @@ class HomeFragment : Fragment() {
     private lateinit var windowInsetsController: WindowInsetsControllerCompat
 
     private var urlCommand = ""
-    //private var isDownloading :Boolean = false
+    private var isDownloading :Boolean = false
 
     private val permission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -72,18 +71,9 @@ class HomeFragment : Fragment() {
             INITIAL -> {
                 //setSystemTheme()
             }
-
             NIGHT -> {
-
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-
-                //can't change drawableStart tint color
-//                binding.etPasteLinkt.compoundDrawables[0].setTint(resources.getColor(R.color.white_max))
-//                binding.etPasteLinkt.compoundDrawables.filterNotNull().forEach {
-//                    it.mutate()
-//                    it.setTint(resources.getColor(R.color.white))
-//                }
 
                 windowInsetsController.isAppearanceLightStatusBars = false
                 window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.black_dark)
@@ -91,7 +81,6 @@ class HomeFragment : Fragment() {
                     ContextCompat.getColor(requireContext(), R.color.black_dark)
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
-
             LIGHT -> {
                 window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
                 windowInsetsController.isAppearanceLightStatusBars = true
@@ -132,7 +121,6 @@ class HomeFragment : Fragment() {
         }
 
         binding.cardDownload.setOnClickListener {
-
             urlCommand = binding.etPasteLinkt.text.toString().trim()
 
             if (urlCommand.isBlank()) {
@@ -142,43 +130,38 @@ class HomeFragment : Fragment() {
             }
 
         }
-
         return binding.root
     }
 
     private fun startDownload(command: String) {
 
         val progressDialog = ProgressDialog(ProgressDialog.MODE_DETERMINATE, requireContext())
-
         val request = YoutubeDLRequest(command)
         request.addOption(
             "-o", getDownloadLocation().absolutePath + "/%(title)s.%(ext)s"
         )
         YoutubeDL.getInstance().execute(request, "taskId") { progressP, _, line ->
-                activity?.runOnUiThread {
-                    //dialog.setContent("${progress.toInt()}")
-                    with(progressDialog) {
-                        theme = ProgressDialog.THEME_LIGHT
-                        mode = ProgressDialog.MODE_DETERMINATE
-                        progress = progressP.toInt()
-                        showProgressTextAsFraction(true)
-                        setNegativeButton("Cancel", "Downloading ...") {
-                            Toast.makeText(
-                                requireContext(),
-                                "Custom OnClickListener for Indeterminate",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            dismiss()
-                        }
-                        show()
+            activity?.runOnUiThread {
+                //dialog.setContent("${progress.toInt()}")
+                with(progressDialog) {
+                    theme = ProgressDialog.THEME_LIGHT
+                    mode = ProgressDialog.MODE_DETERMINATE
+                    progress = progressP.toInt()
+                    showProgressTextAsFraction(true)
+                    setNegativeButton("Cancel", "Downloading ...") {
+                        Toast.makeText(
+                            requireContext(),
+                            "Custom OnClickListener for Indeterminate",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        dismiss()
                     }
-
-                    Log.d(TAG, "startDownload: ${id.hashCode()} , ${progressP.toInt()}, $line")
-                    if (progressP.toInt() == 100) progressDialog.dismiss()
+                    show()
                 }
-
+                Log.d(TAG, "startDownload: ${id.hashCode()} , ${progressP.toInt()}, $line")
+                if (progressP.toInt() == 100) progressDialog.dismiss()
             }
-
+        }
     }
 
     private fun getDownloadLocation(): File {
@@ -199,7 +182,6 @@ class HomeFragment : Fragment() {
                 windowInsetsController.isAppearanceLightStatusBars = true
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
-
             Configuration.UI_MODE_NIGHT_YES -> {
                 //PreferenceHelper.setThemeMode(requireContext(),"initial_app_theme")
                 // clear FLAG_TRANSLUCENT_STATUS flag:
