@@ -35,5 +35,7 @@
     <string name="night_theme">Ночная тема</string>
     <string name="system_theme">Тема устройства</string>
 
+    <string name="cancel_download">Отменить загрузку</string>
+
 
 </resources>

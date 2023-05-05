@@ -12,6 +12,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="@dimen/margin_4x"
         style="@style/Widget.App.Card"
+        app:cardBackgroundColor="@color/transparent"
         android:layout_gravity="center_vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

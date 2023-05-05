@@ -35,4 +35,6 @@
     <string name="night_theme">Tungi reji</string>
     <string name="system_theme">Qurilmadan kelib chiqib</string>
 
+    <string name="cancel_download">Bekor qilish</string>
+
 </resources>

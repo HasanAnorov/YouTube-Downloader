@@ -18,11 +18,6 @@ import androidx.work.WorkerParameters
 import com.hasan.youtubedownloader.NOTIFICATION_CHANNEL_ID
 import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.ui.activities.MainActivity
-import com.yausername.youtubedl_android.YoutubeDL
-import com.yausername.youtubedl_android.YoutubeDLRequest
-import java.util.*
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 class CommandWorker(val context: Context,params:WorkerParameters):Worker(context,params){
 
@@ -69,20 +64,20 @@ class CommandWorker(val context: Context,params:WorkerParameters):Worker(context
 
         // this is not the recommended way to add options/flags/url and might break in future
         // use the constructor for url, addOption(key) for flags, addOption(key, value) for options
-        val request = YoutubeDLRequest(Collections.emptyList())
-        val m: Matcher = Pattern.compile(commandRegex).matcher(command)
-        while (m.find()) {
-            if (m.group(1) != null) {
-                request.addOption(m.group(1))
-            } else {
-                request.addOption(m.group(2))
-            }
-        }
-
-        YoutubeDL.getInstance()
-            .execute(request) { progress, _, line ->
-                showProgress(id.hashCode(), progress.toInt(), line)
-            }
+//        val request = YoutubeDLRequest(Collections.emptyList())
+//        val m: Matcher = Pattern.compile(commandRegex).matcher(command)
+//        while (m.find()) {
+//            if (m.group(1) != null) {
+//                request.addOption(m.group(1))
+//            } else {
+//                request.addOption(m.group(2))
+//            }
+//        }
+//
+//        YoutubeDL.getInstance()
+//            .execute(request) { progress, _, line ->
+//                showProgress(id.hashCode(), progress.toInt(), line)
+//            }
 
         return Result.success()
     }
@@ -121,7 +116,6 @@ class CommandWorker(val context: Context,params:WorkerParameters):Worker(context
         }
     }
 
-
     companion object{
         const val ACTION_SHOW_NOTIFICATION = "com.hasan.youtubedownloader.SHOW_NOTIFICATION"
         const val CUSTOM_PRIVATE_PERMISSION = "com.hasan.youtubedownloader.PRIVATE"
@@ -130,7 +124,5 @@ class CommandWorker(val context: Context,params:WorkerParameters):Worker(context
         const val commandWorkTag = "command_work"
         private const val commandRegex = "\"([^\"]*)\"|(\\S+)"
     }
-
-
 
 }
