@@ -31,7 +31,7 @@ import com.yausername.youtubedl_android.YoutubeDLException
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import java.io.File
 
-const val TAG = "HOME_FRAGMENT"
+const val TAG = "ahi3646"
 
 class HomeFragment : Fragment() {
 
