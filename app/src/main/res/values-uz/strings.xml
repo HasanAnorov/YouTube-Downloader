@@ -2,23 +2,21 @@
 <resources>
 
     <string name="app_name">YouTube Downloader</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="category_download">Category Download</string>
-    <string name="dark_mode">Dark Mode</string>
+    <string name="category_download">Kategoriya Yuklab olish</string>
+    <string name="dark_mode">Tungi mavzu</string>
     <string name="storage_folder">Storage Folder</string>
-    <string name="settings">Settings</string>
+    <string name="settings">Sozlamalar</string>
     <string name="social_downloader">Social Downloader</string>
-    <string name="hello">Hello</string>
-    <string name="paste_link_here">Paste link here ...</string>
-    <string name="history_by_applications">History By Applications</string>
-    <string name="_31_files">31 files</string>
+    <string name="hello">Salom</string>
+    <string name="paste_link_here">Havolani shu yerga joylashtiring ...</string>
+    <string name="history_by_applications">Ilovalar tarixi</string>
+    <string name="_31_files">31 fayllar</string>
     <string name="khasan_anorov">Khasan Anorov</string>
-    <string name="downloads_history">Downloads History</string>
+    <string name="downloads_history">Yuklanishlar tarixi</string>
 
     <string name="notification_channel_name">YouTube Downloader</string>
-    <string name="new_downloaded_video">New Downloaded Video</string>
-    <string name="new_videos_text">You have new videos in YouTube Downloader.</string>
+    <string name="new_downloaded_video">Yangi yuklangan video</string>
+    <string name="new_videos_text">Ilovada yangi yuklangan videolar bor</string>
 
     <string name="command_is_already_running">A command is already running</string>
     <string name="command_queued">Command queued. Check notification for progress</string>
@@ -27,9 +25,9 @@
     <string name="downloads">Yuklanganlar</string>
     <string name="home">Home</string>
 
-    <string name="about_app">О приложении</string>
-    <string name="app_theme">Тема приложения</string>
-    <string name="language">Русский</string>
+    <string name="about_app">Ilova haqida</string>
+    <string name="app_theme">Ilova mavzusi</string>
+    <string name="language">Uzbek</string>
 
     <string name="light_theme">Kunduzgi rejim</string>
     <string name="night_theme">Tungi reji</string>
