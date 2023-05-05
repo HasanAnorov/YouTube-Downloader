@@ -54,15 +54,13 @@ class DownloadWorker(context:Context, workerParams: WorkerParameters):
         val foregroundInfo = ForegroundInfo(notificationId, notification)
         setForeground(foregroundInfo)
 
-        // this is not the recommended way to add options/flags/url and might break in future
-        // use the constructor for url, addOption(key) for flags, addOption(key, value) for options
         val request = YoutubeDLRequest(Collections.emptyList())
         val m: Matcher = Pattern.compile(commandRegex).matcher(downloadUriInput)
         while (m.find()) {
             if (m.group(1) != null) {
-                request.addOption(m.group(1))
+                m.group(1)?.let { request.addOption(it) }
             } else {
-                request.addOption(m.group(2))
+                m.group(2)?.let { request.addOption(it) }
             }
         }
 

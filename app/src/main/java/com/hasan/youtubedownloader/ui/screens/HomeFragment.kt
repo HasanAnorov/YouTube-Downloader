@@ -1,12 +1,12 @@
 package com.hasan.youtubedownloader.ui.screens
 
 import android.Manifest
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
@@ -26,22 +26,21 @@ import com.hasan.youtubedownloader.utils.Constants.NIGHT
 import com.hasan.youtubedownloader.utils.PreferenceHelper
 import com.hasan.youtubedownloader.utils.toast
 import com.techiness.progressdialoglibrary.ProgressDialog
-import com.yausername.youtubedl_android.YoutubeDL.getInstance
+import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLException
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import java.io.File
-import kotlin.math.log
 
 
 const val TAG = "HOME_FRAGMENT"
 
-class HomeFragment : Fragment(){
+class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var window: Window
-    private lateinit var windowInsetsController : WindowInsetsControllerCompat
+    private lateinit var windowInsetsController: WindowInsetsControllerCompat
 
     private var urlCommand = ""
     //private var isDownloading :Boolean = false
@@ -54,7 +53,7 @@ class HomeFragment : Fragment(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         try {
-            getInstance().init(requireContext())
+            YoutubeDL.getInstance().init(requireContext())
         } catch (e: YoutubeDLException) {
             Log.e(TAG, "failed to initialize youtubedl-android", e)
         }
@@ -62,19 +61,19 @@ class HomeFragment : Fragment(){
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         window = requireActivity().window
         windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
 
-        when(PreferenceHelper.isLight(requireContext())){
-            INITIAL ->{
+        when (PreferenceHelper.isLight(requireContext())) {
+            INITIAL -> {
                 //setSystemTheme()
             }
-            NIGHT ->{
+
+            NIGHT -> {
 
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -88,36 +87,40 @@ class HomeFragment : Fragment(){
 
                 windowInsetsController.isAppearanceLightStatusBars = false
                 window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.black_dark)
-                window.navigationBarColor = ContextCompat.getColor(requireContext(),R.color.black_dark)
+                window.navigationBarColor =
+                    ContextCompat.getColor(requireContext(), R.color.black_dark)
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
-            LIGHT ->{
-                window.statusBarColor = ContextCompat.getColor(requireContext(),R.color.white)
+
+            LIGHT -> {
+                window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
                 windowInsetsController.isAppearanceLightStatusBars = true
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
 
         val recyclerView = binding.recyclerView
-        val adapter = HomeAdapter(arrayListOf(
-            ItemDownload(R.drawable.images,"1"),
-            ItemDownload(R.drawable.images,"2"),
-            ItemDownload(R.drawable.images,"3"),
-            ItemDownload(R.drawable.images,"4"),
-            ItemDownload(R.drawable.images,"5"),
-            ItemDownload(R.drawable.images,"6")
-        )){ itemDownload, image ->
+        val adapter = HomeAdapter(
+            arrayListOf(
+                ItemDownload(R.drawable.images, "1"),
+                ItemDownload(R.drawable.images, "2"),
+                ItemDownload(R.drawable.images, "3"),
+                ItemDownload(R.drawable.images, "4"),
+                ItemDownload(R.drawable.images, "5"),
+                ItemDownload(R.drawable.images, "6")
+            )
+        ) { itemDownload, image ->
 
-            ViewCompat.setTransitionName(image,"item_image")
+            ViewCompat.setTransitionName(image, "item_image")
             val extras = FragmentNavigatorExtras(image to "hero_image")
             //why is that ?
             val bundle = Bundle()
-            bundle.putInt("image",itemDownload.image)
-            findNavController().navigate(R.id.action_homeFragment_to_playFragment,
-            bundle,
-            null,
-            extras)
+            bundle.putInt("image", itemDownload.image)
+            findNavController().navigate(
+                R.id.action_homeFragment_to_playFragment, bundle, null, extras
+            )
         }
+
         recyclerView.adapter = adapter
 
         binding.contentToolbar.btnMenu.setOnClickListener {
@@ -132,9 +135,9 @@ class HomeFragment : Fragment(){
 
             urlCommand = binding.etPasteLinkt.text.toString().trim()
 
-            if(urlCommand.isBlank()){
-                toast("Enter link to download. Empty url blank!")
-            }else{
+            if (urlCommand.isBlank()) {
+                toast("Enter link to download!")
+            } else {
                 permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
 
@@ -145,113 +148,58 @@ class HomeFragment : Fragment(){
 
     private fun startDownload(command: String) {
 
-        val dialog = LoadingDialog(requireContext())
-        dialog.setContent("0")
-        dialog.show()
+        val progressDialog = ProgressDialog(ProgressDialog.MODE_DETERMINATE, requireContext())
 
-        //val progressDialog = ProgressDialog(ProgressDialog.MODE_DETERMINATE,requireContext())
-
-        Log.d(TAG, "startDownload: $command")
         val request = YoutubeDLRequest(command)
         request.addOption(
-            "-o",
-            getDownloadLocation().absolutePath + "/%(title)s.%(ext)s")
-
-        getInstance()
-            .execute(request, "taskId") { percentage, _, line ->
+            "-o", getDownloadLocation().absolutePath + "/%(title)s.%(ext)s"
+        )
+        YoutubeDL.getInstance().execute(request, "taskId") { progressP, _, line ->
                 activity?.runOnUiThread {
-                    dialog.setContent("${percentage.toInt()}")
-                    Log.d(TAG, "startDownload: ${id.hashCode()} , ${percentage.toInt()}, $line")
-                    //if(progress.toInt() == 100) dialog.dismiss()
+                    //dialog.setContent("${progress.toInt()}")
+                    with(progressDialog) {
+                        theme = ProgressDialog.THEME_LIGHT
+                        mode = ProgressDialog.MODE_DETERMINATE
+                        progress = progressP.toInt()
+                        showProgressTextAsFraction(true)
+                        setNegativeButton("Cancel", "Downloading ...") {
+                            Toast.makeText(
+                                requireContext(),
+                                "Custom OnClickListener for Indeterminate",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            dismiss()
+                        }
+                        show()
+                    }
 
-//                    with(progressDialog)
-//                    {
-//                        theme = ProgressDialog.THEME_LIGHT
-//                        mode = ProgressDialog.MODE_DETERMINATE
-//                        progress = percentage.toInt()
-//                        showProgressTextAsFraction(true)
-//                        setNegativeButton("Cancel","Determinate",null)
-//                        show()
-//                    }
-
+                    Log.d(TAG, "startDownload: ${id.hashCode()} , ${progressP.toInt()}, $line")
+                    if (progressP.toInt() == 100) progressDialog.dismiss()
                 }
+
             }
-
-        //isDownloading = true
-
-        /**
-        val request = YoutubeDLRequest(command)
-        val youtubeDlDirection = getDownloadLocation()
-        val config = File(youtubeDlDirection, "config.txt")
-
-//        if (useConfigFile.isChecked() && config.exists()) {
-//            request.addOption("--config-location", config.absolutePath)
-//        } else {
-            request.addOption("--no-mtime")
-            request.addOption("--downloader", "libaria2c.so")
-            request.addOption("--external-downloader-args", "aria2c:\"--summary-interval=1\"")
-            request.addOption("-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best")
-            request.addOption("-o", youtubeDlDirection.absolutePath + "/%(title)s.%(ext)s")
-//        }
-
-        */
-
-        /*** Background worker code
-//        val workTag = CommandWorker.commandWorkTag
-//        val workManager = WorkManager.getInstance(activity?.applicationContext!!)
-//        val workData = workDataOf(
-//            commandKey to command
-//        )
-//
-//        val downloadRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
-//            .addTag(workTag)
-//            .setInputData(workData)
-//            .build()
-//            workManager.enqueueUniqueWork(workTag,ExistingWorkPolicy.KEEP,downloadRequest)
-
-
-//        val state = workManager.getWorkInfosByTag(workTag).get()?.getOrNull(0)?.state
-//        val running = state === WorkInfo.State.RUNNING || state === WorkInfo.State.ENQUEUED
-//        if (running) {
-//            Toast.makeText(
-//                context,
-//                R.string.command_is_already_running,
-//                Toast.LENGTH_LONG
-//            ).show()
-//            return
-//        }
-*/
 
     }
 
-    private fun getDownloadLocation():File{
-        val downloadsDir = Environment
-            .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val youtubeDlDir = File(downloadsDir,"hasan_YT_android")
-        if (!youtubeDlDir.exists()){
+    private fun getDownloadLocation(): File {
+        val downloadsDir =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val youtubeDlDir = File(downloadsDir, "hasan_YT_android")
+        if (!youtubeDlDir.exists()) {
             youtubeDlDir.mkdir()
         }
         return youtubeDlDir
     }
 
-    /**
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//        postponeEnterTransition()
-//        (view.parent as? ViewGroup)?.doOnPreDraw {
-//            startPostponedEnterTransition()
-//        }
-//    }
-    */
-
-    private fun setSystemTheme(){
+    private fun setSystemTheme() {
         when (requireContext().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
             Configuration.UI_MODE_NIGHT_NO -> {
                 //PreferenceHelper.setThemeMode(requireContext(),"initial_app_theme")
-                window.statusBarColor = ContextCompat.getColor(requireContext(),R.color.white)
+                window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
                 windowInsetsController.isAppearanceLightStatusBars = true
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
+
             Configuration.UI_MODE_NIGHT_YES -> {
                 //PreferenceHelper.setThemeMode(requireContext(),"initial_app_theme")
                 // clear FLAG_TRANSLUCENT_STATUS flag:
@@ -262,7 +210,8 @@ class HomeFragment : Fragment(){
                 //window.decorView.systemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                 windowInsetsController.isAppearanceLightStatusBars = false
                 window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.black_dark)
-                window.navigationBarColor = ContextCompat.getColor(requireContext(),R.color.black_dark)
+                window.navigationBarColor =
+                    ContextCompat.getColor(requireContext(), R.color.black_dark)
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
         }
