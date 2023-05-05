@@ -4,17 +4,37 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_200</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnPrimary">@color/black_dark</item>
+
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondary">@color/white_max</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/backgroundColor</item>
+        <item name="colorOnSecondary">@color/black_dark</item>
+
         <item name="android:windowContentTransitions">true</item>
 
-        <item name="colorSurface">@color/white_av</item>
-        <item name="colorSurfaceVariant">@color/white_min</item>
+        <item name="colorSurface">@color/black_av</item>
+        <item name="colorSurfaceVariant">@color/black_min</item>
+
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheet</item>
+        <item name="errorTextColor">?colorError</item>
 
     </style>
+
+    <style name="YouTubeDownloaderButton">
+        <item name="android:background">@color/backgroundColor</item>
+    </style>
+
+    <style name="YouTubeDownloaderButton.Strong">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="DrawerItemStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/custom_b</item>
+    </style>
+
+    <style name="NavigationItemNoRipple">
+        <item name="android:colorControlHighlight">@android:color/transparent</item>
+    </style>
+
 </resources>

@@ -72,32 +72,33 @@
         android:layout_height="wrap_content"
         android:text="@string/khasan_anorov"
         android:maxLines="1"
+        android:layout_marginEnd="@dimen/margin_x"
+        style="@style/TextAppearance.App.Body.Search"
         app:layout_constraintEnd_toStartOf="@id/cardViewShare"
         android:fontFamily="@font/custom"
         app:layout_constraintStart_toEndOf="@id/channel_logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:textStyle="normal"
-        android:textColor="@color/black"
-        android:layout_marginStart="16dp"/>
+        android:layout_marginStart="@dimen/margin_4x"/>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardViewShare"
+        android:layout_marginEnd="@dimen/margin_2x"
         app:layout_constraintEnd_toStartOf="@id/cardViewDelete"
-        style="@style/Widget.App.Card"
+        style="@style/Widget.App.Card.Oval"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:cardBackgroundColor="@color/white_grey"
-        android:layout_width="@dimen/margin_12x"
-        android:layout_height="@dimen/margin_12x"
-        app:cardCornerRadius="@dimen/margin_6x">
+        android:layout_width="@dimen/margin_11x"
+        android:layout_height="@dimen/margin_11x"
+        app:cardCornerRadius="@dimen/margin_4x">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imageViewShare"
-            android:layout_width="@dimen/margin_6x"
-            android:layout_height="@dimen/margin_6x"
+            android:layout_width="@dimen/margin_5x"
+            android:layout_height="@dimen/margin_5x"
             android:layout_gravity="center"
             android:layout_margin="@dimen/margin_1_5x"
+            app:tint="?colorSecondary"
             app:srcCompat="@drawable/share" />
 
     </com.google.android.material.card.MaterialCardView>
@@ -105,13 +106,12 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardViewDelete"
         app:layout_constraintEnd_toEndOf="parent"
-        style="@style/Widget.App.Card"
+        style="@style/Widget.App.Card.Oval"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:cardBackgroundColor="@color/white_grey"
-        android:layout_width="@dimen/margin_12x"
-        android:layout_height="@dimen/margin_12x"
-        app:cardCornerRadius="@dimen/margin_6x">
+        android:layout_width="@dimen/margin_11x"
+        android:layout_height="@dimen/margin_11x"
+        app:cardCornerRadius="@dimen/margin_4x">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imageViewDelete"
@@ -119,6 +119,7 @@
             android:layout_height="@dimen/margin_6x"
             android:layout_gravity="center"
             android:layout_margin="@dimen/margin_1_5x"
+            app:tint="?colorSecondary"
             app:srcCompat="@drawable/delete" />
 
     </com.google.android.material.card.MaterialCardView>

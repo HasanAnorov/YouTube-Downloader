@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    //21
+    <style name="TextAppearance.App.Title" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">?colorSecondary</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+        <item name="android:textSize">@dimen/text_size_x_little</item>
+    </style>
+
+    //18
+
+    <style name="TextAppearance.App.SubTitle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">?colorSecondary</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+
+    //17
+
+    <style name="TextAppearance.App.Body" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">?colorSecondary</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:textSize">@dimen/text_size_x_small</item>
+    </style>
+
+    //14
+
+    <style name="TextAppearance.App.Body.Search" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">?colorSecondary</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:textSize">@dimen/text_size_default</item>
+    </style>
+
+
+    //12
+
+    <style name="TextAppearance.App.Small" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">?colorSecondary</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:textSize">@dimen/text_size_xxx_small</item>
+    </style>
+
+
+</resources>

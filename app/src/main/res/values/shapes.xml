@@ -8,12 +8,21 @@
 
     <style name="ShapeAppearanceOverlay.App" parent="">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/margin_4x</item>
+        <item name="cornerSize">@dimen/margin_5x</item>
     </style>
 
     <style name="ShapeAppearanceOverlay.App.Oval">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">50%</item>
+        <item name="cornerSize">@dimen/margin_4x</item>
+    </style>
+
+    // find out . usage here
+
+    <style name="ShapeAppearanceOverlay.App.Top">
+        <item name="cornerSizeTopLeft">@dimen/margin_4x</item>
+        <item name="cornerSizeTopRight">@dimen/margin_4x</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
     </style>
 
 </resources>

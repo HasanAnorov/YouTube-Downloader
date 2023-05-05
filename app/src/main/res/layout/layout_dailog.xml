@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardViewRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/viewLine"
+        android:layout_width="@dimen/line_horizontal_width"
+        android:layout_height="@dimen/line_horizontal_height"
+        android:layout_gravity="center_horizontal"
+        app:cardBackgroundColor="?colorOnPrimary"
+        app:cardCornerRadius="@dimen/margin_0_5x" />
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/Widget.App.Card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_2x"
+        android:theme="@style/Theme.YouTubeDownloader"
+        app:cardBackgroundColor="?colorOnPrimary"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Top">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorOnPrimary">
+
+            <LinearLayout
+                android:id="@+id/layoutDialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

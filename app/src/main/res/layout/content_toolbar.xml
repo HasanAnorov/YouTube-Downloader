@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:layout_constraintTop_toTopOf="parent"
     android:layout_width="match_parent"
-    android:layout_height="?actionBarSize"
-    android:background="@color/backgroundColor">
+    android:layout_height="?actionBarSize">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/btn_menu"
@@ -13,6 +12,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="@dimen/margin_4x"
         style="@style/Widget.App.Card"
+        app:cardBackgroundColor="@color/transparent"
         android:layout_gravity="center_vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,6 +22,7 @@
             android:layout_gravity="center"
             android:layout_width="@dimen/margin_5x"
             android:layout_height="@dimen/margin_4x"
+            app:tint="?colorSecondary"
             android:src="@drawable/category"/>
 
     </com.google.android.material.card.MaterialCardView>
@@ -34,7 +35,7 @@
         android:layout_marginStart="8dp"
         android:gravity="center_vertical"
         android:text="@string/social_downloader"
-        android:textColor="@color/textColor"
+        style="@style/TextAppearance.App.Title"
         android:textSize="18sp" />
 
 </FrameLayout>

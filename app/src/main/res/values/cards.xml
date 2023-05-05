@@ -14,6 +14,9 @@
 
     <style name="Widget.App.Card.Oval" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">?colorSurface</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
         <item name="cardElevation">0dp</item>
         <item name="contentPadding">0dp</item>
         <item name="android:outlineProvider">none</item>

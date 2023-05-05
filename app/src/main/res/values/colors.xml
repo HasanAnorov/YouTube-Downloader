@@ -5,29 +5,31 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+
     <color name="black">#FF000000</color>
+    <color name="black_max">#202530</color>
+    <color name="black_mid">#0D1116</color>
+    <color name="black_av">#161C22</color>
+    <color name="black_min">#45494E</color>
+    <color name="black_dark">#0D1116</color>
+
     <color name="white">#FFFFFFFF</color>
-
-    //for dark mode
-    <color name="backgroundColor">#FFFFFFFF</color>
-    <color name="textColor">#073042</color>
-
-    <color name="statusBarNightColor">#073042</color>
-    <color name="transparent">#00000000</color>
-
-    <color name="green">#00B373</color>
-    <color name="green_dark">#FF009861</color>
-
     <color name="white_max">#FFFFFF</color>
     <color name="white_mid">#F3F3F4</color>
     <color name="white_av">#F7F7F7</color>
     <color name="white_min">#F1F1F1</color>
     <color name="white_grey">#F8F8F8</color>
 
-<!--    <color name="red">#F44336</color>-->
-<!--    <color name="dark_red">#C3352B</color>-->
-<!--    <color name="gray">#607D8B</color>-->
-<!--    <color name="soothing_blue">#0083BF</color>-->
-<!--    <color name="dark_blue">#005A8A</color>-->
+
+    <color name="backgroundColor">#FFFFFFFF</color>
+    <color name="textColor">#073042</color>
+
+    <color name="main_text_color">#010E38</color>
+
+    <color name="statusBarNightColor">#073042</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="green">#00B373</color>
+    <color name="green_dark">#FF009861</color>
 
 </resources>

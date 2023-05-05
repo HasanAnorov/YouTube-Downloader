@@ -20,12 +20,8 @@
             app:destination="@id/playFragment" />
 
         <action
-            android:id="@+id/action_homeFragment_to_downloadsFragment2"
-            app:enterAnim="@anim/slide_in"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/slide_out"
-            app:destination="@id/downloadsFragment" />
+            android:id="@+id/action_homeFragment_to_menuSelectDialog"
+            app:destination="@id/menuSelectDialog" />
 
     </fragment>
 
@@ -40,4 +36,42 @@
         android:name="com.hasan.youtubedownloader.ui.screens.DownloadsFragment"
         android:label="fragment_downloads"
         tools:layout="@layout/fragment_downloads" />
+
+    <dialog
+        android:id="@+id/menuSelectDialog"
+        android:name="com.hasan.youtubedownloader.ui.menu.MenuSelectDialog"
+        android:label="MenuSelectDialog" >
+
+        <action
+            android:id="@+id/action_menuSelectDialog_to_themeSelectDialog"
+            app:destination="@id/themeSelectDialog" />
+        <action
+            android:id="@+id/action_menuSelectDialog_to_aboutFragment"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out"
+            app:destination="@id/aboutFragment" />
+
+        <action
+            android:id="@+id/action_menuSelectDialog_to_downloadsFragment"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out"
+            app:destination="@id/downloadsFragment" />
+
+    </dialog>
+
+    <dialog
+        android:id="@+id/themeSelectDialog"
+        android:name="com.hasan.youtubedownloader.ui.menu.ThemeSelectDialog"
+        android:label="ThemeSelectDialog" />
+
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.hasan.youtubedownloader.ui.screens.AboutFragment"
+        android:label="fragment_about"
+        tools:layout="@layout/fragment_about" />
+
 </navigation>
