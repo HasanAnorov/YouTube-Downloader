@@ -12,7 +12,7 @@
     <include android:id="@+id/content_toolbar"
         layout="@layout/content_toolbar" />
 
-        <com.google.android.material.card.MaterialCardView
+    <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_search"
             app:layout_constraintTop_toBottomOf="@id/content_toolbar"
             android:layout_width="match_parent"

@@ -4,8 +4,12 @@ import android.Manifest
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.provider.Settings
+import android.provider.Settings.Global
 import android.util.Log
 import android.view.*
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
@@ -13,7 +17,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.hasan.youtubedownloader.R
@@ -29,6 +36,11 @@ import com.techiness.progressdialoglibrary.ProgressDialog
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLException
 import com.yausername.youtubedl_android.YoutubeDLRequest
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 const val TAG = "ahi3646"
@@ -40,6 +52,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var window: Window
     private lateinit var windowInsetsController: WindowInsetsControllerCompat
+    private lateinit var dialog:LoadingDialog
 
     private var urlCommand = ""
     private var isDownloading :Boolean = false
@@ -56,7 +69,6 @@ class HomeFragment : Fragment() {
         } catch (e: YoutubeDLException) {
             Log.e(TAG, "failed to initialize youtubedl-android", e)
         }
-
     }
 
     override fun onCreateView(
@@ -88,6 +100,7 @@ class HomeFragment : Fragment() {
             }
         }
 
+        dialog = LoadingDialog(requireContext())
         val recyclerView = binding.recyclerView
         val adapter = HomeAdapter(
             arrayListOf(
@@ -122,45 +135,50 @@ class HomeFragment : Fragment() {
 
         binding.cardDownload.setOnClickListener {
             urlCommand = binding.etPasteLinkt.text.toString().trim()
-
             if (urlCommand.isBlank()) {
                 toast("Enter link to download!")
             } else {
                 permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
-
         }
+
         return binding.root
     }
 
-    private fun startDownload(command: String) {
-
-        val progressDialog = ProgressDialog(ProgressDialog.MODE_DETERMINATE, requireContext())
-        val request = YoutubeDLRequest(command)
-        request.addOption(
-            "-o", getDownloadLocation().absolutePath + "/%(title)s.%(ext)s"
-        )
-        YoutubeDL.getInstance().execute(request, "taskId") { progressP, _, line ->
-            activity?.runOnUiThread {
-                //dialog.setContent("${progress.toInt()}")
-                with(progressDialog) {
-                    theme = ProgressDialog.THEME_LIGHT
-                    mode = ProgressDialog.MODE_DETERMINATE
-                    progress = progressP.toInt()
-                    showProgressTextAsFraction(true)
-                    setNegativeButton("Cancel", "Downloading ...") {
-                        Toast.makeText(
-                            requireContext(),
-                            "Custom OnClickListener for Indeterminate",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        dismiss()
-                    }
-                    show()
-                }
-                Log.d(TAG, "startDownload: ${id.hashCode()} , ${progressP.toInt()}, $line")
-                if (progressP.toInt() == 100) progressDialog.dismiss()
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun showStart(progress:Int){
+        GlobalScope.launch(Dispatchers.Main) {
+            if (progress<0){
+                dialog.setContent(0)
+            }else{
+                dialog.setContent(progress)
             }
+            dialog.show()
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun startDownload(command: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val request = YoutubeDLRequest(command)
+            request.addOption(
+                "-o", getDownloadLocation().absolutePath + "/%(title)s.%(ext)s"
+            )
+            YoutubeDL.getInstance().execute(request, "taskId") { progressP, _, line ->
+                showStart(progressP.toInt())
+                Log.d(TAG, "getProgress - ${id.hashCode()} , ${progressP.toInt()}, $line.")
+                if (progressP.toInt() == 100){
+                    closeDialog()
+                }
+            }
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun closeDialog(){
+        GlobalScope.launch(Dispatchers.Main) {
+            dialog.dismiss()
+            Toast.makeText(requireContext(), "Video successfully downloaded!", Toast.LENGTH_SHORT).show()
         }
     }
 
