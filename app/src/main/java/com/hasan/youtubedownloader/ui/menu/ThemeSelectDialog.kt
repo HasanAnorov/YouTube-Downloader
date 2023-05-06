@@ -9,7 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hasan.youtubedownloader.base.BaseDialog
 import com.hasan.youtubedownloader.databinding.ThemeSelectDialogBinding
-import com.hasan.youtubedownloader.utils.Constants.INITIAL
+import com.hasan.youtubedownloader.utils.Constants.SYSTEM
 import com.hasan.youtubedownloader.utils.Constants.LIGHT
 import com.hasan.youtubedownloader.utils.Constants.NIGHT
 import com.hasan.youtubedownloader.utils.PreferenceHelper
@@ -50,7 +50,7 @@ class ThemeSelectDialog : BaseDialog() {
                 content.imageViewLight.visible()
                 content.imageViewDefault.gone()
             }
-            INITIAL ->{
+            SYSTEM ->{
                 content.imageViewNight.gone()
                 content.imageViewLight.gone()
                 content.imageViewDefault.visible()
@@ -59,7 +59,7 @@ class ThemeSelectDialog : BaseDialog() {
 
         content.cardViewDefault.setOnClickListener {
             try {
-                PreferenceHelper.setThemeMode(requireContext(), INITIAL)
+                PreferenceHelper.setThemeMode(requireContext(), SYSTEM)
                 //viewModel.setDarkMode(-1)
 //                activity?.recreate()
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)

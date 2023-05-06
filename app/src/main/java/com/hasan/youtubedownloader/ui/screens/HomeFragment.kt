@@ -4,14 +4,9 @@ import android.Manifest
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
-import android.provider.Settings
-import android.provider.Settings.Global
-import android.telephony.SignalStrength
 import android.util.Log
 import android.view.*
 import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
@@ -19,22 +14,19 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.databinding.FragmentHomeBinding
 import com.hasan.youtubedownloader.models.ItemDownload
 import com.hasan.youtubedownloader.ui.menu.LoadingDialog
-import com.hasan.youtubedownloader.utils.Constants.INITIAL
+import com.hasan.youtubedownloader.utils.Constants.SYSTEM
 import com.hasan.youtubedownloader.utils.Constants.LIGHT
 import com.hasan.youtubedownloader.utils.Constants.NIGHT
+import com.hasan.youtubedownloader.utils.DebouncingOnClickListener
 import com.hasan.youtubedownloader.utils.PreferenceHelper
 import com.hasan.youtubedownloader.utils.toast
-import com.techiness.progressdialoglibrary.ProgressDialog
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLException
 import com.yausername.youtubedl_android.YoutubeDLRequest
@@ -43,7 +35,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.supervisorScope
 import java.io.File
 
 const val TAG = "ahi3646"
@@ -62,7 +54,12 @@ class HomeFragment : Fragment() {
 
     private val permission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            startDownload(urlCommand)
+            if (isDownloading){
+                dialog.show()
+                //Toast.makeText(requireContext(), "Downloading is in progress !", Toast.LENGTH_SHORT).show()
+            }else{
+                startDownload(urlCommand)
+            }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,7 +71,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -84,7 +80,7 @@ class HomeFragment : Fragment() {
         windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
 
         when (PreferenceHelper.isLight(requireContext())) {
-            INITIAL -> {
+            SYSTEM -> {
                 //setSystemTheme()
             }
             NIGHT -> {
@@ -105,6 +101,7 @@ class HomeFragment : Fragment() {
         }
 
         dialog = LoadingDialog(requireContext())
+
         val recyclerView = binding.recyclerView
         val adapter = HomeAdapter(
             arrayListOf(
@@ -129,13 +126,13 @@ class HomeFragment : Fragment() {
 
         recyclerView.adapter = adapter
 
-        binding.contentToolbar.btnMenu.setOnClickListener {
+        binding.contentToolbar.btnMenu.setOnClickListener(DebouncingOnClickListener{
             try {
                 findNavController().navigate(R.id.menuSelectDialog)
             } catch (e: Exception) {
                 //Timber.e(e)
             }
-        }
+        })
 
         binding.cardDownload.setOnClickListener {
             urlCommand = binding.etPasteLinkt.text.toString().trim()
@@ -178,6 +175,8 @@ class HomeFragment : Fragment() {
         dialog.setContent(0)
         dialog.show()
 
+        isDownloading = true
+
         GlobalScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
             val request = YoutubeDLRequest(command)
             request.addOption(
@@ -187,6 +186,7 @@ class HomeFragment : Fragment() {
                 showStart(progressP.toInt())
                 Log.d(TAG, "getProgress - ${id.hashCode()} , ${progressP.toInt()}, $line.")
                 if (progressP.toInt() == 100){
+                    isDownloading = false
                     closeDialog()
                 }
             }

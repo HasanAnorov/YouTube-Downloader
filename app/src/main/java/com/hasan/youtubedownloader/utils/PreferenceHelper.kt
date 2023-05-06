@@ -1,7 +1,7 @@
 package com.hasan.youtubedownloader.utils
 
 import android.content.Context
-import com.hasan.youtubedownloader.utils.Constants.INITIAL
+import com.hasan.youtubedownloader.utils.Constants.SYSTEM
 
 private const val SHARED_PREF = "sharedPref"
 private const val THEME_MODE_KEY = "themeModeKeyString"
@@ -21,7 +21,7 @@ object PreferenceHelper {
     fun isLight(context: Context): String {
         val sharedPref = context.getSharedPreferences(SHARED_PREF, Context.MODE_PRIVATE)
        // Log.d(TAG, "get isLight:${ sharedPref.getString(THEME_MODE_KEY, INITIAL) }")
-        return sharedPref.getString(THEME_MODE_KEY, INITIAL)!!
+        return sharedPref.getString(THEME_MODE_KEY, SYSTEM)!!
     }
 
 }
