@@ -170,7 +170,7 @@ class HomeFragment : Fragment() {
     @OptIn(DelicateCoroutinesApi::class)
     private fun showStart(progress: Int) {
         GlobalScope.launch(Dispatchers.Main) {
-            dialog.setContent(if (progress < 0) 0 else progress)
+            dialog.setContent(if (progress < 0) "Please wait - 0" else "Please wait -$progress")
         }
     }
 
@@ -180,7 +180,7 @@ class HomeFragment : Fragment() {
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun startDownload(command: String) {
-        dialog.setContent(0)
+        dialog.setContent("Please wait - 0)")
         dialog.show()
 
         isDownloading = true

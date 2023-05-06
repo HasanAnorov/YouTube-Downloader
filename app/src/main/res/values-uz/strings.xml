@@ -36,4 +36,8 @@
 
     <string name="cancel_download">Bekor qilish</string>
 
+    <string name="update">Yangilamoq</string>
+    <string name="already_updated">Allaqachon yangilangan</string>
+    <string name="updated_successful">Muvaffaqiyatli yangilandi</string>
+
 </resources>

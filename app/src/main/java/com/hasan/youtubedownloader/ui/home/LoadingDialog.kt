@@ -13,8 +13,8 @@ class LoadingDialog(context: Context): Dialog(context){
         setCanceledOnTouchOutside(false)
     }
 
-    fun setContent(progressbarPercent:Int){
-        findViewById<TextView>(R.id.progress_circular_percent).text = "Please wait - $progressbarPercent%"
+    fun setContent(progressContent:String){
+        findViewById<TextView>(R.id.progress_circular_percent).text = progressContent
     }
 
 }

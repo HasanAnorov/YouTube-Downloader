@@ -37,6 +37,10 @@
     <string name="please_wait_12">Пожалуйста, подождите 0%</string>
 
     <string name="cancel_download">Отменить загрузку</string>
+    <string name="updated_successful">Обновлено успешно</string>
+
+    <string name="update">Обновлять</string>
+    <string name="already_updated">Уже в курсе</string>
 
 
 </resources>
