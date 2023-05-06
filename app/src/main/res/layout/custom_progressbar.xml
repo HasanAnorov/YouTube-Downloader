@@ -11,14 +11,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-<!--        <ProgressBar-->
-<!--            android:id="@+id/progress_circular"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            android:layout_margin="@dimen/margin_6x"/>-->
+        <ProgressBar
+            android:id="@+id/progress_circular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="@dimen/margin_5x"/>
 
         <TextView
             android:id="@+id/progress_circular_percent"
@@ -30,6 +30,36 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:padding="@dimen/margin_6x"/>
+
+        <Button
+            android:id="@+id/hide_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/progress_circular_percent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/cancel_loading"
+            android:text="Hide"
+            android:layout_marginBottom="@dimen/margin_2x"
+            android:layout_marginStart="@dimen/margin_5x"
+            android:layout_marginEnd="@dimen/margin_2x"
+            android:textAllCaps="false"
+            style="@style/TextAppearance.App.Small"/>
+
+        <Button
+            android:id="@+id/cancel_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/progress_circular_percent"
+            app:layout_constraintStart_toEndOf="@id/hide_loading"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Cancel"
+            android:layout_marginBottom="@dimen/margin_2x"
+            android:layout_marginStart="@dimen/margin_2x"
+            android:layout_marginEnd="@dimen/margin_5x"
+            android:textAllCaps="false"
+            style="@style/TextAppearance.App.Small"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

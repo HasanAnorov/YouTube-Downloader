@@ -7,8 +7,10 @@ import android.os.Environment
 import android.os.Handler
 import android.provider.Settings
 import android.provider.Settings.Global
+import android.telephony.SignalStrength
 import android.util.Log
 import android.view.*
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,6 +38,7 @@ import com.techiness.progressdialoglibrary.ProgressDialog
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLException
 import com.yausername.youtubedl_android.YoutubeDLRequest
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -71,6 +74,7 @@ class HomeFragment : Fragment() {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -142,6 +146,15 @@ class HomeFragment : Fragment() {
             }
         }
 
+        dialog.findViewById<Button>(R.id.cancel_loading).setOnClickListener {
+            cancelDownload("taskId")
+            Toast.makeText(requireContext(), "Downloading cancelled !", Toast.LENGTH_SHORT).show()
+        }
+
+        dialog.findViewById<Button>(R.id.hide_loading).setOnClickListener {
+            dialog.dismiss()
+        }
+
         return binding.root
     }
 
@@ -153,13 +166,19 @@ class HomeFragment : Fragment() {
             }else{
                 dialog.setContent(progress)
             }
-            dialog.show()
         }
+    }
+
+    private val coroutineExceptionHandler = CoroutineExceptionHandler{ _, throwable ->
+        throwable.printStackTrace()
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun startDownload(command: String) {
-        GlobalScope.launch(Dispatchers.IO) {
+        dialog.setContent(0)
+        dialog.show()
+
+        GlobalScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
             val request = YoutubeDLRequest(command)
             request.addOption(
                 "-o", getDownloadLocation().absolutePath + "/%(title)s.%(ext)s"
@@ -172,6 +191,14 @@ class HomeFragment : Fragment() {
                 }
             }
         }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun cancelDownload(processId: String){
+        GlobalScope.launch(Dispatchers.IO) {
+            YoutubeDL.getInstance().destroyProcessById(processId)
+        }
+        dialog.dismiss()
     }
 
     @OptIn(DelicateCoroutinesApi::class)

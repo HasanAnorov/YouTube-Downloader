@@ -32,6 +32,7 @@
     <string name="light_theme">Kunduzgi rejim</string>
     <string name="night_theme">Tungi reji</string>
     <string name="system_theme">Qurilmadan kelib chiqib</string>
+    <string name="please_wait_12">Iltimos kuting 0%</string>
 
     <string name="cancel_download">Bekor qilish</string>
 

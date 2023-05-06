@@ -34,6 +34,7 @@
     <string name="light_theme">Светлая тема</string>
     <string name="night_theme">Ночная тема</string>
     <string name="system_theme">Тема устройства</string>
+    <string name="please_wait_12">Пожалуйста, подождите 0%</string>
 
     <string name="cancel_download">Отменить загрузку</string>
 
