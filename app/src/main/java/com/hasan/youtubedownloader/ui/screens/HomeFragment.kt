@@ -56,8 +56,10 @@ class HomeFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isDownloading){
                 dialog.show()
+                //Log.d(TAG, "inpermission : showing dialog")
                 //Toast.makeText(requireContext(), "Downloading is in progress !", Toast.LENGTH_SHORT).show()
             }else{
+                Log.d(TAG, "in permission : starting download")
                 startDownload(urlCommand)
             }
         }
@@ -145,7 +147,8 @@ class HomeFragment : Fragment() {
 
         dialog.findViewById<Button>(R.id.cancel_loading).setOnClickListener {
             cancelDownload("taskId")
-            Toast.makeText(requireContext(), "Downloading cancelled !", Toast.LENGTH_SHORT).show()
+            isDownloading = false
+            //Toast.makeText(requireContext(), "Downloading cancelled !", Toast.LENGTH_SHORT).show()
         }
 
         dialog.findViewById<Button>(R.id.hide_loading).setOnClickListener {
