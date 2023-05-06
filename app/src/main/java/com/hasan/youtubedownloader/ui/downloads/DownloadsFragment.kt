@@ -1,4 +1,4 @@
-package com.hasan.youtubedownloader.ui.screens
+package com.hasan.youtubedownloader.ui.downloads
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

@@ -1,4 +1,4 @@
-package com.hasan.youtubedownloader.ui.screens
+package com.hasan.youtubedownloader.ui.play
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -26,16 +26,6 @@ class PlayFragment : Fragment() {
             .inflateTransition(android.R.transition.move)
         sharedElementEnterTransition = animation
         sharedElementEnterTransition = animation
-
-//        TransitionSet().apply {
-//            addTransition(ChangeImageTransform())
-//            addTransition(ChangeBounds())
-//            addTransition(ChangeTransform())
-//            addTransition(
-//                ChangeOutlineRadiusTransition(animationRadiusData.startRadius,
-//                animationRadiusData.endRadius)
-//            ) // add this Transition
-//        }
     }
 
     override fun onCreateView(

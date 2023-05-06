@@ -1,4 +1,4 @@
-package com.hasan.youtubedownloader.ui.screens
+package com.hasan.youtubedownloader.ui.home
 
 import android.Manifest
 import android.content.res.Configuration
@@ -20,10 +20,9 @@ import androidx.navigation.fragment.findNavController
 import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.databinding.FragmentHomeBinding
 import com.hasan.youtubedownloader.models.ItemDownload
-import com.hasan.youtubedownloader.ui.menu.LoadingDialog
-import com.hasan.youtubedownloader.utils.Constants.SYSTEM
 import com.hasan.youtubedownloader.utils.Constants.LIGHT
 import com.hasan.youtubedownloader.utils.Constants.NIGHT
+import com.hasan.youtubedownloader.utils.Constants.SYSTEM
 import com.hasan.youtubedownloader.utils.DebouncingOnClickListener
 import com.hasan.youtubedownloader.utils.PreferenceHelper
 import com.hasan.youtubedownloader.utils.toast
@@ -35,7 +34,6 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
 import java.io.File
 
 const val TAG = "ahi3646"
@@ -47,18 +45,18 @@ class HomeFragment : Fragment() {
 
     private lateinit var window: Window
     private lateinit var windowInsetsController: WindowInsetsControllerCompat
-    private lateinit var dialog:LoadingDialog
+    private lateinit var dialog: LoadingDialog
 
     private var urlCommand = ""
-    private var isDownloading :Boolean = false
+    private var isDownloading: Boolean = false
 
     private val permission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isDownloading){
+            if (isDownloading) {
                 dialog.show()
                 //Log.d(TAG, "inpermission : showing dialog")
                 //Toast.makeText(requireContext(), "Downloading is in progress !", Toast.LENGTH_SHORT).show()
-            }else{
+            } else {
                 Log.d(TAG, "in permission : starting download")
                 startDownload(urlCommand)
             }
@@ -74,7 +72,7 @@ class HomeFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
@@ -85,6 +83,7 @@ class HomeFragment : Fragment() {
             SYSTEM -> {
                 //setSystemTheme()
             }
+
             NIGHT -> {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -95,6 +94,7 @@ class HomeFragment : Fragment() {
                     ContextCompat.getColor(requireContext(), R.color.black_dark)
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
+
             LIGHT -> {
                 window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
                 windowInsetsController.isAppearanceLightStatusBars = true
@@ -128,7 +128,7 @@ class HomeFragment : Fragment() {
 
         recyclerView.adapter = adapter
 
-        binding.contentToolbar.btnMenu.setOnClickListener(DebouncingOnClickListener{
+        binding.contentToolbar.btnMenu.setOnClickListener(DebouncingOnClickListener {
             try {
                 findNavController().navigate(R.id.menuSelectDialog)
             } catch (e: Exception) {
@@ -158,18 +158,11 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun showStart(progress:Int){
-        GlobalScope.launch(Dispatchers.Main) {
-            if (progress<0){
-                dialog.setContent(0)
-            }else{
-                dialog.setContent(progress)
-            }
-        }
+    private fun showStart(progress: Int) {
+        dialog.setContent(if (progress < 0) 0 else progress)
     }
 
-    private val coroutineExceptionHandler = CoroutineExceptionHandler{ _, throwable ->
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace()
     }
 
@@ -188,7 +181,7 @@ class HomeFragment : Fragment() {
             YoutubeDL.getInstance().execute(request, "taskId") { progressP, _, line ->
                 showStart(progressP.toInt())
                 Log.d(TAG, "getProgress - ${id.hashCode()} , ${progressP.toInt()}, $line.")
-                if (progressP.toInt() == 100){
+                if (progressP.toInt() == 100) {
                     isDownloading = false
                     closeDialog()
                 }
@@ -196,8 +189,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun cancelDownload(processId: String){
+    private fun cancelDownload(processId: String) {
         GlobalScope.launch(Dispatchers.IO) {
             YoutubeDL.getInstance().destroyProcessById(processId)
         }
@@ -205,10 +197,11 @@ class HomeFragment : Fragment() {
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun closeDialog(){
+    private fun closeDialog() {
         GlobalScope.launch(Dispatchers.Main) {
             dialog.dismiss()
-            Toast.makeText(requireContext(), "Video successfully downloaded!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Video successfully downloaded!", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -230,6 +223,7 @@ class HomeFragment : Fragment() {
                 windowInsetsController.isAppearanceLightStatusBars = true
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
+
             Configuration.UI_MODE_NIGHT_YES -> {
                 //PreferenceHelper.setThemeMode(requireContext(),"initial_app_theme")
                 // clear FLAG_TRANSLUCENT_STATUS flag:

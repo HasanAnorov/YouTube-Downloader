@@ -25,7 +25,7 @@
         android:theme="@style/Theme.YouTubeDownloader"
         tools:targetApi="31">
         <activity
-            android:name=".ui.activities.MainActivity"
+            android:name=".ui.MainActivity"
             android:theme="@style/YoutubeDownloader.SplashScreen"
             android:exported="true">
             <intent-filter>
@@ -34,13 +34,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".work.NotificationReceiver"
-            android:permission="com.hasan.youtubedownloader.PRIVATE"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.hasan.youtubedownloader.SHOW_NOTIFICATION"/>
-            </intent-filter>
-        </receiver>
 
     </application>
 

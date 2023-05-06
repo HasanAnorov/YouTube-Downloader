@@ -1,4 +1,4 @@
-package com.hasan.youtubedownloader.ui.menu
+package com.hasan.youtubedownloader.ui.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.hasan.youtubedownloader.R
-import com.hasan.youtubedownloader.base.BaseDialog
+import com.hasan.youtubedownloader.ui.base.BaseDialog
 import com.hasan.youtubedownloader.databinding.HomeMenuDialogBinding
 
 class MenuSelectDialog : BaseDialog() {
