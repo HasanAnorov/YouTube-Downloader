@@ -3,6 +3,8 @@ package com.hasan.youtubedownloader.ui.home
 import android.Manifest
 import android.content.res.Configuration
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings.Global
@@ -74,9 +76,8 @@ class HomeFragment : Fragment() {
 
         when (PreferenceHelper.isLight(requireContext())) {
             SYSTEM -> {
-                //setSystemTheme()
+                setSystemTheme()
             }
-
             NIGHT -> {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -87,7 +88,6 @@ class HomeFragment : Fragment() {
                     ContextCompat.getColor(requireContext(), R.color.black_dark)
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
-
             LIGHT -> {
                 window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
                 windowInsetsController.isAppearanceLightStatusBars = true
@@ -136,7 +136,6 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-
 
         binding.contentToolbar.btnMenu.setOnClickListener(DebouncingOnClickListener {
             try {
@@ -233,20 +232,15 @@ class HomeFragment : Fragment() {
         when (requireContext().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
             Configuration.UI_MODE_NIGHT_NO -> {
                 //PreferenceHelper.setThemeMode(requireContext(),"initial_app_theme")
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                 window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
                 windowInsetsController.isAppearanceLightStatusBars = true
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
 
             Configuration.UI_MODE_NIGHT_YES -> {
-                //PreferenceHelper.setThemeMode(requireContext(),"initial_app_theme")
-                // clear FLAG_TRANSLUCENT_STATUS flag:
-                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-                // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                // finally change the color
-                //window.decorView.systemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                windowInsetsController.isAppearanceLightStatusBars = false
+               window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+               windowInsetsController.isAppearanceLightStatusBars = false
                 window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.black_dark)
                 window.navigationBarColor =
                     ContextCompat.getColor(requireContext(), R.color.black_dark)
