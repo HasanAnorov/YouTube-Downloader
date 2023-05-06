@@ -2,8 +2,10 @@ package com.hasan.youtubedownloader.ui.home
 
 import android.Manifest
 import android.content.res.Configuration
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
+import android.provider.Settings.Global
 import android.util.Log
 import android.view.*
 import android.widget.Button
@@ -14,6 +16,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -35,6 +39,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
+import kotlin.math.log
 
 const val TAG = "ahi3646"
 
@@ -52,24 +57,12 @@ class HomeFragment : Fragment() {
 
     private val permission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isDownloading) {
-                dialog.show()
-                //Log.d(TAG, "inpermission : showing dialog")
-                //Toast.makeText(requireContext(), "Downloading is in progress !", Toast.LENGTH_SHORT).show()
+            if (isGranted) {
+                if (isDownloading) dialog.show() else startDownload(urlCommand)
             } else {
-                Log.d(TAG, "in permission : starting download")
-                startDownload(urlCommand)
+                Toast.makeText(requireContext(), "Permission denied !", Toast.LENGTH_SHORT).show()
             }
         }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        try {
-            YoutubeDL.getInstance().init(requireContext())
-        } catch (e: YoutubeDLException) {
-            Log.e(TAG, "failed to initialize youtubedl-android", e)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
@@ -128,6 +121,23 @@ class HomeFragment : Fragment() {
 
         recyclerView.adapter = adapter
 
+        binding.etPasteLinkt.doOnTextChanged { text, start, before, count ->
+            Log.d(TAG, "onCreateView: $text  - $start   - $before   -$count")
+            if (start ==0 && count ==0){
+                binding.cardClear.isClickable = false
+                binding.cardClear.isFocusable = false
+                binding.clearText.setImageResource(R.drawable.iv_search)
+            }else{
+                binding.cardClear.isClickable = true
+                binding.cardClear.isFocusable = true
+                binding.clearText.setImageResource(R.drawable.cancel)
+                binding.cardClear.setOnClickListener {
+                    binding.etPasteLinkt.text?.clear()
+                }
+            }
+        }
+
+
         binding.contentToolbar.btnMenu.setOnClickListener(DebouncingOnClickListener {
             try {
                 findNavController().navigate(R.id.menuSelectDialog)
@@ -158,8 +168,11 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun showStart(progress: Int) {
-        dialog.setContent(if (progress < 0) 0 else progress)
+        GlobalScope.launch(Dispatchers.Main) {
+            dialog.setContent(if (progress < 0) 0 else progress)
+        }
     }
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -189,6 +202,7 @@ class HomeFragment : Fragment() {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun cancelDownload(processId: String) {
         GlobalScope.launch(Dispatchers.IO) {
             YoutubeDL.getInstance().destroyProcessById(processId)
