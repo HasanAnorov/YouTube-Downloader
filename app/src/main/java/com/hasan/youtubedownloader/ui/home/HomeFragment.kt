@@ -1,6 +1,7 @@
 package com.hasan.youtubedownloader.ui.home
 
 import android.Manifest
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -21,11 +22,13 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.databinding.FragmentHomeBinding
 import com.hasan.youtubedownloader.models.ItemDownload
+import com.hasan.youtubedownloader.ui.IntentViewModel
 import com.hasan.youtubedownloader.utils.Constants.LIGHT
 import com.hasan.youtubedownloader.utils.Constants.NIGHT
 import com.hasan.youtubedownloader.utils.Constants.SYSTEM
@@ -56,6 +59,8 @@ class HomeFragment : Fragment() {
 
     private var urlCommand = ""
     private var isDownloading: Boolean = false
+
+    private val viewModel: IntentViewModel by activityViewModels()
 
     private val permission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -122,7 +127,6 @@ class HomeFragment : Fragment() {
         recyclerView.adapter = adapter
 
         binding.etPasteLinkt.doOnTextChanged { text, start, before, count ->
-            Log.d(TAG, "onCreateView: $text  - $start   - $before   -$count")
             if (start ==0 && count ==0){
                 binding.cardClear.isClickable = false
                 binding.cardClear.isFocusable = false
@@ -135,6 +139,12 @@ class HomeFragment : Fragment() {
                     binding.etPasteLinkt.text?.clear()
                 }
             }
+        }
+
+        viewModel.externalLink.observe(viewLifecycleOwner){link ->
+            urlCommand = link
+            permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            Log.d(TAG, "onCreated: $link")
         }
 
         binding.contentToolbar.btnMenu.setOnClickListener(DebouncingOnClickListener {
@@ -167,6 +177,14 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.externalLink.observe(viewLifecycleOwner){link ->
+            //binding.etPasteLinkt.setText(link)
+            Log.d(TAG, "onViewCreated: $link")
+        }
+    }
+
     @OptIn(DelicateCoroutinesApi::class)
     private fun showStart(progress: Int) {
         GlobalScope.launch(Dispatchers.Main) {
@@ -180,7 +198,7 @@ class HomeFragment : Fragment() {
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun startDownload(command: String) {
-        dialog.setContent("Please wait - 0)")
+        dialog.setContent("Please wait - 0")
         dialog.show()
 
         isDownloading = true
