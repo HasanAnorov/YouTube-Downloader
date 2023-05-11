@@ -7,23 +7,31 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.core.view.isGone
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.data.YoutubeRepository
 import com.hasan.youtubedownloader.databinding.HomeMenuDialogBinding
 import com.hasan.youtubedownloader.ui.base.BaseDialog
 import com.yausername.youtubedl_android.YoutubeDL
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MenuSelectDialog : BaseDialog() {
 
     private var _content: HomeMenuDialogBinding? = null
     private val content get() = _content!!
 
     private var isUpdating = false
+
+    lateinit var dialog: LoadingDialog
+
+    @Inject
+    lateinit var repository: YoutubeRepository
 
     override fun getContent(inflater: LayoutInflater, container: ViewGroup?): View {
         _content = HomeMenuDialogBinding.inflate(inflater, container, false)
@@ -71,31 +79,32 @@ class MenuSelectDialog : BaseDialog() {
         }
 
         isUpdating = true
-        val dialog = LoadingDialog(requireContext())
+        dialog = LoadingDialog(requireContext())
         dialog.findViewById<Button>(R.id.cancel_loading).isGone = true
         dialog.findViewById<Button>(R.id.hide_loading).isGone = true
         dialog.setContent("Wait, updating ...")
         dialog.show()
-        GlobalScope.launch(Dispatchers.IO) {
-            val youtubeDL = YoutubeDL.getInstance()
-            YoutubeRepository(youtubeDL,requireContext()).updateYoutubeDl()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            repository.updateYoutubeDL(YoutubeDL.UpdateChannel._STABLE)
             val result = YoutubeDL.getInstance().updateYoutubeDL(requireContext())
             if (result == YoutubeDL.UpdateStatus.ALREADY_UP_TO_DATE) {
-                GlobalScope.launch(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), R.string.already_updated, Toast.LENGTH_SHORT)
-                        .show()
-                    isUpdating = false
-                    dialog.dismiss()
-                }
+                closeDialog()
             }
             if (result == YoutubeDL.UpdateStatus.DONE) {
-                GlobalScope.launch(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), R.string.updated_successful, Toast.LENGTH_SHORT)
-                        .show()
-                    isUpdating = false
-                    dialog.dismiss()
-                }
+                closeDialog()
             }
         }
+
     }
+
+    private fun closeDialog() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            Toast.makeText(requireContext(), R.string.updated_successful, Toast.LENGTH_SHORT)
+                .show()
+            isUpdating = false
+            dialog?.dismiss()
+        }
+    }
+
 }

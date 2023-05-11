@@ -1,6 +1,5 @@
 package com.hasan.youtubedownloader.ui
 
-import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,4 +11,6 @@ class IntentViewModel : ViewModel() {
     fun setExternalLink(intent: String) {
         mutableExternalLink.value = intent
     }
+
+
 }

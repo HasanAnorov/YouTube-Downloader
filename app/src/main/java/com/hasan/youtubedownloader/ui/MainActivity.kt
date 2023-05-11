@@ -8,11 +8,21 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import com.hasan.youtubedownloader.R
+import com.hasan.youtubedownloader.data.YoutubeRepository
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     val TAG = "main_ahi3646"
+
+    @Inject
+    lateinit var repository: YoutubeRepository
+
 
     private val viewModel: IntentViewModel by viewModels()
 
@@ -20,14 +30,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        when (intent?.action) {
-            Intent.ACTION_SEND -> {
-                if ("text/plain" == intent.type) {
-                    handleSendText(intent) // Handle text being sent
+        lifecycleScope.launch {
+            when (intent?.action) {
+                Intent.ACTION_SEND -> {
+                    if ("text/plain" == intent.type) {
+                        handleSendText(intent) // Handle text being sent
+                    }
                 }
-            }
-            else -> {
-                // Handle other intents, such as being started from the home screen
+
+                else -> {
+                    // Handle other intents, such as being started from the home screen
+                }
             }
         }
 
@@ -38,18 +51,18 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
     }
 
-
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        when(intent?.action){
-            Intent.ACTION_SEND -> {
-                if ("text/plain" == intent.type) {
-                    handleSendText(intent) // Handle text being sent
+        lifecycleScope.launch {
+            when (intent?.action) {
+                Intent.ACTION_SEND -> {
+                    if ("text/plain" == intent.type) {
+                        handleSendText(intent) // Handle text being sent
+                    }
                 }
             }
         }
     }
-
 
     private fun handleSendText(intent: Intent) {
         intent.getStringExtra(Intent.EXTRA_TEXT)?.let {

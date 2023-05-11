@@ -1,8 +1,10 @@
 plugins {
+
     id 'com.android.application'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
     id 'org.jetbrains.kotlin.android'
 }
-// no longer supported - apply plugin: 'kotlin-android-extensions'
 
 android {
     namespace 'com.hasan.youtubedownloader'
@@ -30,8 +32,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     splits {
@@ -44,15 +46,24 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 
     buildFeatures{
         viewBinding = true
     }
+
+    // Allow references to generated code
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
+    implementation 'com.google.dagger:hilt-android:2.46'
+    kapt 'com.google.dagger:hilt-compiler:2.46'
+
+    implementation 'androidx.lifecycle:lifecycle-service:2.6.1'
 
     //work manager
     implementation("androidx.work:work-runtime-ktx:2.8.1")
@@ -68,14 +79,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    //Timber
-    //implementation("com.jakewharton.timber:timber:5.0.1")
-
     //splash screen
     implementation 'androidx.core:core-splashscreen:1.0.1'
-
-    //RX Java
-    implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
 
     //glide
     implementation 'com.github.bumptech.glide:glide:4.15.0'
@@ -92,4 +97,5 @@ dependencies {
     //coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+
 }

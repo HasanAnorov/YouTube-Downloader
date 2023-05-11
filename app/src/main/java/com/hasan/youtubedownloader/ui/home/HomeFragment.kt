@@ -1,14 +1,8 @@
 package com.hasan.youtubedownloader.ui.home
 
 import android.Manifest
-import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.Settings.Global
 import android.util.Log
 import android.view.*
 import android.widget.Button
@@ -19,13 +13,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.hasan.youtubedownloader.R
+import com.hasan.youtubedownloader.data.YoutubeRepository
 import com.hasan.youtubedownloader.databinding.FragmentHomeBinding
 import com.hasan.youtubedownloader.models.ItemDownload
 import com.hasan.youtubedownloader.ui.IntentViewModel
@@ -35,19 +31,15 @@ import com.hasan.youtubedownloader.utils.Constants.SYSTEM
 import com.hasan.youtubedownloader.utils.DebouncingOnClickListener
 import com.hasan.youtubedownloader.utils.PreferenceHelper
 import com.hasan.youtubedownloader.utils.toast
-import com.yausername.youtubedl_android.YoutubeDL
-import com.yausername.youtubedl_android.YoutubeDLException
-import com.yausername.youtubedl_android.YoutubeDLRequest
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.io.File
-import kotlin.math.log
+import javax.inject.Inject
 
 const val TAG = "ahi3646"
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
@@ -61,6 +53,9 @@ class HomeFragment : Fragment() {
     private var isDownloading: Boolean = false
 
     private val viewModel: IntentViewModel by activityViewModels()
+
+    @Inject
+    lateinit var repository: YoutubeRepository
 
     private val permission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -83,6 +78,7 @@ class HomeFragment : Fragment() {
             SYSTEM -> {
                 setSystemTheme()
             }
+
             NIGHT -> {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -93,6 +89,7 @@ class HomeFragment : Fragment() {
                     ContextCompat.getColor(requireContext(), R.color.black_dark)
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             }
+
             LIGHT -> {
                 window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
                 windowInsetsController.isAppearanceLightStatusBars = true
@@ -127,11 +124,11 @@ class HomeFragment : Fragment() {
         recyclerView.adapter = adapter
 
         binding.etPasteLinkt.doOnTextChanged { text, start, before, count ->
-            if (start ==0 && count ==0){
+            if (start == 0 && count == 0) {
                 binding.cardClear.isClickable = false
                 binding.cardClear.isFocusable = false
                 binding.clearText.setImageResource(R.drawable.iv_search)
-            }else{
+            } else {
                 binding.cardClear.isClickable = true
                 binding.cardClear.isFocusable = true
                 binding.clearText.setImageResource(R.drawable.cancel)
@@ -141,7 +138,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        viewModel.externalLink.observe(viewLifecycleOwner){link ->
+        viewModel.externalLink.observe(viewLifecycleOwner) { link ->
             urlCommand = link
             permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             Log.d(TAG, "onCreated: $link")
@@ -165,7 +162,9 @@ class HomeFragment : Fragment() {
         }
 
         dialog.findViewById<Button>(R.id.cancel_loading).setOnClickListener {
-            cancelDownload("taskId")
+            lifecycleScope.launch {
+                cancelDownload("taskId")
+            }
             isDownloading = false
             //Toast.makeText(requireContext(), "Downloading cancelled !", Toast.LENGTH_SHORT).show()
         }
@@ -177,73 +176,41 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel.externalLink.observe(viewLifecycleOwner){link ->
-            //binding.etPasteLinkt.setText(link)
-            Log.d(TAG, "onViewCreated: $link")
-        }
-    }
-
-    @OptIn(DelicateCoroutinesApi::class)
     private fun showStart(progress: Int) {
-        GlobalScope.launch(Dispatchers.Main) {
-            dialog.setContent(if (progress < 0) "Please wait - 0" else "Please wait -$progress")
-        }
+        dialog.setContent(if (progress < 0) "Please wait  0" else "Please wait  $progress")
     }
 
-    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        throwable.printStackTrace()
-    }
-
-    @OptIn(DelicateCoroutinesApi::class)
     private fun startDownload(command: String) {
-        dialog.setContent("Please wait - 0")
+        dialog.setContent("Please wait  0")
         dialog.show()
 
         isDownloading = true
 
-        GlobalScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
-            val request = YoutubeDLRequest(command)
-            request.addOption(
-                "-o", getDownloadLocation().absolutePath + "/%(title)s.%(ext)s"
-            )
-            YoutubeDL.getInstance().execute(request, "taskId") { progressP, _, line ->
-                showStart(progressP.toInt())
-                Log.d(TAG, "getProgress - ${id.hashCode()} , ${progressP.toInt()}, $line.")
-                if (progressP.toInt() == 100) {
+
+        repository.startDownload(command)
+            .flowWithLifecycle(lifecycle)
+            .onEach { progress ->
+                showStart(progress.toInt())
+                Log.d(TAG, "getProgress -  ${progress}")
+                if (progress.toInt() == 100) {
                     isDownloading = false
                     closeDialog()
                 }
             }
-        }
+            .launchIn(lifecycleScope)
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun cancelDownload(processId: String) {
-        GlobalScope.launch(Dispatchers.IO) {
-            YoutubeDL.getInstance().destroyProcessById(processId)
-        }
+        Log.d(TAG, "cancelDownload: ")
+        repository.cancelDownload(processId)
         dialog.dismiss()
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun closeDialog() {
-        GlobalScope.launch(Dispatchers.Main) {
-            dialog.dismiss()
-            Toast.makeText(requireContext(), "Video successfully downloaded!", Toast.LENGTH_SHORT)
-                .show()
-        }
-    }
-
-    private fun getDownloadLocation(): File {
-        val downloadsDir =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val youtubeDlDir = File(downloadsDir, "hasan_YT_android")
-        if (!youtubeDlDir.exists()) {
-            youtubeDlDir.mkdir()
-        }
-        return youtubeDlDir
+        dialog.dismiss()
+        Toast
+            .makeText(requireContext(), "Video successfully downloaded!", Toast.LENGTH_SHORT)
+            .show()
     }
 
     private fun setSystemTheme() {
@@ -257,8 +224,8 @@ class HomeFragment : Fragment() {
             }
 
             Configuration.UI_MODE_NIGHT_YES -> {
-               window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-               windowInsetsController.isAppearanceLightStatusBars = false
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                windowInsetsController.isAppearanceLightStatusBars = false
                 window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.black_dark)
                 window.navigationBarColor =
                     ContextCompat.getColor(requireContext(), R.color.black_dark)
