@@ -1,10 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    android:id="@+id/card_search"
+    app:layout_constraintTop_toBottomOf="@id/content_toolbar"
     android:layout_width="match_parent"
-    android:text="Textview"
-    android:padding="14dp"
-    android:textColor="@color/black"
-    android:textStyle="bold"
-    android:textSize="16sp"
-    android:layout_height="wrap_content"/>
+    app:cardCornerRadius="@dimen/margin_2_5x"
+    android:elevation="@dimen/margin_x"
+    android:layout_marginTop="@dimen/margin_x"
+    app:cardElevation="0dp"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:weightSum="1"
+        android:gravity="end"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:id="@+id/tv_video_format"
+            android:background="@android:color/transparent"
+            android:layout_weight="0.86"
+            android:layout_width="0dp"
+            android:textSize="16sp"
+            android:textColor="?colorSecondary"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/custom"
+            android:text="Video format"
+            android:padding="@dimen/margin_4x" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_download"
+            android:layout_weight="0.14"
+            android:layout_width="0dp"
+            app:cardElevation="0dp"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:clickable="true">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/margin_3x"
+                android:layout_width="@dimen/margin_6x"
+                android:layout_height="@dimen/margin_6x"
+                android:tint="?colorSecondary"
+                android:src="@drawable/download"/>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

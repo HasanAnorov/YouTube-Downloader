@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -30,6 +31,7 @@ import com.hasan.youtubedownloader.utils.Constants.NIGHT
 import com.hasan.youtubedownloader.utils.Constants.SYSTEM
 import com.hasan.youtubedownloader.utils.DebouncingOnClickListener
 import com.hasan.youtubedownloader.utils.PreferenceHelper
+import com.hasan.youtubedownloader.utils.isEmailValid
 import com.hasan.youtubedownloader.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -50,7 +52,6 @@ class HomeFragment : Fragment() {
     private lateinit var dialog: LoadingDialog
 
     private var urlCommand = ""
-    private var isDownloading: Boolean = false
 
     private val viewModel: IntentViewModel by activityViewModels()
 
@@ -60,7 +61,7 @@ class HomeFragment : Fragment() {
     private val permission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
-                if (isDownloading) dialog.show() else startDownload(urlCommand)
+                prepareForDownload(urlCommand)
             } else {
                 Toast.makeText(requireContext(), "Permission denied !", Toast.LENGTH_SHORT).show()
             }
@@ -127,13 +128,15 @@ class HomeFragment : Fragment() {
             if (start == 0 && count == 0) {
                 binding.cardClear.isClickable = false
                 binding.cardClear.isFocusable = false
-                binding.clearText.setImageResource(R.drawable.iv_search)
+                binding.cardClear.visibility = View.GONE
             } else {
                 binding.cardClear.isClickable = true
                 binding.cardClear.isFocusable = true
+                binding.cardClear.visibility = View.VISIBLE
                 binding.clearText.setImageResource(R.drawable.cancel)
                 binding.cardClear.setOnClickListener {
                     binding.etPasteLinkt.text?.clear()
+                    Log.d(TAG, "onCreateView: clear button")
                 }
             }
         }
@@ -156,61 +159,68 @@ class HomeFragment : Fragment() {
             urlCommand = binding.etPasteLinkt.text.toString().trim()
             if (urlCommand.isBlank()) {
                 toast("Enter link to download!")
-            } else {
+            }
+//            else if (urlCommand.isNotBlank() && !urlCommand.isEmailValid()){
+//                toast("Enter valid link !")
+//            }
+            else {
                 permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
         }
 
-        dialog.findViewById<Button>(R.id.cancel_loading).setOnClickListener {
-            lifecycleScope.launch {
-                cancelDownload("taskId")
-            }
-            isDownloading = false
-        }
 
-        dialog.findViewById<Button>(R.id.hide_loading).setOnClickListener {
-            dialog.dismiss()
-        }
+
+//        dialog.findViewById<Button>(R.id.cancel_loading).setOnClickListener {
+//            lifecycleScope.launch {
+//                cancelDownload("taskId")
+//            }
+//            isDownloading = false
+//            //Toast.makeText(requireContext(), "Downloading cancelled !", Toast.LENGTH_SHORT).show()
+//        }
+//
+//        dialog.findViewById<Button>(R.id.hide_loading).setOnClickListener {
+//            dialog.dismiss()
+//        }
 
         return binding.root
     }
 
-    private fun showStart(progress: Int) {
-        dialog.setContent(if (progress < 0) "Please wait  0" else "Please wait  $progress")
+//    private fun showStart(progress: Int) {
+//        dialog.setContent(if (progress < 0) "Please wait  0" else "Please wait  $progress")
+//    }
+
+    private fun prepareForDownload(link: String) {
+//        dialog.setContent("Please wait  0")
+//        dialog.show()
+
+        //isDownloading = true
+        repository.prepareForDownload(link)
+        findNavController().navigate(R.id.menuDownload)
+
+//            .flowWithLifecycle(lifecycle)
+//            .onEach { progress ->
+//                showStart(progress.toInt())
+//                Log.d(TAG, "getProgress -  ${progress}")
+//                if (progress.toInt() == 100) {
+//                    isDownloading = false
+//                    closeDialog()
+//                }
+//            }
+//            .launchIn(lifecycleScope)
     }
 
-    private fun startDownload(command: String) {
-        dialog.setContent("Please wait  0")
-        dialog.show()
+//    private fun cancelDownload(processId: String) {
+//        Log.d(TAG, "cancelDownload: ")
+//        repository.cancelDownload(processId)
+//        dialog.dismiss()
+//    }
 
-        isDownloading = true
-
-
-        repository.startDownload(command)
-            .flowWithLifecycle(lifecycle)
-            .onEach { progress ->
-                showStart(progress.toInt())
-                Log.d(TAG, "getProgress -  ${progress}")
-                if (progress.toInt() == 100) {
-                    isDownloading = false
-                    closeDialog()
-                }
-            }
-            .launchIn(lifecycleScope)
-    }
-
-    private fun cancelDownload(processId: String) {
-        Log.d(TAG, "cancelDownload: ")
-        repository.cancelDownload(processId)
-        dialog.dismiss()
-    }
-
-    private fun closeDialog() {
-        dialog.dismiss()
-        Toast
-            .makeText(requireContext(), "Video successfully downloaded!", Toast.LENGTH_SHORT)
-            .show()
-    }
+//    private fun closeDialog() {
+//        dialog.dismiss()
+//        Toast
+//            .makeText(requireContext(), "Video successfully downloaded!", Toast.LENGTH_SHORT)
+//            .show()
+//    }
 
     private fun setSystemTheme() {
         when (requireContext().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {

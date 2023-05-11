@@ -1,5 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -13,78 +11,78 @@
         layout="@layout/content_toolbar" />
 
     <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_search"
-            app:layout_constraintTop_toBottomOf="@id/content_toolbar"
+        android:id="@+id/card_search"
+        app:layout_constraintTop_toBottomOf="@id/content_toolbar"
+        android:layout_width="match_parent"
+        android:layout_marginEnd="@dimen/margin_4x"
+        android:layout_marginTop="@dimen/margin_4x"
+        android:layout_marginStart="@dimen/margin_4x"
+        app:cardCornerRadius="@dimen/margin_2_5x"
+        android:elevation="@dimen/margin_x"
+        app:cardElevation="0dp"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:weightSum="1"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_marginEnd="@dimen/margin_4x"
-            android:layout_marginTop="@dimen/margin_4x"
-            android:layout_marginStart="@dimen/margin_4x"
-            app:cardCornerRadius="@dimen/margin_2_5x"
-            android:elevation="@dimen/margin_x"
-            app:cardElevation="0dp"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:weightSum="1"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_clear"
+                android:layout_weight="0.12"
+                android:layout_width="0dp"
+                app:cardElevation="0dp"
+                android:layout_height="match_parent"
+                android:focusable="false"
+                android:clickable="false">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_clear"
-                    android:layout_weight="0.12"
-                    android:layout_width="0dp"
-                    app:cardElevation="0dp"
-                    android:layout_height="match_parent"
-                    android:focusable="false"
-                    android:clickable="false">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/clear_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="@dimen/margin_3x"
-                        android:src="@drawable/iv_search"
-                        android:tint="?colorSecondary" />
-
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_paste_linkt"
-                    android:background="@android:color/transparent"
-                    android:layout_weight="0.74"
-                    android:layout_width="0dp"
-                    android:textColorHint="?colorSecondary"
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/clear_text"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/custom"
-                    android:hint="@string/paste_link_here"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:padding="@dimen/margin_4x" />
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/margin_3x"
+                    android:src="@drawable/iv_search"
+                    android:tint="?colorSecondary" />
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_download"
-                    android:layout_weight="0.14"
-                    android:layout_width="0dp"
-                    app:cardElevation="0dp"
-                    android:layout_height="match_parent"
-                    android:focusable="true"
-                    android:clickable="true">
+            </com.google.android.material.card.MaterialCardView>
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_gravity="center"
-                        android:layout_margin="@dimen/margin_3x"
-                        android:layout_width="@dimen/margin_6x"
-                        android:layout_height="@dimen/margin_6x"
-                        android:tint="?colorSecondary"
-                        android:src="@drawable/download"/>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_paste_linkt"
+                android:background="@android:color/transparent"
+                android:layout_weight="0.74"
+                android:layout_width="0dp"
+                android:textColorHint="?colorSecondary"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/custom"
+                android:hint="@string/paste_link_here"
+                android:inputType="text"
+                android:maxLines="1"
+                android:padding="@dimen/margin_4x" />
 
-                </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_download"
+                android:layout_weight="0.14"
+                android:layout_width="0dp"
+                app:cardElevation="0dp"
+                android:layout_height="match_parent"
+                android:focusable="true"
+                android:clickable="true">
 
-            </LinearLayout>
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/margin_3x"
+                    android:layout_width="@dimen/margin_6x"
+                    android:layout_height="@dimen/margin_6x"
+                    android:tint="?colorSecondary"
+                    android:src="@drawable/download"/>
 
-        </com.google.android.material.card.MaterialCardView>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
         android:layout_marginStart="@dimen/margin_4x"
