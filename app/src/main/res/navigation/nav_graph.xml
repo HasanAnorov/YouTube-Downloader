@@ -23,6 +23,10 @@
             android:id="@+id/action_homeFragment_to_menuSelectDialog"
             app:destination="@id/menuSelectDialog" />
 
+        <action
+            android:id="@+id/action_homeFragment_to_downloadMenu"
+            app:destination="@id/menuDownload" />
+
     </fragment>
 
     <fragment
@@ -36,6 +40,12 @@
         android:name="com.hasan.youtubedownloader.ui.downloads.DownloadsFragment"
         android:label="fragment_downloads"
         tools:layout="@layout/fragment_downloads" />
+
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.hasan.youtubedownloader.ui.about.AboutFragment"
+        android:label="fragment_about"
+        tools:layout="@layout/fragment_about" />
 
     <dialog
         android:id="@+id/menuSelectDialog"
@@ -68,10 +78,9 @@
         android:name="com.hasan.youtubedownloader.ui.home.ThemeSelectDialog"
         android:label="ThemeSelectDialog" />
 
-    <fragment
-        android:id="@+id/aboutFragment"
-        android:name="com.hasan.youtubedownloader.ui.about.AboutFragment"
-        android:label="fragment_about"
-        tools:layout="@layout/fragment_about" />
+    <dialog
+        android:id="@+id/menuDownload"
+        android:name="com.hasan.youtubedownloader.ui.home.MenuDownload"
+        android:label="DownloadMenu" />
 
 </navigation>

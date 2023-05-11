@@ -32,24 +32,13 @@ class YoutubeRepository(
         Log.d("ahi3646", "startDownload: triggered $link ")
 
         val youtubeDLRequest = YoutubeDLRequest(link)
-            .addOption("--no-mtime")
-            .addOption("--downloader", "libaria2c.so")
-            .addOption("--external-downloader-args", "aria2c:\"--summary-interval=1\"")
-            .addOption("-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best")
+//            .addOption("--no-mtime")
+//            .addOption("--downloader", "libaria2c.so")
+//            .addOption("--external-downloader-args", "aria2c:\"--summary-interval=1\"")
+//            .addOption("-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best")
             .addOption(
                 "-o", getDownloadLocation().absolutePath + "/%(title)s.%(ext)s"
             )
-
-
-
-        with(youtubeDLClient.getInfo(youtubeDLRequest)){
-            Log.d("ahi3646", "resolution: $resolution ")
-            requestedFormats?.forEach {
-                Log.d("ahi3646", "requestedFormats - ${"formatNote - " + it.formatNote + " format - " + it.format + " formatID - " + it.formatId } ")            }
-            formats?.forEach {
-                Log.d("ahi3646", "formats - ${"formatNote - " + it.formatNote + " format - " + it.format + " formatID - " + it.formatId } ")
-            }
-        }
 
         val callback = object : DownloadProgressCallback {
             override fun onProgressUpdate(progress: Float, etaInSeconds: Long, line: String?) {

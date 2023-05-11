@@ -166,7 +166,6 @@ class HomeFragment : Fragment() {
                 cancelDownload("taskId")
             }
             isDownloading = false
-            //Toast.makeText(requireContext(), "Downloading cancelled !", Toast.LENGTH_SHORT).show()
         }
 
         dialog.findViewById<Button>(R.id.hide_loading).setOnClickListener {

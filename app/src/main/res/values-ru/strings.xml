@@ -41,6 +41,7 @@
 
     <string name="update">Обновлять</string>
     <string name="already_updated">Уже в курсе</string>
+    <string name="format">Формат</string>
 
 
 </resources>

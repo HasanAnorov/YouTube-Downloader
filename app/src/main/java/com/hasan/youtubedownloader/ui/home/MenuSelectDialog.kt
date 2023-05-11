@@ -28,7 +28,7 @@ class MenuSelectDialog : BaseDialog() {
 
     private var isUpdating = false
 
-    lateinit var dialog: LoadingDialog
+    lateinit var loadingDialog: LoadingDialog
 
     @Inject
     lateinit var repository: YoutubeRepository
@@ -38,7 +38,6 @@ class MenuSelectDialog : BaseDialog() {
         return content.root
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -71,7 +70,6 @@ class MenuSelectDialog : BaseDialog() {
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun updateYouTubeDL() {
         if (isUpdating) {
             Toast.makeText(requireContext(), "Update is already in progress", Toast.LENGTH_SHORT)
@@ -79,11 +77,11 @@ class MenuSelectDialog : BaseDialog() {
         }
 
         isUpdating = true
-        dialog = LoadingDialog(requireContext())
-        dialog.findViewById<Button>(R.id.cancel_loading).isGone = true
-        dialog.findViewById<Button>(R.id.hide_loading).isGone = true
-        dialog.setContent("Wait, updating ...")
-        dialog.show()
+        loadingDialog = LoadingDialog(requireContext())
+        loadingDialog.findViewById<Button>(R.id.cancel_loading).isGone = true
+        loadingDialog.findViewById<Button>(R.id.hide_loading).isGone = true
+        loadingDialog.setContent("Wait, updating ...")
+        loadingDialog.show()
 
         lifecycleScope.launch(Dispatchers.IO) {
             repository.updateYoutubeDL(YoutubeDL.UpdateChannel._STABLE)
@@ -103,7 +101,7 @@ class MenuSelectDialog : BaseDialog() {
             Toast.makeText(requireContext(), R.string.updated_successful, Toast.LENGTH_SHORT)
                 .show()
             isUpdating = false
-            dialog?.dismiss()
+            loadingDialog?.dismiss()
         }
     }
 
