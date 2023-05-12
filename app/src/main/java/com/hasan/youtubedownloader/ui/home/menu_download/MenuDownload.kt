@@ -96,7 +96,7 @@ class MenuDownload : BaseDialog() {
     private fun closeDialog() {
         lifecycleScope.launch {
             dialog.setContent("Video successfully downloaded!")
-            delay(3000)
+            delay(1000)
             dialog.dismiss()
         }
     }
