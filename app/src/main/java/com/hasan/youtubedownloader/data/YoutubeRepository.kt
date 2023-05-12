@@ -21,18 +21,12 @@ class YoutubeRepository(
     private val context: Context
 ) {
 
-    private lateinit var youtubeDLClient: YoutubeDL
+    private val youtubeDLClient: YoutubeDL = YoutubeDL.getInstance()
     private lateinit var youtubeDLRequest: YoutubeDLRequest
 
-    fun prepareForDownload(link: String) {
-        Log.d("ahi3646", "prepareForDownload: $link")
-        youtubeDLClient = YoutubeDL.getInstance()
+    fun getFormats(link: String): ArrayList<VideoFormat> {
+
         youtubeDLRequest = YoutubeDLRequest(link)
-    }
-
-     fun getFormats(): ArrayList<VideoFormat> {
-        Log.d("ahi3646", "getFormats: ")
-
         val videoFormats = youtubeDLClient.getInfo(youtubeDLRequest).formats
 
         videoFormats?.sortBy { it.fileSize }
@@ -40,26 +34,32 @@ class YoutubeRepository(
             it.ext != "mp4" || it.fileSize == 0L
         }
 
+        val sortedFormats = ArrayList<String>()
         videoFormats?.forEach {
-            Log.d(
-                "ahi3646",
-                "formats - ${"formatNote - " + it.formatNote + " format - " + it.format + " formatID - " + it.formatId + " formatSize - " + it.fileSize + " ext - " + it.ext + " preference - " + it.preference} "
-            )
+            sortedFormats.add(it.formatNote!!)
         }
+
+        sortedFormats.toSet()
+        sortedFormats.toHashSet()
+
+        sortedFormats.forEach{
+            Log.d("ahi3646", "getFormats: $it ")
+        }
+
         return videoFormats!!
     }
 
+    fun startDownload(link: String, format: VideoFormat): Flow<Float> = callbackFlow {
 
-    fun startDownload(link: String): Flow<Float> = callbackFlow {
+        val formatNote = format.formatNote.toString().filter {
+            it.isDigit()
+        }
 
-        Log.d("ahi3646", "startDownload: triggered $link ")
+        youtubeDLRequest = YoutubeDLRequest(link)
 
         youtubeDLRequest
-//            .addOption("--no-mtime")
-//            .addOption("--downloader", "libaria2c.so")
-//            .addOption("--external-downloader-args", "aria2c:\"--summary-interval=1\"")
-//            .addOption("-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best")
-            //.addOption("--list-formats")
+            .addOption("--no-mtime")
+            .addOption("-f", "bestvideo[height<=${formatNote}][ext=mp4]+bestaudio/best[height<=${formatNote}][ext=mp4]")
             .addOption(
                 "-o", getDownloadLocation().absolutePath + "/%(title)s.%(ext)s"
             )

@@ -49,7 +49,6 @@ class HomeFragment : Fragment() {
 
     private lateinit var window: Window
     private lateinit var windowInsetsController: WindowInsetsControllerCompat
-    private lateinit var dialog: LoadingDialog
 
     private var urlCommand = ""
 
@@ -61,7 +60,7 @@ class HomeFragment : Fragment() {
     private val permission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
-                prepareForDownload(urlCommand)
+                prepareForDownload()
             } else {
                 Toast.makeText(requireContext(), "Permission denied !", Toast.LENGTH_SHORT).show()
             }
@@ -98,8 +97,6 @@ class HomeFragment : Fragment() {
             }
         }
 
-        dialog = LoadingDialog(requireContext())
-
         val recyclerView = binding.recyclerView
         val adapter = HomeAdapter(
             arrayListOf(
@@ -128,15 +125,13 @@ class HomeFragment : Fragment() {
             if (start == 0 && count == 0) {
                 binding.cardClear.isClickable = false
                 binding.cardClear.isFocusable = false
-                binding.cardClear.visibility = View.GONE
+                binding.clearText.setImageResource(R.drawable.iv_search)
             } else {
                 binding.cardClear.isClickable = true
                 binding.cardClear.isFocusable = true
-                binding.cardClear.visibility = View.VISIBLE
                 binding.clearText.setImageResource(R.drawable.cancel)
                 binding.cardClear.setOnClickListener {
                     binding.etPasteLinkt.text?.clear()
-                    Log.d(TAG, "onCreateView: clear button")
                 }
             }
         }
@@ -144,7 +139,6 @@ class HomeFragment : Fragment() {
         viewModel.externalLink.observe(viewLifecycleOwner) { link ->
             urlCommand = link
             permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            Log.d(TAG, "onCreated: $link")
         }
 
         binding.contentToolbar.btnMenu.setOnClickListener(DebouncingOnClickListener {
@@ -168,64 +162,18 @@ class HomeFragment : Fragment() {
             }
         }
 
-
-
-//        dialog.findViewById<Button>(R.id.cancel_loading).setOnClickListener {
-//            lifecycleScope.launch {
-//                cancelDownload("taskId")
-//            }
-//            isDownloading = false
-//            //Toast.makeText(requireContext(), "Downloading cancelled !", Toast.LENGTH_SHORT).show()
-//        }
-//
-//        dialog.findViewById<Button>(R.id.hide_loading).setOnClickListener {
-//            dialog.dismiss()
-//        }
-
         return binding.root
     }
 
-//    private fun showStart(progress: Int) {
-//        dialog.setContent(if (progress < 0) "Please wait  0" else "Please wait  $progress")
-//    }
-
-    private fun prepareForDownload(link: String) {
-//        dialog.setContent("Please wait  0")
-//        dialog.show()
-
-        //isDownloading = true
-        repository.prepareForDownload(link)
-        findNavController().navigate(R.id.menuDownload)
-
-//            .flowWithLifecycle(lifecycle)
-//            .onEach { progress ->
-//                showStart(progress.toInt())
-//                Log.d(TAG, "getProgress -  ${progress}")
-//                if (progress.toInt() == 100) {
-//                    isDownloading = false
-//                    closeDialog()
-//                }
-//            }
-//            .launchIn(lifecycleScope)
+    private fun prepareForDownload() {
+        val bundle = Bundle()
+        bundle.putString("link", urlCommand)
+        findNavController().navigate(R.id.menuDownload,bundle)
     }
-
-//    private fun cancelDownload(processId: String) {
-//        Log.d(TAG, "cancelDownload: ")
-//        repository.cancelDownload(processId)
-//        dialog.dismiss()
-//    }
-
-//    private fun closeDialog() {
-//        dialog.dismiss()
-//        Toast
-//            .makeText(requireContext(), "Video successfully downloaded!", Toast.LENGTH_SHORT)
-//            .show()
-//    }
 
     private fun setSystemTheme() {
         when (requireContext().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
             Configuration.UI_MODE_NIGHT_NO -> {
-                //PreferenceHelper.setThemeMode(requireContext(),"initial_app_theme")
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                 window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
                 windowInsetsController.isAppearanceLightStatusBars = true
