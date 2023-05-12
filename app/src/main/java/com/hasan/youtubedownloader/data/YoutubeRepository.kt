@@ -1,7 +1,6 @@
 package com.hasan.youtubedownloader.data
 
 import android.content.Context
-import android.os.Build
 import android.os.Environment
 import android.util.Log
 import com.yausername.youtubedl_android.DownloadProgressCallback
@@ -15,18 +14,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.math.log
+import java.util.UUID
 
 class YoutubeRepository(
     private val context: Context
 ) {
 
     private val youtubeDLClient: YoutubeDL = YoutubeDL.getInstance()
-    private lateinit var youtubeDLRequest: YoutubeDLRequest
 
     fun getFormats(link: String): ArrayList<VideoFormat> {
 
-        youtubeDLRequest = YoutubeDLRequest(link)
+        val youtubeDLRequest = YoutubeDLRequest(link)
         val videoFormats = youtubeDLClient.getInfo(youtubeDLRequest).formats
 
         videoFormats?.sortBy { it.fileSize }
@@ -55,14 +53,26 @@ class YoutubeRepository(
             it.isDigit()
         }
 
-        youtubeDLRequest = YoutubeDLRequest(link)
+        val youtubeDLRequest = YoutubeDLRequest(link)
+
+        val downloadsDir =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+
+        val uniqueID = UUID.randomUUID().toString()
 
         youtubeDLRequest
             .addOption("--no-mtime")
-            .addOption("-f", "bestvideo[height<=${formatNote}][ext=mp4]+bestaudio/best[height<=${formatNote}][ext=mp4]")
+            .addOption("-f", "bestvideo[height<=${formatNote}][ext=mp4]+bestaudio")
             .addOption(
-                "-o", getDownloadLocation().absolutePath + "/%(title)s.%(ext)s"
+                "-o", getDownloadLocation().absolutePath + "/$uniqueID/%(title)s.%(ext)s"
             )
+
+        val filePath = File(downloadsDir, "${getDownloadLocation()}/$uniqueID/%(title)s.%(ext)s")
+        if (filePath.exists()){
+            Log.d("ahi3646", "exists $filePath")
+        }else{
+            Log.d("ahi3646", "not found $filePath")
+        }
 
         val callback = object : DownloadProgressCallback {
             override fun onProgressUpdate(progress: Float, etaInSeconds: Long, line: String?) {
@@ -91,6 +101,19 @@ class YoutubeRepository(
         awaitClose {
             youtubeDLClient.destroyProcessById("taskId")
         }
+    }
+
+    private fun getDownloadFile(info: VideoInfo, format: VideoFormat, folder: String): File {
+        val filepath = File(folder, "${info.title} ${format.formatNote}.${info.ext}")
+
+
+        (2..10_000).forEach { number ->
+            val file = File(folder, "${info.title} ${format.formatNote} ($number).${info.ext}")
+            if (!file.exists()) return@forEach
+        }
+
+        return if (!filepath.exists()) filepath
+        else filepath
     }
 
     fun updateYoutubeDL(updateChannel: YoutubeDL.UpdateChannel) {
