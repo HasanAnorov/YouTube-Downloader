@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     @Inject
     lateinit var repository: YoutubeRepository
 
-
     private val viewModel: IntentViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {

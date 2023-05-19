@@ -16,8 +16,6 @@ import kotlinx.coroutines.GlobalScope
 @HiltAndroidApp
 class DownloaderApplication : Application() {
 
-    @OptIn(DelicateCoroutinesApi::class)
-    val applicationScope = GlobalScope
     override fun onCreate() {
         super.onCreate()
         try {
