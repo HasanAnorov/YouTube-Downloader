@@ -1,6 +1,9 @@
 package com.hasan.youtubedownloader.ui.home
 
 import android.Manifest
+import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -26,6 +29,7 @@ import com.hasan.youtubedownloader.data.YoutubeRepository
 import com.hasan.youtubedownloader.databinding.FragmentHomeBinding
 import com.hasan.youtubedownloader.models.ItemDownload
 import com.hasan.youtubedownloader.ui.IntentViewModel
+import com.hasan.youtubedownloader.ui.MainActivity
 import com.hasan.youtubedownloader.utils.Constants.LIGHT
 import com.hasan.youtubedownloader.utils.Constants.NIGHT
 import com.hasan.youtubedownloader.utils.Constants.SYSTEM
@@ -120,6 +124,29 @@ class HomeFragment : Fragment() {
         }
 
         recyclerView.adapter = adapter
+
+        val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val pasteDate : String = ""
+
+        var hasPaste = when{
+            !clipboard.hasPrimaryClip() -> {
+                false
+            }
+            !(clipboard.primaryClipDescription?.hasMimeType(MIMETYPE_TEXT_PLAIN))!! -> {
+                // Disables the paste menu item, since the clipboard has data but it
+                // isn't plain text.
+                false
+            }
+            else -> {
+                // Enables the paste menu item, since the clipboard contains plain text.
+                true
+            }
+        }
+
+        if(hasPaste){
+            Log.d(TAG, "onCreateView: hastPaste - true")
+            binding.clearText.setImageResource(R.drawable.paste)
+        }
 
         binding.etPasteLinkt.doOnTextChanged { text, start, before, count ->
             if (start == 0 && count == 0) {
