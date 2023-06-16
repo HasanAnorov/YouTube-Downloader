@@ -33,9 +33,7 @@
                 android:layout_weight="0.12"
                 android:layout_width="0dp"
                 app:cardElevation="0dp"
-                android:layout_height="match_parent"
-                android:focusable="false"
-                android:clickable="false">
+                android:layout_height="match_parent">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/clear_text"
@@ -48,9 +46,9 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.textfield.TextInputEditText
+            <EditText
                 android:id="@+id/et_paste_linkt"
-                android:background="@android:color/transparent"
+                android:background="@color/transparent"
                 android:layout_weight="0.74"
                 android:layout_width="0dp"
                 android:textColorHint="?colorSecondary"
@@ -59,7 +57,10 @@
                 android:hint="@string/paste_link_here"
                 android:inputType="text"
                 android:maxLines="1"
-                android:padding="@dimen/margin_4x" />
+                android:paddingStart="@dimen/margin_2x"
+                android:paddingTop="@dimen/margin_4x"
+                android:paddingBottom="@dimen/margin_4x"
+                android:paddingEnd="@dimen/margin_4x" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_download"

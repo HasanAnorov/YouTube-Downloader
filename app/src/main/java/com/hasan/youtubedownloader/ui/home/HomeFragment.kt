@@ -4,12 +4,12 @@ import android.Manifest
 import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
@@ -20,8 +20,6 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.hasan.youtubedownloader.R
@@ -29,19 +27,15 @@ import com.hasan.youtubedownloader.data.YoutubeRepository
 import com.hasan.youtubedownloader.databinding.FragmentHomeBinding
 import com.hasan.youtubedownloader.models.ItemDownload
 import com.hasan.youtubedownloader.ui.IntentViewModel
-import com.hasan.youtubedownloader.ui.MainActivity
 import com.hasan.youtubedownloader.utils.Constants.LIGHT
 import com.hasan.youtubedownloader.utils.Constants.NIGHT
 import com.hasan.youtubedownloader.utils.Constants.SYSTEM
 import com.hasan.youtubedownloader.utils.DebouncingOnClickListener
 import com.hasan.youtubedownloader.utils.PreferenceHelper
-import com.hasan.youtubedownloader.utils.isEmailValid
 import com.hasan.youtubedownloader.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 const val TAG = "ahi3646"
 
@@ -148,17 +142,29 @@ class HomeFragment : Fragment() {
             binding.clearText.setImageResource(R.drawable.paste)
         }
 
+        val transparentRipple = ColorStateList(
+            arrayOf<IntArray>(intArrayOf()), intArrayOf(
+                android.R.color.transparent
+            )
+        )
+
+        val lightRipple = ColorStateList(
+            arrayOf<IntArray>(intArrayOf()), intArrayOf(
+                resources.getColor(R.color.rippleColor)
+            )
+        )
+
         binding.etPasteLinkt.doOnTextChanged { text, start, before, count ->
+            Log.d(TAG, "onCreateView: text - $text *** start - $start *** befeore - $before *** count- $count")
             if (start == 0 && count == 0) {
-                binding.cardClear.isClickable = false
-                binding.cardClear.isFocusable = false
                 binding.clearText.setImageResource(R.drawable.iv_search)
+                binding.cardClear.rippleColor = transparentRipple
             } else {
-                binding.cardClear.isClickable = true
-                binding.cardClear.isFocusable = true
+                binding.cardClear.rippleColor = lightRipple
                 binding.clearText.setImageResource(R.drawable.cancel)
                 binding.cardClear.setOnClickListener {
                     binding.etPasteLinkt.text?.clear()
+                    binding.cardClear.rippleColor = transparentRipple
                 }
             }
         }
