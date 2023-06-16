@@ -13,6 +13,7 @@ import com.hasan.youtubedownloader.data.YoutubeRepository
 import com.hasan.youtubedownloader.databinding.MenuDownloadBinding
 import com.hasan.youtubedownloader.ui.base.BaseDialog
 import com.hasan.youtubedownloader.ui.home.LoadingDialog
+import com.yausername.youtubedl_android.YoutubeDLException
 import com.yausername.youtubedl_android.mapper.VideoFormat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -42,13 +43,15 @@ class MenuDownload : BaseDialog() {
         _binding = MenuDownloadBinding.inflate(inflater, container, false)
         dialog = LoadingDialog(requireContext())
 
-        val formats = repository.getFormats(link)
-
-        val adapter = MenuDownLoadAdapter(formats) {
-            if (isDownloading) dialog.show() else startDownload(link, it)
+        try {
+            val formats = repository.getFormats(link)
+            val adapter = MenuDownLoadAdapter(formats) {
+                if (isDownloading) dialog.show() else startDownload(link, it)
+            }
+            binding.recyclerView.adapter = adapter
+        }catch (e: YoutubeDLException){
+            Log.d(TAG, "getContent: ${e.message}")
         }
-
-        binding.recyclerView.adapter = adapter
 
         dialog.findViewById<Button>(R.id.cancel_loading).setOnClickListener {
             lifecycleScope.launch {

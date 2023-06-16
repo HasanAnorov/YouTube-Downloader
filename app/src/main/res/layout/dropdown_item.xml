@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView
-    android:id="@+id/card_search"
+    android:id="@+id/card_video_format"
     app:layout_constraintTop_toBottomOf="@id/content_toolbar"
     android:layout_width="match_parent"
     app:cardCornerRadius="@dimen/margin_2_5x"

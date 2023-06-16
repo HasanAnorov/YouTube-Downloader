@@ -37,7 +37,8 @@
     <string name="already_updated">Already up to date</string>
     <string name="updated_successful">Updated successful</string>
     <string name="format">Formats</string>
-    <string name="choose_video_formats">Choose Video Formats</string>
+    <string name="choose_video_formats">Choose Video Format</string>
+    <string name="please_hold_on_fetching_information">Please hold on, fetching information ...</string>
 
 
     <string-array name="formats">

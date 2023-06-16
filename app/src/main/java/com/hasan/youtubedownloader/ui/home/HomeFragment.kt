@@ -119,29 +119,6 @@ class HomeFragment : Fragment() {
 
         recyclerView.adapter = adapter
 
-        val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val pasteDate : String = ""
-
-        var hasPaste = when{
-            !clipboard.hasPrimaryClip() -> {
-                false
-            }
-            !(clipboard.primaryClipDescription?.hasMimeType(MIMETYPE_TEXT_PLAIN))!! -> {
-                // Disables the paste menu item, since the clipboard has data but it
-                // isn't plain text.
-                false
-            }
-            else -> {
-                // Enables the paste menu item, since the clipboard contains plain text.
-                true
-            }
-        }
-
-        if(hasPaste){
-            Log.d(TAG, "onCreateView: hastPaste - true")
-            binding.clearText.setImageResource(R.drawable.paste)
-        }
-
         val transparentRipple = ColorStateList(
             arrayOf<IntArray>(intArrayOf()), intArrayOf(
                 android.R.color.transparent
@@ -155,7 +132,6 @@ class HomeFragment : Fragment() {
         )
 
         binding.etPasteLinkt.doOnTextChanged { text, start, before, count ->
-            Log.d(TAG, "onCreateView: text - $text *** start - $start *** befeore - $before *** count- $count")
             if (start == 0 && count == 0) {
                 binding.clearText.setImageResource(R.drawable.iv_search)
                 binding.cardClear.rippleColor = transparentRipple
@@ -178,7 +154,7 @@ class HomeFragment : Fragment() {
             try {
                 findNavController().navigate(R.id.menuSelectDialog)
             } catch (e: Exception) {
-                //Timber.e(e)
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
             }
         })
 
@@ -191,10 +167,13 @@ class HomeFragment : Fragment() {
 //                toast("Enter valid link !")
 //            }
             else {
+                binding.cardDownload.rippleColor = transparentRipple
+                val progressButton = ProgressButton(requireContext(),binding.cardSearch)
+                progressButton.buttonActivated()
+
                 permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
         }
-
         return binding.root
     }
 

@@ -5,6 +5,7 @@ import android.os.Environment
 import android.util.Log
 import com.yausername.youtubedl_android.DownloadProgressCallback
 import com.yausername.youtubedl_android.YoutubeDL
+import com.yausername.youtubedl_android.YoutubeDLException
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import com.yausername.youtubedl_android.mapper.VideoFormat
 import com.yausername.youtubedl_android.mapper.VideoInfo
@@ -20,31 +21,35 @@ class YoutubeRepository(
     private val context: Context
 ) {
 
-    private val youtubeDLClient: YoutubeDL = YoutubeDL.getInstance()
+    private val youtubeDLClient: YoutubeDL by lazy { YoutubeDL.getInstance() }
 
     fun getFormats(link: String): ArrayList<VideoFormat> {
-
         val youtubeDLRequest = YoutubeDLRequest(link)
-        val videoFormats = youtubeDLClient.getInfo(youtubeDLRequest).formats
+        try {
+            val videoFormats = youtubeDLClient.getInfo(youtubeDLRequest).formats
 
-        videoFormats?.sortBy { it.fileSize }
-        videoFormats?.removeIf {
-            it.ext != "mp4" || it.fileSize == 0L
+            videoFormats?.sortBy { it.fileSize }
+            videoFormats?.removeIf {
+                it.ext != "mp4" || it.fileSize == 0L
+            }
+
+            val sortedFormats = ArrayList<String>()
+            videoFormats?.forEach {
+                sortedFormats.add(it.formatNote!!)
+            }
+
+            sortedFormats.toSet()
+            sortedFormats.toHashSet()
+
+            sortedFormats.forEach{
+                Log.d("ahi3646", "getFormats: $it ")
+            }
+
+            return videoFormats!!
+        }catch (e: YoutubeDLException){
+            Log.d("ahi3646", "getFormats: $e ")
+            return arrayListOf()
         }
-
-        val sortedFormats = ArrayList<String>()
-        videoFormats?.forEach {
-            sortedFormats.add(it.formatNote!!)
-        }
-
-        sortedFormats.toSet()
-        sortedFormats.toHashSet()
-
-        sortedFormats.forEach{
-            Log.d("ahi3646", "getFormats: $it ")
-        }
-
-        return videoFormats!!
     }
 
     fun startDownload(link: String, format: VideoFormat): Flow<Float> = callbackFlow {

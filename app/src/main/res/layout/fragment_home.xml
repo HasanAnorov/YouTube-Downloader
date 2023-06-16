@@ -23,12 +23,14 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
+            android:id="@+id/container_layout"
             android:weightSum="1"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <com.google.android.material.card.MaterialCardView
+                android:visibility="visible"
                 android:id="@+id/card_clear"
                 android:layout_weight="0.12"
                 android:layout_width="0dp"
@@ -47,6 +49,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <EditText
+                android:visibility="visible"
                 android:id="@+id/et_paste_linkt"
                 android:background="@color/transparent"
                 android:layout_weight="0.74"
@@ -62,6 +65,24 @@
                 android:paddingBottom="@dimen/margin_4x"
                 android:paddingEnd="@dimen/margin_4x" />
 
+            <TextView
+                android:id="@+id/info_text"
+                android:visibility="gone"
+                android:paddingStart="@dimen/margin_4x"
+                android:paddingTop="@dimen/margin_4x"
+                android:paddingBottom="@dimen/margin_4x"
+                android:paddingEnd="@dimen/margin_4x"
+                android:layout_width="0dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textAlignment="center"
+                style="@style/TextAppearance.App.Small"
+                android:fontFamily="@font/custom"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.86"
+                android:text="@string/please_hold_on_fetching_information"/>
+
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_download"
                 android:layout_weight="0.14"
@@ -72,12 +93,24 @@
                 android:clickable="true">
 
                 <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_download"
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/margin_3x"
                     android:layout_width="@dimen/margin_6x"
                     android:layout_height="@dimen/margin_6x"
                     android:tint="?colorSecondary"
+                    android:visibility="visible"
                     android:src="@drawable/download"/>
+
+                <ProgressBar
+                    android:visibility="gone"
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/margin_3x"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:tint="?colorSecondary"/>
 
             </com.google.android.material.card.MaterialCardView>
 
