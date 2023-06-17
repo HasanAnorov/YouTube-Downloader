@@ -7,15 +7,15 @@ import com.hasan.youtubedownloader.databinding.DropdownItemBinding
 import com.yausername.youtubedl_android.mapper.VideoFormat
 
 class MenuDownLoadAdapter(
-    private val videoFormats: List<VideoFormat>,
-    private val itemClick: (videoFormat: VideoFormat) -> Unit,
+    private val videoFormats: List<String>,
+    private val itemClick: (videoFormat: String) -> Unit,
 ) : RecyclerView.Adapter<MenuDownLoadAdapter.HomeViewHolder>() {
 
     inner class HomeViewHolder(private val binding: DropdownItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun onBind(videoFormat : VideoFormat) {
+        fun onBind(videoFormat : String) {
 
-            binding.tvVideoFormat.text = videoFormat.formatNote
+            binding.tvVideoFormat.text = videoFormat
             binding.cardDownload.setOnClickListener {
                 itemClick.invoke(videoFormat)
             }

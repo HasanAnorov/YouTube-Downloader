@@ -1,15 +1,15 @@
 package com.hasan.youtubedownloader.ui.home
 
 import android.Manifest
-import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
@@ -20,6 +20,8 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.hasan.youtubedownloader.R
@@ -32,10 +34,14 @@ import com.hasan.youtubedownloader.utils.Constants.NIGHT
 import com.hasan.youtubedownloader.utils.Constants.SYSTEM
 import com.hasan.youtubedownloader.utils.DebouncingOnClickListener
 import com.hasan.youtubedownloader.utils.PreferenceHelper
+import com.hasan.youtubedownloader.utils.Resource
 import com.hasan.youtubedownloader.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
-
 
 const val TAG = "ahi3646"
 
@@ -51,6 +57,7 @@ class HomeFragment : Fragment() {
     private var urlCommand = ""
 
     private val viewModel: IntentViewModel by activityViewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
 
     @Inject
     lateinit var repository: YoutubeRepository
@@ -120,16 +127,17 @@ class HomeFragment : Fragment() {
         recyclerView.adapter = adapter
 
         val transparentRipple = ColorStateList(
-            arrayOf<IntArray>(intArrayOf()), intArrayOf(
+            arrayOf(intArrayOf()), intArrayOf(
                 android.R.color.transparent
             )
         )
 
         val lightRipple = ColorStateList(
-            arrayOf<IntArray>(intArrayOf()), intArrayOf(
+            arrayOf(intArrayOf()), intArrayOf(
                 resources.getColor(R.color.rippleColor)
             )
         )
+
 
         binding.etPasteLinkt.doOnTextChanged { text, start, before, count ->
             if (start == 0 && count == 0) {
@@ -167,10 +175,6 @@ class HomeFragment : Fragment() {
 //                toast("Enter valid link !")
 //            }
             else {
-                binding.cardDownload.rippleColor = transparentRipple
-                val progressButton = ProgressButton(requireContext(),binding.cardSearch)
-                progressButton.buttonActivated()
-
                 permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
         }
@@ -178,9 +182,55 @@ class HomeFragment : Fragment() {
     }
 
     private fun prepareForDownload() {
+        Log.d(TAG, "prepareForDownload: ")
+
+        val progressButton = ProgressButton(requireContext(), binding.cardSearch)
         val bundle = Bundle()
-        bundle.putString("link", urlCommand)
-        findNavController().navigate(R.id.menuDownload,bundle)
+
+        val transparentRipple = ColorStateList(
+            arrayOf(intArrayOf()), intArrayOf(
+                android.R.color.transparent
+            )
+        )
+
+        val lightRipple = ColorStateList(
+            arrayOf(intArrayOf()), intArrayOf(
+                resources.getColor(R.color.rippleColor)
+            )
+        )
+
+        progressButton.buttonActivated()
+        binding.cardDownload.rippleColor = transparentRipple
+
+        homeViewModel.formats.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Loading -> {
+                    Log.d(TAG, "prepareForDownload: load")
+                    progressButton.changeInfoText("Loading ...")
+                }
+
+                is Resource.Success -> {
+                    Log.d(TAG, "prepareForDownload: success")
+                    progressButton.buttonFinished("Success")
+                    binding.cardDownload.rippleColor = lightRipple
+
+                    bundle.putStringArrayList("formats", it.data)
+                    bundle.putString("link", urlCommand)
+                    findNavController().navigate(R.id.menuDownload, bundle)
+                }
+
+                is Resource.DataError -> {
+                    Log.d(TAG, "prepareForDownload: error")
+                    progressButton.buttonFinished(it.errorMessage.toString())
+                    binding.cardDownload.rippleColor = lightRipple
+                }
+            }
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            homeViewModel.getFormats(urlCommand)
+        }
+
     }
 
     private fun setSystemTheme() {

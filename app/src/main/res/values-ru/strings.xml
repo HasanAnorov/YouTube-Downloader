@@ -2,8 +2,6 @@
 <resources>
 
     <string name="app_name">YouTube Downloader</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Привет, пустой фрагмент</string>
     <string name="category_download">Категория скачать</string>
     <string name="dark_mode">Темный режим</string>
     <string name="storage_folder">Папка хранения</string>
@@ -45,6 +43,7 @@
 
     <string name="choose_video_formats">Выберите формат видео</string>
     <string name="please_hold_on_fetching_information">Подождите, получение информации...</string>
+    <string name="please_wait">Пожалуйста, подождите ...</string>
 
 
 </resources>

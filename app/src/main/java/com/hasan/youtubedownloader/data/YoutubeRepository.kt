@@ -3,6 +3,7 @@ package com.hasan.youtubedownloader.data
 import android.content.Context
 import android.os.Environment
 import android.util.Log
+import com.hasan.youtubedownloader.utils.Resource
 import com.yausername.youtubedl_android.DownloadProgressCallback
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLException
@@ -23,7 +24,8 @@ class YoutubeRepository(
 
     private val youtubeDLClient: YoutubeDL by lazy { YoutubeDL.getInstance() }
 
-    fun getFormats(link: String): ArrayList<VideoFormat> {
+    fun getFormats(link: String): Resource<ArrayList<String>> {
+
         val youtubeDLRequest = YoutubeDLRequest(link)
         try {
             val videoFormats = youtubeDLClient.getInfo(youtubeDLRequest).formats
@@ -38,23 +40,20 @@ class YoutubeRepository(
                 sortedFormats.add(it.formatNote!!)
             }
 
-            sortedFormats.toSet()
-            sortedFormats.toHashSet()
-
             sortedFormats.forEach{
                 Log.d("ahi3646", "getFormats: $it ")
             }
 
-            return videoFormats!!
+            return Resource.Success(sortedFormats)
         }catch (e: YoutubeDLException){
-            Log.d("ahi3646", "getFormats: $e ")
-            return arrayListOf()
+            Log.d("ahi3646", "getFormats: ${e.localizedMessage} ")
+            return Resource.DataError(e.message!!)
         }
     }
 
-    fun startDownload(link: String, format: VideoFormat): Flow<Float> = callbackFlow {
+    fun startDownload(link: String, format: String): Flow<Float> = callbackFlow {
 
-        val formatNote = format.formatNote.toString().filter {
+        val formatNote = format.filter {
             it.isDigit()
         }
 

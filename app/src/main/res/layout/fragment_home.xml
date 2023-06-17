@@ -75,12 +75,14 @@
                 android:layout_width="0dp"
                 android:textColor="@color/black"
                 android:textSize="16sp"
+                android:maxLines="2"
+                android:lines="1"
                 android:textAlignment="center"
                 style="@style/TextAppearance.App.Small"
                 android:fontFamily="@font/custom"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.86"
-                android:text="@string/please_hold_on_fetching_information"/>
+                android:text="@string/please_wait"/>
 
 
             <com.google.android.material.card.MaterialCardView

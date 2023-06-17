@@ -39,12 +39,12 @@ class MenuDownload : BaseDialog() {
         Log.d("ahi3646", "getContent: ")
 
         val link = arguments?.getString("link")?:""
+        val formats = arguments?.getStringArrayList("formats") ?: arrayListOf()
 
         _binding = MenuDownloadBinding.inflate(inflater, container, false)
         dialog = LoadingDialog(requireContext())
 
         try {
-            val formats = repository.getFormats(link)
             val adapter = MenuDownLoadAdapter(formats) {
                 if (isDownloading) dialog.show() else startDownload(link, it)
             }
@@ -67,7 +67,7 @@ class MenuDownload : BaseDialog() {
         return binding.root
     }
 
-    private fun startDownload(link:String, format: VideoFormat) {
+    private fun startDownload(link:String, format: String) {
         dialog.setContent("Please wait  0")
         dialog.show()
 
