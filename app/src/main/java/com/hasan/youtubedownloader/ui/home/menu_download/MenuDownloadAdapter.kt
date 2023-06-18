@@ -14,9 +14,8 @@ class MenuDownLoadAdapter(
     inner class HomeViewHolder(private val binding: DropdownItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(videoFormat : String) {
-
             binding.tvVideoFormat.text = videoFormat
-            binding.cardDownload.setOnClickListener {
+            binding.cardVideoFormat.setOnClickListener {
                 itemClick.invoke(videoFormat)
             }
         }

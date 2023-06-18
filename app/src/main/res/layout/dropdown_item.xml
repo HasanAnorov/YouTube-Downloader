@@ -7,6 +7,8 @@
     android:elevation="@dimen/margin_x"
     android:layout_marginTop="@dimen/margin_x"
     app:cardElevation="0dp"
+    android:clickable="true"
+    android:focusable="true"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -28,7 +30,7 @@
             android:textColor="?colorSecondary"
             android:layout_height="wrap_content"
             android:fontFamily="@font/custom"
-            android:text="Video format"
+            android:text="@string/video_format"
             android:padding="@dimen/margin_4x" />
 
         <com.google.android.material.card.MaterialCardView
@@ -36,9 +38,7 @@
             android:layout_weight="0.14"
             android:layout_width="0dp"
             app:cardElevation="0dp"
-            android:layout_height="match_parent"
-            android:focusable="true"
-            android:clickable="true">
+            android:layout_height="match_parent">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_gravity="center"

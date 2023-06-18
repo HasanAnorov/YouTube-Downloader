@@ -1,5 +1,6 @@
 package com.hasan.youtubedownloader.ui.home.menu_download
 
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.data.YoutubeRepository
 import com.hasan.youtubedownloader.databinding.MenuDownloadBinding
@@ -38,7 +40,6 @@ class MenuDownload : BaseDialog() {
     override fun getContent(inflater: LayoutInflater, container: ViewGroup?): View {
         Log.d("ahi3646", "getContent: ")
 
-        val link = arguments?.getString("link") ?: ""
         val formats = arguments?.getStringArrayList("formats") ?: arrayListOf()
 
         _binding = MenuDownloadBinding.inflate(inflater, container, false)
@@ -46,7 +47,15 @@ class MenuDownload : BaseDialog() {
 
         try {
             val adapter = MenuDownLoadAdapter(formats) {
-                if (isDownloading) dialog.show() else startDownload(link, it)
+                //if (isDownloading) dialog.show() else startDownload(link, it)
+                if (isDownloading)
+                    dialog.show()
+                else {
+                    val bundle = Bundle()
+                    bundle.putString("videoFormat", it)
+                    findNavController().navigate(R.id.homeFragment, bundle)
+                    dismiss()
+                }
             }
             binding.recyclerView.adapter = adapter
         } catch (e: YoutubeDLException) {
@@ -68,7 +77,7 @@ class MenuDownload : BaseDialog() {
     }
 
     private fun startDownload(link: String, format: String) {
-        dialog.setContent("Please wait  0")
+        dialog.setContent("Please wait  0 %")
         dialog.show()
 
         isDownloading = true
@@ -77,7 +86,7 @@ class MenuDownload : BaseDialog() {
             .flowWithLifecycle(lifecycle)
             .onEach { progress ->
                 updateDialog(progress.toInt())
-                Log.d(TAG, "getProgress -  ${progress}")
+                Log.d(TAG, "getProgress -  $progress")
                 if (progress.toInt() == 100) {
                     isDownloading = false
                     closeDialog()
@@ -87,7 +96,7 @@ class MenuDownload : BaseDialog() {
     }
 
     private fun updateDialog(progress: Int) {
-        dialog.setContent(if (progress < 0) "Please wait  0" else "Please wait  $progress")
+        dialog.setContent(if (progress < 0) "Please wait  0 %" else "Please wait  $progress %")
     }
 
     private fun cancelDownload(processId: String) {

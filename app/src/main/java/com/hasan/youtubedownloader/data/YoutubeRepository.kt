@@ -3,10 +3,8 @@ package com.hasan.youtubedownloader.data
 import android.content.Context
 import android.os.Environment
 import android.util.Log
-import com.hasan.youtubedownloader.utils.Resource
 import com.yausername.youtubedl_android.DownloadProgressCallback
 import com.yausername.youtubedl_android.YoutubeDL
-import com.yausername.youtubedl_android.YoutubeDLException
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import com.yausername.youtubedl_android.mapper.VideoFormat
 import com.yausername.youtubedl_android.mapper.VideoInfo
@@ -14,9 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.UUID
@@ -27,8 +22,8 @@ class YoutubeRepository(
 
     private val youtubeDLClient: YoutubeDL by lazy { YoutubeDL.getInstance() }
 
-    fun getFormats(link: String) = flow<ArrayList<VideoFormat>> {
-        youtubeDLClient.getInfo(YoutubeDLRequest(link)).formats
+    fun getFormats(link: String) : ArrayList<VideoFormat>?{
+        return youtubeDLClient.getInfo(YoutubeDLRequest(link)).formats
     }
 
     fun startDownload(link: String, format: String): Flow<Float> = callbackFlow {

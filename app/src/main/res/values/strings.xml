@@ -43,7 +43,7 @@
     <string name="choose_video_formats">Choose Video Format</string>
     <string name="please_hold_on_fetching_information">Please hold on, fetching information ...</string>
     <string name="please_wait">Please wait ...</string>
-
+    <string name="video_format">Video format</string>
 
     <string-array name="formats">
         <item>144</item>

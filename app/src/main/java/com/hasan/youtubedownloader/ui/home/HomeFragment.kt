@@ -42,6 +42,7 @@ import com.hasan.youtubedownloader.utils.Resource
 import com.hasan.youtubedownloader.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
@@ -218,57 +219,59 @@ class HomeFragment : Fragment() {
         binding.cardDownload.rippleColor = transparentRipple
 
         lifecycleScope.launch(Dispatchers.IO) {
-            homeViewModel.getFormats(urlCommand)
-        }
+            when (val formats = homeViewModel.getJustFormats(urlCommand)) {
+                is Resource.Loading -> {
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        Log.d(TAG, "prepareForDownload: load")
+                        binding.infoText.text = resources.getString(R.string.loading)
+                    }
+                }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                homeViewModel.formats.collectLatest {
-                    when (it) {
-                        is Resource.Loading -> {
-                            Log.d(TAG, "prepareForDownload: load")
-                            binding.infoText.text = resources.getString(R.string.loading)
-                        }
+                is Resource.Success -> {
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        Log.d(TAG, "prepareForDownload: success")
+                        binding.progressBar.visibility = View.GONE
+                        binding.infoText.text = resources.getString(R.string.success)
 
-                        is Resource.Success -> {
-                            binding.progressBar.visibility = View.GONE
-                            binding.infoText.text = resources.getString(R.string.success)
+                        delay(500)
+                        binding.infoText.visibility = View.GONE
+                        binding.infoText.text = resources.getString(R.string.please_wait)
 
-                            delay(1500)
-                            binding.infoText.visibility = View.GONE
+                        binding.cardClear.animation = fadeIn
+                        binding.cardClear.visibility = View.VISIBLE
+                        binding.etPasteLinkt.animation = fadeIn
+                        binding.etPasteLinkt.visibility = View.VISIBLE
+                        binding.ivDownload.animation = fadeIn
+                        binding.ivDownload.visibility = View.VISIBLE
 
-                            binding.cardClear.animation = fadeIn
-                            binding.cardClear.visibility = View.VISIBLE
-                            binding.etPasteLinkt.animation = fadeIn
-                            binding.etPasteLinkt.visibility = View.VISIBLE
-                            binding.ivDownload.animation = fadeIn
-                            binding.ivDownload.visibility = View.VISIBLE
+                        binding.cardDownload.isClickable = true
+                        binding.cardDownload.rippleColor = lightRipple
 
-                            binding.cardDownload.isClickable = true
-                            binding.cardDownload.rippleColor = lightRipple
+                        bundle.putStringArrayList("formats", formats.data)
+                        bundle.putString("link", urlCommand)
+                        findNavController().navigate(R.id.menuDownload, bundle)
+                    }
+                }
 
-                            bundle.putStringArrayList("formats", it.data)
-                            bundle.putString("link", urlCommand)
-                            findNavController().navigate(R.id.menuDownload, bundle)
-                        }
+                is Resource.DataError -> {
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        Log.d(TAG, "prepareForDownload: error")
+                        binding.progressBar.visibility = View.GONE
+                        binding.infoText.text = formats.errorMessage.toString()
 
-                        is Resource.DataError -> {
-                            binding.progressBar.visibility = View.GONE
-                            binding.infoText.text = it.errorMessage.toString()
+                        delay(2500)
+                        binding.infoText.visibility = View.GONE
+                        binding.infoText.text = resources.getString(R.string.please_wait)
 
-                            delay(2500)
-                            binding.infoText.visibility = View.GONE
+                        binding.cardClear.animation = fadeIn
+                        binding.cardClear.visibility = View.VISIBLE
+                        binding.etPasteLinkt.animation = fadeIn
+                        binding.etPasteLinkt.visibility = View.VISIBLE
+                        binding.ivDownload.animation = fadeIn
+                        binding.ivDownload.visibility = View.VISIBLE
 
-                            binding.cardClear.animation = fadeIn
-                            binding.cardClear.visibility = View.VISIBLE
-                            binding.etPasteLinkt.animation = fadeIn
-                            binding.etPasteLinkt.visibility = View.VISIBLE
-                            binding.ivDownload.animation = fadeIn
-                            binding.ivDownload.visibility = View.VISIBLE
-
-                            binding.cardDownload.isClickable = true
-                            binding.cardDownload.rippleColor = lightRipple
-                        }
+                        binding.cardDownload.isClickable = true
+                        binding.cardDownload.rippleColor = lightRipple
                     }
                 }
             }
