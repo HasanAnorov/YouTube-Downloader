@@ -14,16 +14,15 @@ import com.hasan.youtubedownloader.R
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Timer
 import java.util.logging.Handler
 
-class ProgressButton(private val context: Context,private val view: View) {
+class ProgressButton(context: Context, view: View) {
 
-    private var parentCardView: MaterialCardView = view.findViewById(R.id.card_search)
-    private var linearLayout: LinearLayout = view.findViewById(R.id.container_layout)
     private var searchCardView: MaterialCardView = view.findViewById(R.id.card_clear)
     private var edittext: EditText = view.findViewById(R.id.et_paste_linkt)
     private var downloadCard: MaterialCardView = view.findViewById(R.id.card_download)
@@ -32,7 +31,8 @@ class ProgressButton(private val context: Context,private val view: View) {
     private var progressBar: ProgressBar = view.findViewById(R.id.progressBar)
     private var fadeIn: Animation = AnimationUtils.loadAnimation(context, R.anim.fade_in)
 
-    fun buttonActivated(){
+    fun buttonActivated() {
+
         downloadCard.isClickable = false
 
         progressBar.visibility = View.VISIBLE
@@ -45,28 +45,23 @@ class ProgressButton(private val context: Context,private val view: View) {
         ivDownload.visibility = View.GONE
     }
 
-    fun changeInfoText(text: String){
+    fun changeInfoText(text: String) {
         infoText.text = text
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    fun buttonFinished(result: String){
-        downloadCard.isClickable = true
-
+    fun buttonFinished(result: String) {
         progressBar.visibility = View.GONE
         infoText.text = result
 
-        GlobalScope.launch(Dispatchers.Main) {
-            delay(2000)
-            infoText.visibility = View.GONE
+        infoText.visibility = View.GONE
 
-            searchCardView.visibility = View.VISIBLE
-            searchCardView.animation = fadeIn
-            edittext.visibility = View.VISIBLE
-            edittext.animation = fadeIn
-            ivDownload.visibility = View.VISIBLE
-            ivDownload.animation = fadeIn
-        }
+        searchCardView.visibility = View.VISIBLE
+        searchCardView.animation = fadeIn
+        edittext.visibility = View.VISIBLE
+        edittext.animation = fadeIn
+        ivDownload.visibility = View.VISIBLE
+        ivDownload.animation = fadeIn
+
     }
 
 }

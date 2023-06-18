@@ -14,6 +14,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.UUID
@@ -24,31 +27,8 @@ class YoutubeRepository(
 
     private val youtubeDLClient: YoutubeDL by lazy { YoutubeDL.getInstance() }
 
-    fun getFormats(link: String): Resource<ArrayList<String>> {
-
-        val youtubeDLRequest = YoutubeDLRequest(link)
-        try {
-            val videoFormats = youtubeDLClient.getInfo(youtubeDLRequest).formats
-
-            videoFormats?.sortBy { it.fileSize }
-            videoFormats?.removeIf {
-                it.ext != "mp4" || it.fileSize == 0L
-            }
-
-            val sortedFormats = ArrayList<String>()
-            videoFormats?.forEach {
-                sortedFormats.add(it.formatNote!!)
-            }
-
-            sortedFormats.forEach{
-                Log.d("ahi3646", "getFormats: $it ")
-            }
-
-            return Resource.Success(sortedFormats)
-        }catch (e: YoutubeDLException){
-            Log.d("ahi3646", "getFormats: ${e.localizedMessage} ")
-            return Resource.DataError(e.message!!)
-        }
+    fun getFormats(link: String) = flow<ArrayList<VideoFormat>> {
+        youtubeDLClient.getInfo(YoutubeDLRequest(link)).formats
     }
 
     fun startDownload(link: String, format: String): Flow<Float> = callbackFlow {

@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
@@ -21,7 +23,9 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.hasan.youtubedownloader.R
@@ -39,6 +43,9 @@ import com.hasan.youtubedownloader.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -171,9 +178,6 @@ class HomeFragment : Fragment() {
             if (urlCommand.isBlank()) {
                 toast("Enter link to download!")
             }
-//            else if (urlCommand.isNotBlank() && !urlCommand.isEmailValid()){
-//                toast("Enter valid link !")
-//            }
             else {
                 permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
@@ -184,6 +188,7 @@ class HomeFragment : Fragment() {
     private fun prepareForDownload() {
         Log.d(TAG, "prepareForDownload: ")
 
+        val fadeIn: Animation = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_in)
         val progressButton = ProgressButton(requireContext(), binding.cardSearch)
         val bundle = Bundle()
 
@@ -200,37 +205,55 @@ class HomeFragment : Fragment() {
         )
 
         progressButton.buttonActivated()
+        binding.cardDownload.isClickable = false
         binding.cardDownload.rippleColor = transparentRipple
-
-        homeViewModel.formats.observe(viewLifecycleOwner) {
-            when (it) {
-                is Resource.Loading -> {
-                    Log.d(TAG, "prepareForDownload: load")
-                    progressButton.changeInfoText("Loading ...")
-                }
-
-                is Resource.Success -> {
-                    Log.d(TAG, "prepareForDownload: success")
-                    progressButton.buttonFinished("Success")
-                    binding.cardDownload.rippleColor = lightRipple
-
-                    bundle.putStringArrayList("formats", it.data)
-                    bundle.putString("link", urlCommand)
-                    findNavController().navigate(R.id.menuDownload, bundle)
-                }
-
-                is Resource.DataError -> {
-                    Log.d(TAG, "prepareForDownload: error")
-                    progressButton.buttonFinished(it.errorMessage.toString())
-                    binding.cardDownload.rippleColor = lightRipple
-                }
-            }
-        }
 
         lifecycleScope.launch(Dispatchers.IO) {
             homeViewModel.getFormats(urlCommand)
         }
 
+        lifecycleScope.launch{
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                homeViewModel.formats.collectLatest{
+                    when (it) {
+                        is Resource.Loading -> {
+                            Log.d(TAG, "prepareForDownload: load")
+                            progressButton.changeInfoText("Loading ...")
+                        }
+
+                        is Resource.Success -> {
+                            Log.d(TAG, "prepareForDownload: success")
+                            progressButton.buttonFinished("Success")
+                            binding.cardDownload.isClickable = true
+                            binding.cardDownload.rippleColor = lightRipple
+
+                            bundle.putStringArrayList("formats", it.data)
+                            bundle.putString("link", urlCommand)
+                            findNavController().navigate(R.id.menuDownload, bundle)
+                        }
+
+                        is Resource.DataError -> {
+
+                            binding.progressBar.visibility = View.GONE
+                            binding.infoText.text = it.errorMessage.toString()
+
+                            delay(2000)
+                            binding.infoText.visibility = View.GONE
+
+                            binding.cardClear.visibility = View.VISIBLE
+                            binding.cardClear.animation = fadeIn
+                            binding.etPasteLinkt.visibility = View.VISIBLE
+                            binding.etPasteLinkt.animation = fadeIn
+                            binding.ivDownload.visibility = View.VISIBLE
+                            binding.ivDownload.animation = fadeIn
+
+                            binding.cardDownload.isClickable = true
+                            binding.cardDownload.rippleColor = lightRipple
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setSystemTheme() {

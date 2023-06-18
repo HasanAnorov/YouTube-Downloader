@@ -10,6 +10,10 @@ import com.hasan.youtubedownloader.data.YoutubeRepository
 import com.hasan.youtubedownloader.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -17,34 +21,29 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val repository: YoutubeRepository) : ViewModel() {
 
-    private var _formats : MutableLiveData<Resource<ArrayList<String>>> = MutableLiveData(Resource.Loading())
-    val formats: LiveData<Resource<ArrayList<String>>> get() = _formats
+    private var _formats  = MutableStateFlow<Resource<ArrayList<String>>>(Resource.Loading())
+    val formats: StateFlow<Resource<ArrayList<String>>> get() = _formats
 
-    fun getFormats(link: String) {
-//        viewModelScope.launch(Dispatchers.Main) {
-//            _formats.value = Resource.Loading()
-//            Log.d(TAG, "getFormats viewModel: initial load")
-//        }
-        repository.getFormats(link).let {
-            when (it) {
-                is Resource.Success -> {
-                    viewModelScope.launch(Dispatchers.Main) {
-                        _formats.value = it
-                    }
-                }
-
-                is Resource.DataError -> {
-                    viewModelScope.launch(Dispatchers.Main) {
-                        _formats.value = it
-                    }
-                }
-
-                else -> {
-                    viewModelScope.launch(Dispatchers.Main) {
-                        _formats.value = Resource.DataError("Something went wong!")
-                    }
-                }
+    suspend fun getFormats(link: String) {
+        _formats.value = Resource.Loading()
+        repository.getFormats(link).catch {
+            Log.d(TAG, "getFormats: ${it.message} *** ${it.localizedMessage} *** ${it.stackTrace}  *** ${it.cause} *** ${it.suppressed}")
+            _formats.value = Resource.DataError(it.message.toString())
+        }.collect { videoFormats ->
+            videoFormats.sortBy { it.fileSize }
+            videoFormats.removeIf {
+                it.ext != "mp4" || it.fileSize == 0L
             }
+
+            val sortedFormats = ArrayList<String>()
+            videoFormats.forEach {
+                sortedFormats.add(it.formatNote!!)
+            }
+
+            sortedFormats.forEach {
+                Log.d("ahi3646", "getFormats: $it ")
+            }
+            _formats.value = Resource.Success(sortedFormats)
         }
     }
 }
