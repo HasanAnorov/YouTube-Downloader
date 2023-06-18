@@ -28,6 +28,11 @@
     <string name="about_app">Ilova haqida</string>
     <string name="app_theme">Ilova mavzusi</string>
     <string name="language">Uzbek</string>
+    <string name="success">Muvaffaqiyatli</string>
+    <string name="loading">Yuklanmoqda ...</string>
+    <string name="files"> fayllar</string>
+
+
 
     <string name="light_theme">Kunduzgi rejim</string>
     <string name="night_theme">Tungi reji</string>

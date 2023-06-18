@@ -28,6 +28,9 @@
     <string name="about_app">О приложении</string>
     <string name="app_theme">Тема приложения</string>
     <string name="language">Русский</string>
+    <string name="success">Успех</string>
+    <string name="loading">Загрузка...</string>
+    <string name="files"> файлы</string>
 
     <string name="light_theme">Светлая тема</string>
     <string name="night_theme">Ночная тема</string>

@@ -75,6 +75,7 @@
                 android:layout_width="0dp"
                 android:textSize="16sp"
                 android:maxLines="2"
+                android:ellipsize="end"
                 android:lines="1"
                 android:textAlignment="textStart"
                 style="@style/TextAppearance.App.Small"
@@ -82,7 +83,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.86"
                 android:text="@string/please_wait"/>
-
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_download"

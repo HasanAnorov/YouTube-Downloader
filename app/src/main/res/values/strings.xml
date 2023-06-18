@@ -26,6 +26,9 @@
     <string name="about_app">About App</string>
     <string name="app_theme">App Theme</string>
     <string name="language">English</string>
+    <string name="success">Success</string>
+    <string name="loading">Loading ...</string>
+    <string name="files"> files</string>
 
     <string name="light_theme">Light Theme</string>
     <string name="night_theme">Night Theme</string>

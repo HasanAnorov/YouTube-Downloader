@@ -109,17 +109,19 @@ class HomeFragment : Fragment() {
             }
         }
 
+        val downloads = arrayListOf(
+            ItemDownload(R.drawable.images, "1"),
+            ItemDownload(R.drawable.images, "2"),
+            ItemDownload(R.drawable.images, "3"),
+            ItemDownload(R.drawable.images, "4"),
+            ItemDownload(R.drawable.images, "5"),
+            ItemDownload(R.drawable.images, "6")
+        )
+
+        val downloadsCount = downloads.size.toString() + " " + resources.getString(R.string.files)
+        binding.downloadsCount.text = downloadsCount
         val recyclerView = binding.recyclerView
-        val adapter = HomeAdapter(
-            arrayListOf(
-                ItemDownload(R.drawable.images, "1"),
-                ItemDownload(R.drawable.images, "2"),
-                ItemDownload(R.drawable.images, "3"),
-                ItemDownload(R.drawable.images, "4"),
-                ItemDownload(R.drawable.images, "5"),
-                ItemDownload(R.drawable.images, "6")
-            )
-        ) { itemDownload, image ->
+        val adapter = HomeAdapter(downloads) { itemDownload, image ->
 
             ViewCompat.setTransitionName(image, "item_image")
             val extras = FragmentNavigatorExtras(image to "hero_image")
@@ -144,7 +146,6 @@ class HomeFragment : Fragment() {
                 resources.getColor(R.color.rippleColor)
             )
         )
-
 
         binding.etPasteLinkt.doOnTextChanged { text, start, before, count ->
             if (start == 0 && count == 0) {
@@ -177,8 +178,7 @@ class HomeFragment : Fragment() {
             urlCommand = binding.etPasteLinkt.text.toString().trim()
             if (urlCommand.isBlank()) {
                 toast("Enter link to download!")
-            }
-            else {
+            } else {
                 permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
         }
@@ -189,7 +189,6 @@ class HomeFragment : Fragment() {
         Log.d(TAG, "prepareForDownload: ")
 
         val fadeIn: Animation = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_in)
-        val progressButton = ProgressButton(requireContext(), binding.cardSearch)
         val bundle = Bundle()
 
         val transparentRipple = ColorStateList(
@@ -204,7 +203,17 @@ class HomeFragment : Fragment() {
             )
         )
 
-        progressButton.buttonActivated()
+        binding.cardDownload.isClickable = false
+
+        binding.progressBar.animation = fadeIn
+        binding.progressBar.visibility = View.VISIBLE
+        binding.infoText.animation = fadeIn
+        binding.infoText.visibility = View.VISIBLE
+
+        binding.etPasteLinkt.visibility = View.GONE
+        binding.cardClear.visibility = View.GONE
+        binding.ivDownload.visibility = View.GONE
+
         binding.cardDownload.isClickable = false
         binding.cardDownload.rippleColor = transparentRipple
 
@@ -212,18 +221,29 @@ class HomeFragment : Fragment() {
             homeViewModel.getFormats(urlCommand)
         }
 
-        lifecycleScope.launch{
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                homeViewModel.formats.collectLatest{
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeViewModel.formats.collectLatest {
                     when (it) {
                         is Resource.Loading -> {
                             Log.d(TAG, "prepareForDownload: load")
-                            progressButton.changeInfoText("Loading ...")
+                            binding.infoText.text = resources.getString(R.string.loading)
                         }
 
                         is Resource.Success -> {
-                            Log.d(TAG, "prepareForDownload: success")
-                            progressButton.buttonFinished("Success")
+                            binding.progressBar.visibility = View.GONE
+                            binding.infoText.text = resources.getString(R.string.success)
+
+                            delay(1500)
+                            binding.infoText.visibility = View.GONE
+
+                            binding.cardClear.animation = fadeIn
+                            binding.cardClear.visibility = View.VISIBLE
+                            binding.etPasteLinkt.animation = fadeIn
+                            binding.etPasteLinkt.visibility = View.VISIBLE
+                            binding.ivDownload.animation = fadeIn
+                            binding.ivDownload.visibility = View.VISIBLE
+
                             binding.cardDownload.isClickable = true
                             binding.cardDownload.rippleColor = lightRipple
 
@@ -233,19 +253,18 @@ class HomeFragment : Fragment() {
                         }
 
                         is Resource.DataError -> {
-
                             binding.progressBar.visibility = View.GONE
                             binding.infoText.text = it.errorMessage.toString()
 
-                            delay(2000)
+                            delay(2500)
                             binding.infoText.visibility = View.GONE
 
-                            binding.cardClear.visibility = View.VISIBLE
                             binding.cardClear.animation = fadeIn
-                            binding.etPasteLinkt.visibility = View.VISIBLE
+                            binding.cardClear.visibility = View.VISIBLE
                             binding.etPasteLinkt.animation = fadeIn
-                            binding.ivDownload.visibility = View.VISIBLE
+                            binding.etPasteLinkt.visibility = View.VISIBLE
                             binding.ivDownload.animation = fadeIn
+                            binding.ivDownload.visibility = View.VISIBLE
 
                             binding.cardDownload.isClickable = true
                             binding.cardDownload.rippleColor = lightRipple

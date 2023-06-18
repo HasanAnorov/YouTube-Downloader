@@ -52,9 +52,9 @@ class YoutubeRepository(
             )
 
         val filePath = File(downloadsDir, "${getDownloadLocation()}/$uniqueID/%(title)s.%(ext)s")
-        if (filePath.exists()){
+        if (filePath.exists()) {
             Log.d("ahi3646", "exists $filePath")
-        }else{
+        } else {
             Log.d("ahi3646", "not found $filePath")
         }
 

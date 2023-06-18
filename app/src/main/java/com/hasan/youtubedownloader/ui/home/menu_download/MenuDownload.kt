@@ -38,7 +38,7 @@ class MenuDownload : BaseDialog() {
     override fun getContent(inflater: LayoutInflater, container: ViewGroup?): View {
         Log.d("ahi3646", "getContent: ")
 
-        val link = arguments?.getString("link")?:""
+        val link = arguments?.getString("link") ?: ""
         val formats = arguments?.getStringArrayList("formats") ?: arrayListOf()
 
         _binding = MenuDownloadBinding.inflate(inflater, container, false)
@@ -49,7 +49,7 @@ class MenuDownload : BaseDialog() {
                 if (isDownloading) dialog.show() else startDownload(link, it)
             }
             binding.recyclerView.adapter = adapter
-        }catch (e: YoutubeDLException){
+        } catch (e: YoutubeDLException) {
             Log.d(TAG, "getContent: ${e.message}")
         }
 
@@ -67,7 +67,7 @@ class MenuDownload : BaseDialog() {
         return binding.root
     }
 
-    private fun startDownload(link:String, format: String) {
+    private fun startDownload(link: String, format: String) {
         dialog.setContent("Please wait  0")
         dialog.show()
 

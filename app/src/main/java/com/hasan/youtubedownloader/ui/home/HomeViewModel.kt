@@ -21,14 +21,14 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val repository: YoutubeRepository) : ViewModel() {
 
-    private var _formats  = MutableStateFlow<Resource<ArrayList<String>>>(Resource.Loading())
+    private var _formats = MutableStateFlow<Resource<ArrayList<String>>>(Resource.Loading())
     val formats: StateFlow<Resource<ArrayList<String>>> get() = _formats
 
     suspend fun getFormats(link: String) {
         _formats.value = Resource.Loading()
         repository.getFormats(link).catch {
-            Log.d(TAG, "getFormats: ${it.message} *** ${it.localizedMessage} *** ${it.stackTrace}  *** ${it.cause} *** ${it.suppressed}")
-            _formats.value = Resource.DataError(it.message.toString())
+            Log.d(TAG, "getFormats: ${it.message}")
+            _formats.value = Resource.DataError("Entered url is not valid")
         }.collect { videoFormats ->
             videoFormats.sortBy { it.fileSize }
             videoFormats.removeIf {
