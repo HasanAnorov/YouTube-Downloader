@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">YouTube Downloader</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Привет, пустой фрагмент</string>
     <string name="category_download">Категория скачать</string>
     <string name="dark_mode">Темный режим</string>
     <string name="storage_folder">Папка хранения</string>
@@ -30,6 +27,10 @@
     <string name="about_app">О приложении</string>
     <string name="app_theme">Тема приложения</string>
     <string name="language">Русский</string>
+    <string name="success">Успех</string>
+    <string name="loading">Загрузка...</string>
+    <string name="files"> файлы</string>
+    <string name="video_format">Формат видео</string>
 
     <string name="light_theme">Светлая тема</string>
     <string name="night_theme">Ночная тема</string>
@@ -42,6 +43,10 @@
     <string name="update">Обновлять</string>
     <string name="already_updated">Уже в курсе</string>
     <string name="format">Формат</string>
+
+    <string name="choose_video_formats">Выберите формат видео</string>
+    <string name="please_hold_on_fetching_information">Подождите, получение информации...</string>
+    <string name="please_wait">Пожалуйста, подождите ...</string>
 
 
 </resources>

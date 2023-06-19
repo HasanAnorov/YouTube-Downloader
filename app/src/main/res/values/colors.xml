@@ -32,4 +32,6 @@
     <color name="green">#00B373</color>
     <color name="green_dark">#FF009861</color>
 
+    <color name="rippleColor">#1f000000</color>
+
 </resources>

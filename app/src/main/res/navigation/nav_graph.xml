@@ -80,7 +80,7 @@
 
     <dialog
         android:id="@+id/menuDownload"
-        android:name="com.hasan.youtubedownloader.ui.home.MenuDownload"
+        android:name="com.hasan.youtubedownloader.ui.home.menu_download.MenuDownload"
         android:label="DownloadMenu" />
 
 </navigation>

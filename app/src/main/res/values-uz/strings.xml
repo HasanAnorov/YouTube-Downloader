@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">YouTube Downloader</string>
     <string name="category_download">Kategoriya Yuklab olish</string>
     <string name="dark_mode">Tungi mavzu</string>
@@ -28,6 +27,10 @@
     <string name="about_app">Ilova haqida</string>
     <string name="app_theme">Ilova mavzusi</string>
     <string name="language">Uzbek</string>
+    <string name="success">Muvaffaqiyatli</string>
+    <string name="loading">Yuklanmoqda ...</string>
+    <string name="files"> fayllar</string>
+    <string name="video_format">Video formati</string>
 
     <string name="light_theme">Kunduzgi rejim</string>
     <string name="night_theme">Tungi reji</string>
@@ -40,5 +43,9 @@
     <string name="already_updated">Allaqachon yangilangan</string>
     <string name="updated_successful">Muvaffaqiyatli yangilandi</string>
     <string name="format">Format</string>
+
+    <string name="choose_video_formats">Video formatini tanlang</string>
+    <string name="please_hold_on_fetching_information">Kutib turing, maʼlumot olinmoqda...</string>
+    <string name="please_wait">Iltimos kuting ...</string>
 
 </resources>

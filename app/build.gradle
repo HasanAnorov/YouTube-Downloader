@@ -10,6 +10,13 @@ android {
     namespace 'com.hasan.youtubedownloader'
     compileSdk 33
 
+    signingConfigs {
+        config {
+            enableV3Signing = true
+            enableV4Signing = true
+        }
+    }
+
     defaultConfig {
         applicationId "com.hasan.youtubedownloader"
         minSdk 24

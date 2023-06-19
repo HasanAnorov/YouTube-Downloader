@@ -12,5 +12,4 @@ class IntentViewModel : ViewModel() {
         mutableExternalLink.value = intent
     }
 
-
 }

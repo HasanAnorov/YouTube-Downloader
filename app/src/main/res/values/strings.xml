@@ -26,6 +26,9 @@
     <string name="about_app">About App</string>
     <string name="app_theme">App Theme</string>
     <string name="language">English</string>
+    <string name="success">Success</string>
+    <string name="loading">Loading ...</string>
+    <string name="files"> files</string>
 
     <string name="light_theme">Light Theme</string>
     <string name="night_theme">Night Theme</string>
@@ -37,7 +40,10 @@
     <string name="already_updated">Already up to date</string>
     <string name="updated_successful">Updated successful</string>
     <string name="format">Formats</string>
-
+    <string name="choose_video_formats">Choose Video Format</string>
+    <string name="please_hold_on_fetching_information">Please hold on, fetching information ...</string>
+    <string name="please_wait">Please wait ...</string>
+    <string name="video_format">Video format</string>
 
     <string-array name="formats">
         <item>144</item>

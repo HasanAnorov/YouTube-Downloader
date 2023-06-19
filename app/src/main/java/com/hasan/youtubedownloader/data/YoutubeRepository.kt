@@ -6,39 +6,52 @@ import android.util.Log
 import com.yausername.youtubedl_android.DownloadProgressCallback
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLRequest
+import com.yausername.youtubedl_android.mapper.VideoFormat
+import com.yausername.youtubedl_android.mapper.VideoInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.UUID
+import kotlin.math.log
 
 class YoutubeRepository(
     private val context: Context
 ) {
 
-    private val youtubeDLClient = YoutubeDL.getInstance()
+    private val youtubeDLClient: YoutubeDL by lazy { YoutubeDL.getInstance() }
 
-    fun updateYoutubeDL(updateChannel: YoutubeDL.UpdateChannel) {
-        youtubeDLClient.updateYoutubeDL(context, updateChannel)
+    fun getFormats(link: String): ArrayList<VideoFormat>? {
+        return youtubeDLClient.getInfo(YoutubeDLRequest(link)).formats
     }
 
-    fun cancelDownload(taskId: String) {
-        youtubeDLClient.destroyProcessById(taskId)
-    }
+    fun startDownload(link: String, format: String): Flow<Float> = callbackFlow {
 
-    fun startDownload(link: String): Flow<Float> = callbackFlow {
-
-        Log.d("ahi3646", "startDownload: triggered $link ")
+        val formatNote = format.filter {
+            it.isDigit()
+        }
 
         val youtubeDLRequest = YoutubeDLRequest(link)
-//            .addOption("--no-mtime")
-//            .addOption("--downloader", "libaria2c.so")
-//            .addOption("--external-downloader-args", "aria2c:\"--summary-interval=1\"")
-//            .addOption("-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best")
+
+        val downloadsDir =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val uniqueID = UUID.randomUUID().toString()
+
+        youtubeDLRequest
+            .addOption("--no-mtime")
+            .addOption("-f", "bestvideo[height<=${formatNote}][ext=mp4]+bestaudio")
             .addOption(
-                "-o", getDownloadLocation().absolutePath + "/%(title)s.%(ext)s"
+                "-o", getDownloadLocation().absolutePath + "/$uniqueID/%(title)s.%(ext)s"
             )
+
+        val filePath = File(downloadsDir, "${getDownloadLocation()}/$uniqueID/%(title)s.%(ext)s")
+        if (filePath.exists()) {
+            Log.d("ahi3646", "exists $filePath")
+        } else {
+            Log.d("ahi3646", "not found $filePath")
+        }
 
         val callback = object : DownloadProgressCallback {
             override fun onProgressUpdate(progress: Float, etaInSeconds: Long, line: String?) {
@@ -46,7 +59,7 @@ class YoutubeRepository(
             }
         }
 
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.IO){
             try {
                 youtubeDLClient.execute(
                     request = youtubeDLRequest,
@@ -60,13 +73,39 @@ class YoutubeRepository(
                     }
                 )
             } catch (e: YoutubeDL.CanceledException) {
+
+                Log.d("ahi3646", "startDownload: error - ${e.message}")
                 close()
             }
         }
-
         awaitClose {
-            youtubeDLClient.destroyProcessById("taskId")
+            destroyProcessById("taskId")
         }
+    }
+
+    private fun destroyProcessById(taskId: String) {
+        youtubeDLClient.destroyProcessById(taskId)
+    }
+
+    private fun getDownloadFile(info: VideoInfo, format: VideoFormat, folder: String): File {
+        val filepath = File(folder, "${info.title} ${format.formatNote}.${info.ext}")
+
+
+        (2..10_000).forEach { number ->
+            val file = File(folder, "${info.title} ${format.formatNote} ($number).${info.ext}")
+            if (!file.exists()) return@forEach
+        }
+
+        return if (!filepath.exists()) filepath
+        else filepath
+    }
+
+    fun updateYoutubeDL(updateChannel: YoutubeDL.UpdateChannel) {
+        youtubeDLClient.updateYoutubeDL(context, updateChannel)
+    }
+
+    fun cancelDownload(taskId: String) {
+        youtubeDLClient.destroyProcessById(taskId)
     }
 
     private fun getDownloadLocation(): File {

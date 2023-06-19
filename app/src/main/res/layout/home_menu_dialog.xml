@@ -21,6 +21,8 @@
 
             <com.google.android.material.card.MaterialCardView
                 style="@style/Widget.App.Card"
+                android:clickable="false"
+                android:focusable="false"
                 android:layout_width="@dimen/margin_14x"
                 android:layout_height="@dimen/margin_14x"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Oval">
@@ -76,6 +78,8 @@
                 style="@style/Widget.App.Card"
                 android:layout_width="@dimen/margin_14x"
                 android:layout_height="@dimen/margin_14x"
+                android:clickable="false"
+                android:focusable="false"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Oval">
 
                 <com.google.android.material.imageview.ShapeableImageView
@@ -129,6 +133,8 @@
                 style="@style/Widget.App.Card"
                 android:layout_width="@dimen/margin_14x"
                 android:layout_height="@dimen/margin_14x"
+                android:clickable="false"
+                android:focusable="false"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Oval">
 
                 <com.google.android.material.imageview.ShapeableImageView
@@ -182,6 +188,8 @@
                 style="@style/Widget.App.Card"
                 android:layout_width="@dimen/margin_14x"
                 android:layout_height="@dimen/margin_14x"
+                android:clickable="false"
+                android:focusable="false"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Oval">
 
                 <com.google.android.material.imageview.ShapeableImageView

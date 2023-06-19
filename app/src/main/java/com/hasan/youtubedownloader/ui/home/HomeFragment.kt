@@ -1,10 +1,17 @@
 package com.hasan.youtubedownloader.ui.home
 
 import android.Manifest
+import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,51 +23,50 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.flowWithLifecycle
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.hasan.youtubedownloader.R
-import com.hasan.youtubedownloader.data.YoutubeRepository
 import com.hasan.youtubedownloader.databinding.FragmentHomeBinding
 import com.hasan.youtubedownloader.models.ItemDownload
 import com.hasan.youtubedownloader.ui.IntentViewModel
+import com.hasan.youtubedownloader.ui.home.menu_download.DialogForResultCallback
+import com.hasan.youtubedownloader.ui.home.menu_download.MenuDownload
 import com.hasan.youtubedownloader.utils.Constants.LIGHT
 import com.hasan.youtubedownloader.utils.Constants.NIGHT
 import com.hasan.youtubedownloader.utils.Constants.SYSTEM
 import com.hasan.youtubedownloader.utils.DebouncingOnClickListener
 import com.hasan.youtubedownloader.utils.PreferenceHelper
+import com.hasan.youtubedownloader.utils.Resource
 import com.hasan.youtubedownloader.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 const val TAG = "ahi3646"
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), DialogForResultCallback {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var window: Window
     private lateinit var windowInsetsController: WindowInsetsControllerCompat
-    private lateinit var dialog: LoadingDialog
 
     private var urlCommand = ""
-    private var isDownloading: Boolean = false
 
     private val viewModel: IntentViewModel by activityViewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
 
-    @Inject
-    lateinit var repository: YoutubeRepository
+    private lateinit var dialog: LoadingDialog
 
     private val permission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
-                if (isDownloading) dialog.show() else startDownload(urlCommand)
+                prepareForDownload()
             } else {
                 Toast.makeText(requireContext(), "Permission denied !", Toast.LENGTH_SHORT).show()
             }
@@ -97,19 +103,19 @@ class HomeFragment : Fragment() {
             }
         }
 
-        dialog = LoadingDialog(requireContext())
+        val downloads = arrayListOf(
+            ItemDownload(R.drawable.images, "1"),
+            ItemDownload(R.drawable.images, "2"),
+            ItemDownload(R.drawable.images, "3"),
+            ItemDownload(R.drawable.images, "4"),
+            ItemDownload(R.drawable.images, "5"),
+            ItemDownload(R.drawable.images, "6")
+        )
 
+        val downloadsCount = downloads.size.toString() + " " + resources.getString(R.string.files)
+        binding.downloadsCount.text = downloadsCount
         val recyclerView = binding.recyclerView
-        val adapter = HomeAdapter(
-            arrayListOf(
-                ItemDownload(R.drawable.images, "1"),
-                ItemDownload(R.drawable.images, "2"),
-                ItemDownload(R.drawable.images, "3"),
-                ItemDownload(R.drawable.images, "4"),
-                ItemDownload(R.drawable.images, "5"),
-                ItemDownload(R.drawable.images, "6")
-            )
-        ) { itemDownload, image ->
+        val adapter = HomeAdapter(downloads) { itemDownload, image ->
 
             ViewCompat.setTransitionName(image, "item_image")
             val extras = FragmentNavigatorExtras(image to "hero_image")
@@ -123,17 +129,28 @@ class HomeFragment : Fragment() {
 
         recyclerView.adapter = adapter
 
+        val transparentRipple = ColorStateList(
+            arrayOf(intArrayOf()), intArrayOf(
+                android.R.color.transparent
+            )
+        )
+
+        val lightRipple = ColorStateList(
+            arrayOf(intArrayOf()), intArrayOf(
+                resources.getColor(R.color.rippleColor)
+            )
+        )
+
         binding.etPasteLinkt.doOnTextChanged { text, start, before, count ->
             if (start == 0 && count == 0) {
-                binding.cardClear.isClickable = false
-                binding.cardClear.isFocusable = false
                 binding.clearText.setImageResource(R.drawable.iv_search)
+                binding.cardClear.rippleColor = transparentRipple
             } else {
-                binding.cardClear.isClickable = true
-                binding.cardClear.isFocusable = true
+                binding.cardClear.rippleColor = lightRipple
                 binding.clearText.setImageResource(R.drawable.cancel)
                 binding.cardClear.setOnClickListener {
                     binding.etPasteLinkt.text?.clear()
+                    binding.cardClear.rippleColor = transparentRipple
                 }
             }
         }
@@ -141,14 +158,13 @@ class HomeFragment : Fragment() {
         viewModel.externalLink.observe(viewLifecycleOwner) { link ->
             urlCommand = link
             permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            Log.d(TAG, "onCreated: $link")
         }
 
         binding.contentToolbar.btnMenu.setOnClickListener(DebouncingOnClickListener {
             try {
                 findNavController().navigate(R.id.menuSelectDialog)
             } catch (e: Exception) {
-                //Timber.e(e)
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
             }
         })
 
@@ -160,62 +176,153 @@ class HomeFragment : Fragment() {
                 permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
         }
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        dialog = LoadingDialog(requireContext())
 
         dialog.findViewById<Button>(R.id.cancel_loading).setOnClickListener {
             lifecycleScope.launch {
-                cancelDownload("taskId")
+                homeViewModel.cancelDownload("taskId")
+                dialog.dismiss()
             }
-            isDownloading = false
         }
 
         dialog.findViewById<Button>(R.id.hide_loading).setOnClickListener {
             dialog.dismiss()
         }
-
-        return binding.root
     }
 
-    private fun showStart(progress: Int) {
-        dialog.setContent(if (progress < 0) "Please wait  0" else "Please wait  $progress")
-    }
-
-    private fun startDownload(command: String) {
-        dialog.setContent("Please wait  0")
+    private fun startDownload(link: String, format: String) {
+        Log.d(TAG, "startDownload: $format")
+        dialog.setContent("Please wait  0 %")
         dialog.show()
 
-        isDownloading = true
+        lifecycleScope.launch(Dispatchers.IO) {
+            homeViewModel.startDownload(link, format, lifecycle)
+        }
 
+        homeViewModel.progress.observe(viewLifecycleOwner) { progress ->
+            if (progress.toInt() == 100) {
+                onComplete()
+            } else {
+                updateDialog(progress.toInt())
+            }
+        }
+    }
 
-        repository.startDownload(command)
-            .flowWithLifecycle(lifecycle)
-            .onEach { progress ->
-                showStart(progress.toInt())
-                Log.d(TAG, "getProgress -  ${progress}")
-                if (progress.toInt() == 100) {
-                    isDownloading = false
-                    closeDialog()
+    private fun updateDialog(progress: Int) {
+        if (progress > 0) dialog.setContent("Please wait  $progress %")
+    }
+
+    private fun onComplete() {
+        homeViewModel.onComplete()
+        lifecycleScope.launch {
+            dialog.setContent("Video successfully downloaded!")
+            delay(1000)
+            dialog.dismiss()
+        }
+    }
+
+    private fun prepareForDownload() {
+        Log.d(TAG, "prepareForDownload: ")
+        val fadeIn: Animation = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_in)
+
+        val transparentRipple = ColorStateList(
+            arrayOf(intArrayOf()), intArrayOf(
+                android.R.color.transparent
+            )
+        )
+
+        val lightRipple = ColorStateList(
+            arrayOf(intArrayOf()), intArrayOf(
+                resources.getColor(R.color.rippleColor)
+            )
+        )
+
+        binding.cardDownload.isClickable = false
+
+        binding.progressBar.animation = fadeIn
+        binding.progressBar.visibility = View.VISIBLE
+        binding.infoText.animation = fadeIn
+        binding.infoText.visibility = View.VISIBLE
+
+        binding.etPasteLinkt.visibility = View.GONE
+        binding.cardClear.visibility = View.GONE
+        binding.ivDownload.visibility = View.GONE
+
+        binding.cardDownload.isClickable = false
+        binding.cardDownload.rippleColor = transparentRipple
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            when (val formats = homeViewModel.getFormats(urlCommand)) {
+                is Resource.Loading -> {
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        Log.d(TAG, "prepareForDownload: load")
+                        binding.infoText.text = resources.getString(R.string.loading)
+                    }
+                }
+
+                is Resource.Success -> {
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        Log.d(TAG, "prepareForDownload: success")
+                        binding.progressBar.visibility = View.GONE
+                        binding.infoText.text = resources.getString(R.string.success)
+
+                        delay(500)
+                        binding.infoText.visibility = View.GONE
+                        binding.infoText.text = resources.getString(R.string.please_wait)
+
+                        binding.cardClear.animation = fadeIn
+                        binding.cardClear.visibility = View.VISIBLE
+                        binding.etPasteLinkt.animation = fadeIn
+                        binding.etPasteLinkt.visibility = View.VISIBLE
+                        binding.ivDownload.animation = fadeIn
+                        binding.ivDownload.visibility = View.VISIBLE
+
+                        binding.cardDownload.isClickable = true
+                        binding.cardDownload.rippleColor = lightRipple
+
+//                        bundle.putStringArrayList("formats", formats.data)
+//                        bundle.putString("link", urlCommand)
+//                        findNavController().navigate(R.id.menuDownload, bundle)
+                        MenuDownload(this@HomeFragment, formats.data!!).show(
+                            childFragmentManager,
+                            "ahi3646"
+                        )
+                    }
+                }
+
+                is Resource.DataError -> {
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        Log.d(TAG, "prepareForDownload: error")
+                        binding.progressBar.visibility = View.GONE
+                        binding.infoText.text = formats.errorMessage.toString()
+
+                        delay(2500)
+                        binding.infoText.visibility = View.GONE
+                        binding.infoText.text = resources.getString(R.string.please_wait)
+
+                        binding.cardClear.animation = fadeIn
+                        binding.cardClear.visibility = View.VISIBLE
+                        binding.etPasteLinkt.animation = fadeIn
+                        binding.etPasteLinkt.visibility = View.VISIBLE
+                        binding.ivDownload.animation = fadeIn
+                        binding.ivDownload.visibility = View.VISIBLE
+
+                        binding.cardDownload.isClickable = true
+                        binding.cardDownload.rippleColor = lightRipple
+                    }
                 }
             }
-            .launchIn(lifecycleScope)
-    }
-
-    private fun cancelDownload(processId: String) {
-        Log.d(TAG, "cancelDownload: ")
-        repository.cancelDownload(processId)
-        dialog.dismiss()
-    }
-
-    private fun closeDialog() {
-        dialog.dismiss()
-        Toast
-            .makeText(requireContext(), "Video successfully downloaded!", Toast.LENGTH_SHORT)
-            .show()
+        }
     }
 
     private fun setSystemTheme() {
         when (requireContext().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
             Configuration.UI_MODE_NIGHT_NO -> {
-                //PreferenceHelper.setThemeMode(requireContext(),"initial_app_theme")
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                 window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
                 windowInsetsController.isAppearanceLightStatusBars = true
@@ -236,6 +343,17 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResultSuccess(videoFormat: String) {
+        //start download
+        Log.d(TAG, "onResultSuccess: $videoFormat")
+        startDownload(urlCommand, videoFormat)
+    }
+
+    override fun onResultFailed(ex: Exception) {
+        Log.d(TAG, "onResultFailed: ${ex.message}")
+        toast("Something went wrong !")
     }
 
 }
