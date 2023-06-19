@@ -11,12 +11,8 @@ import com.hasan.youtubedownloader.data.YoutubeRepository
 import com.hasan.youtubedownloader.utils.Resource
 import com.yausername.youtubedl_android.YoutubeDLException
 import dagger.hilt.android.lifecycle.HiltViewModel
-import hilt_aggregated_deps._com_hasan_youtubedownloader_ui_home_HomeViewModel_HiltModules_BindsModule
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,11 +45,6 @@ class HomeViewModel @Inject constructor(private val repository: YoutubeRepositor
         }
     }
 
-    fun onComplete(){
-        _progress.postValue(0f)
-        isDownloading = false
-    }
-
     fun startDownload(link: String, format: String, lifecycle: Lifecycle) {
         isDownloading = true
 
@@ -68,9 +59,15 @@ class HomeViewModel @Inject constructor(private val repository: YoutubeRepositor
 
     }
 
-    fun cancelDownload(taskId: String) {
+    fun onComplete() {
+        _progress.postValue(0f)
         isDownloading = false
+    }
+
+    fun cancelDownload(taskId: String) {
         repository.cancelDownload(taskId)
+        _progress.postValue(0f)
+        isDownloading = false
     }
 
 }
