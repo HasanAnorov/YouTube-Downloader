@@ -12,6 +12,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
@@ -23,16 +24,15 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.hasan.youtubedownloader.R
-import com.hasan.youtubedownloader.data.YoutubeRepository
 import com.hasan.youtubedownloader.databinding.FragmentHomeBinding
 import com.hasan.youtubedownloader.models.ItemDownload
 import com.hasan.youtubedownloader.ui.IntentViewModel
+import com.hasan.youtubedownloader.ui.home.menu_download.DialogForResultCallback
+import com.hasan.youtubedownloader.ui.home.menu_download.MenuDownload
 import com.hasan.youtubedownloader.utils.Constants.LIGHT
 import com.hasan.youtubedownloader.utils.Constants.NIGHT
 import com.hasan.youtubedownloader.utils.Constants.SYSTEM
@@ -42,19 +42,13 @@ import com.hasan.youtubedownloader.utils.Resource
 import com.hasan.youtubedownloader.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 const val TAG = "ahi3646"
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), DialogForResultCallback {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -67,8 +61,7 @@ class HomeFragment : Fragment() {
     private val viewModel: IntentViewModel by activityViewModels()
     private val homeViewModel: HomeViewModel by viewModels()
 
-    @Inject
-    lateinit var repository: YoutubeRepository
+    private lateinit var dialog: LoadingDialog
 
     private val permission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -186,11 +179,56 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        dialog = LoadingDialog(requireContext())
+
+        dialog.findViewById<Button>(R.id.cancel_loading).setOnClickListener {
+            lifecycleScope.launch {
+                homeViewModel.cancelDownload("taskId")
+                dialog.dismiss()
+            }
+        }
+
+        dialog.findViewById<Button>(R.id.hide_loading).setOnClickListener {
+            dialog.dismiss()
+        }
+    }
+
+    private fun startDownload(link: String, format: String) {
+        Log.d(TAG, "startDownload: $format")
+        dialog.setContent("Please wait  0 %")
+        dialog.show()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            homeViewModel.startDownload(link, format, lifecycle)
+        }
+
+        homeViewModel.progress.observe(viewLifecycleOwner) { progress ->
+            if (progress.toInt() == 100) {
+                onComplete()
+            } else {
+                updateDialog(progress.toInt())
+            }
+        }
+    }
+
+    private fun updateDialog(progress: Int) {
+        if (progress > 0) dialog.setContent("Please wait  $progress %")
+    }
+
+    private fun onComplete() {
+        homeViewModel.onComplete()
+        lifecycleScope.launch {
+            dialog.setContent("Video successfully downloaded!")
+            delay(1000)
+            dialog.dismiss()
+        }
+    }
+
     private fun prepareForDownload() {
         Log.d(TAG, "prepareForDownload: ")
-
         val fadeIn: Animation = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_in)
-        val bundle = Bundle()
 
         val transparentRipple = ColorStateList(
             arrayOf(intArrayOf()), intArrayOf(
@@ -219,7 +257,7 @@ class HomeFragment : Fragment() {
         binding.cardDownload.rippleColor = transparentRipple
 
         lifecycleScope.launch(Dispatchers.IO) {
-            when (val formats = homeViewModel.getJustFormats(urlCommand)) {
+            when (val formats = homeViewModel.getFormats(urlCommand)) {
                 is Resource.Loading -> {
                     lifecycleScope.launch(Dispatchers.Main) {
                         Log.d(TAG, "prepareForDownload: load")
@@ -247,9 +285,13 @@ class HomeFragment : Fragment() {
                         binding.cardDownload.isClickable = true
                         binding.cardDownload.rippleColor = lightRipple
 
-                        bundle.putStringArrayList("formats", formats.data)
-                        bundle.putString("link", urlCommand)
-                        findNavController().navigate(R.id.menuDownload, bundle)
+//                        bundle.putStringArrayList("formats", formats.data)
+//                        bundle.putString("link", urlCommand)
+//                        findNavController().navigate(R.id.menuDownload, bundle)
+                        MenuDownload(this@HomeFragment, formats.data!!).show(
+                            childFragmentManager,
+                            "ahi3646"
+                        )
                     }
                 }
 
@@ -301,6 +343,17 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResultSuccess(videoFormat: String) {
+        //start download
+        Log.d(TAG, "onResultSuccess: $videoFormat")
+        startDownload(urlCommand, videoFormat)
+    }
+
+    override fun onResultFailed(ex: Exception) {
+        Log.d(TAG, "onResultFailed: ${ex.message}")
+        toast("Something went wrong !")
     }
 
 }

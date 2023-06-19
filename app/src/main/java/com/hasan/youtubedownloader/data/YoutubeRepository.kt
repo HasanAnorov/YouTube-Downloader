@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.UUID
+import kotlin.math.log
 
 class YoutubeRepository(
     private val context: Context
@@ -22,7 +23,7 @@ class YoutubeRepository(
 
     private val youtubeDLClient: YoutubeDL by lazy { YoutubeDL.getInstance() }
 
-    fun getFormats(link: String) : ArrayList<VideoFormat>?{
+    fun getFormats(link: String): ArrayList<VideoFormat>? {
         return youtubeDLClient.getInfo(YoutubeDLRequest(link)).formats
     }
 
@@ -36,7 +37,6 @@ class YoutubeRepository(
 
         val downloadsDir =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-
         val uniqueID = UUID.randomUUID().toString()
 
         youtubeDLRequest
@@ -59,7 +59,7 @@ class YoutubeRepository(
             }
         }
 
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.IO){
             try {
                 youtubeDLClient.execute(
                     request = youtubeDLRequest,
@@ -73,13 +73,18 @@ class YoutubeRepository(
                     }
                 )
             } catch (e: YoutubeDL.CanceledException) {
+
+                Log.d("ahi3646", "startDownload: error - ${e.message}")
                 close()
             }
         }
-
         awaitClose {
-            youtubeDLClient.destroyProcessById("taskId")
+            destroyProcessById("taskId")
         }
+    }
+
+    private fun destroyProcessById(taskId: String) {
+        youtubeDLClient.destroyProcessById(taskId)
     }
 
     private fun getDownloadFile(info: VideoInfo, format: VideoFormat, folder: String): File {
