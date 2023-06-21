@@ -15,7 +15,6 @@ import com.hasan.youtubedownloader.databinding.HomeMenuDialogBinding
 import com.hasan.youtubedownloader.ui.base.BaseDialog
 import com.yausername.youtubedl_android.YoutubeDL
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,7 +27,7 @@ class MenuSelectDialog : BaseDialog() {
 
     private var isUpdating = false
 
-    lateinit var loadingDialog: LoadingDialog
+    private lateinit var loadingDialog: LoadingDialog
 
     @Inject
     lateinit var repository: YoutubeRepository

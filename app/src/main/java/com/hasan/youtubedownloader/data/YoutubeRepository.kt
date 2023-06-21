@@ -33,7 +33,6 @@ class YoutubeRepository(
 
         val folderPath = File(downloadPath, "YT_Hasan")
         var file: File? = null
-        var videoFilePath = ""
 
         if (!folderPath.exists()) {
             if (folderPath.mkdirs()) {
@@ -44,8 +43,8 @@ class YoutubeRepository(
         } else {
             file = File(downloadPath, "/YT_Downloader/" + System.currentTimeMillis() + "mp4")
         }
-        videoFilePath = file!!.absolutePath
-        return videoFilePath
+
+        return file!!.absolutePath
     }
 
     fun startDownload(link: String, format: String): Flow<Float> = callbackFlow {

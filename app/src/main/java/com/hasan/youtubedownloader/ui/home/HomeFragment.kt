@@ -39,6 +39,7 @@ import com.hasan.youtubedownloader.utils.Constants.SYSTEM
 import com.hasan.youtubedownloader.utils.DebouncingOnClickListener
 import com.hasan.youtubedownloader.utils.PreferenceHelper
 import com.hasan.youtubedownloader.utils.Resource
+import com.hasan.youtubedownloader.utils.closeKeyboard
 import com.hasan.youtubedownloader.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -169,9 +170,10 @@ class HomeFragment : Fragment(), DialogForResultCallback {
         })
 
         binding.cardDownload.setOnClickListener {
+            closeKeyboard()
             urlCommand = binding.etPasteLinkt.text.toString().trim()
             if (urlCommand.isBlank()) {
-                toast("Enter link to download!")
+                toast(resources.getString(R.string.enter_link_to_download))
             } else {
                 permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE  )
             }

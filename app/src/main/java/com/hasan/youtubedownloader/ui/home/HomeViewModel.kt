@@ -19,12 +19,12 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(private val repository: YoutubeRepository) : ViewModel() {
 
 //    @Inject
-//    lateinit var repository: YoutubeRepository
+//    late init var repository: YoutubeRepository
 
     private var _progress = MutableLiveData(0f)
     val progress: LiveData<Float> = _progress
 
-    var isDownloading = false
+    private var isDownloading = false
 
     fun getFormats(link: String): Resource<ArrayList<String>> {
         return try {
@@ -36,8 +36,8 @@ class HomeViewModel @Inject constructor(private val repository: YoutubeRepositor
             }
             val sortedFormats = ArrayList<String>()
             formats?.forEach {
-                if(!sortedFormats.contains(it.formatNote))
-                sortedFormats.add(it.formatNote!!)
+                if (!sortedFormats.contains(it.formatNote))
+                    sortedFormats.add(it.formatNote!!)
             }
             Resource.Success(sortedFormats)
         } catch (e: YoutubeDLException) {
