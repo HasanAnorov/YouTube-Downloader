@@ -129,25 +129,28 @@ class YoutubeRepository(
         youtubeDLClient.destroyProcessById(taskId)
     }
 
-    private fun getDownloadLocation(): File {
-        val downloadPath =
-            Environment.getExternalStorageDirectory()
-                .toString() + File.separator + "YouTubeDownloader"
-        val youtubeDlDir = File(downloadPath, "hasan_YT_android")
-        if (!youtubeDlDir.exists()) {
-            youtubeDlDir.mkdir()
-        }
-        return youtubeDlDir
-    }
-
 //    private fun getDownloadLocation(): File {
-//        val downloadsDir =
-//            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-//        val youtubeDlDir = File(downloadsDir, "hasan_YT_android")
+//        val downloadPath =
+//            Environment.getExternalStorageDirectory()
+//                .toString() + File.separator + "YouTubeDownloader"
+//        val youtubeDlDir = File(downloadPath, "hasan_YT_android")
 //        if (!youtubeDlDir.exists()) {
 //            youtubeDlDir.mkdir()
 //        }
 //        return youtubeDlDir
 //    }
+
+    private fun getDownloadLocation(): File {
+//        val downloadsDir =
+//            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val downloadsDir =
+            Environment.getExternalStorageDirectory()
+                .toString() + File.separator + "YouTubeDownloader"
+        val youtubeDlDir = File(downloadsDir, "hasan_YT_android")
+        if (!youtubeDlDir.exists()) {
+            youtubeDlDir.mkdir()
+        }
+        return youtubeDlDir
+    }
 
 }

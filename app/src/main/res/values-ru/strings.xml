@@ -39,6 +39,7 @@
 
     <string name="cancel_download">Отменить загрузку</string>
     <string name="updated_successful">Обновлено успешно</string>
+    <string name="already_up_to_date">Вы используете последнюю версию</string>
 
     <string name="update">Обновлять</string>
     <string name="already_updated">Уже в курсе</string>

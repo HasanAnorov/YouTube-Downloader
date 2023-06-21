@@ -87,21 +87,21 @@ class MenuSelectDialog : BaseDialog() {
             repository.updateYoutubeDL(YoutubeDL.UpdateChannel._STABLE)
             val result = YoutubeDL.getInstance().updateYoutubeDL(requireContext())
             if (result == YoutubeDL.UpdateStatus.ALREADY_UP_TO_DATE) {
-                closeDialog()
+                closeDialog(resources.getString(R.string.already_up_to_date))
             }
             if (result == YoutubeDL.UpdateStatus.DONE) {
-                closeDialog()
+                closeDialog(resources.getString(R.string.updated_successful))
             }
         }
 
     }
 
-    private fun closeDialog() {
+    private fun closeDialog(updateStatus: String) {
         lifecycleScope.launch(Dispatchers.Main) {
-            Toast.makeText(requireContext(), R.string.updated_successful, Toast.LENGTH_SHORT)
+            Toast.makeText(requireContext(), updateStatus, Toast.LENGTH_SHORT)
                 .show()
             isUpdating = false
-            loadingDialog?.dismiss()
+            loadingDialog.dismiss()
         }
     }
 
