@@ -18,11 +18,11 @@ import java.io.File
 
 class YoutubeRepository(
     private val context: Context
-) {
+) : YoutubeRepositorySource{
 
     private val youtubeDLClient: YoutubeDL by lazy { YoutubeDL.getInstance() }
 
-    fun getFormats(link: String): ArrayList<VideoFormat>? {
+    override fun getFormats(link: String): ArrayList<VideoFormat>? {
         return youtubeDLClient.getInfo(YoutubeDLRequest(link)).formats
     }
 
@@ -47,7 +47,7 @@ class YoutubeRepository(
         return file!!.absolutePath
     }
 
-    fun startDownload(link: String, format: String): Flow<Float> = callbackFlow {
+    override fun startDownload(link: String, format: String): Flow<Float> = callbackFlow {
         val formatNote = format.filter {
             it.isDigit()
         }
@@ -100,12 +100,8 @@ class YoutubeRepository(
             }
         }
         awaitClose {
-            destroyProcessById("taskId")
+            youtubeDLClient.destroyProcessById("taskId")
         }
-    }
-
-    private fun destroyProcessById(taskId: String) {
-        youtubeDLClient.destroyProcessById(taskId)
     }
 
     private fun getDownloadFile(info: VideoInfo, format: VideoFormat, folder: String): File {
@@ -120,12 +116,12 @@ class YoutubeRepository(
         else filepath
     }
 
-    fun updateYoutubeDL(updateChannel: YoutubeDL.UpdateChannel) {
-        youtubeDLClient.updateYoutubeDL(context, updateChannel)
+    override fun updateYoutubeDL(updateChannel: YoutubeDL.UpdateChannel): YoutubeDL.UpdateStatus? {
+        return youtubeDLClient.updateYoutubeDL(context, updateChannel)
     }
 
-    fun cancelDownload(taskId: String) {
-        youtubeDLClient.destroyProcessById(taskId)
+    override fun cancelDownload(taskId: String): Boolean {
+        return youtubeDLClient.destroyProcessById(taskId)
     }
 
 //    private fun getDownloadLocation(): File {
