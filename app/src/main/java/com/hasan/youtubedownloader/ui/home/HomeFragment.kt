@@ -173,7 +173,7 @@ class HomeFragment : Fragment(), DialogForResultCallback {
             if (urlCommand.isBlank()) {
                 toast("Enter link to download!")
             } else {
-                permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE  )
             }
         }
         return binding.root

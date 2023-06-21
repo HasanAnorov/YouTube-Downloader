@@ -5,6 +5,7 @@ import android.os.Environment
 import android.util.Log
 import com.yausername.youtubedl_android.DownloadProgressCallback
 import com.yausername.youtubedl_android.YoutubeDL
+import com.yausername.youtubedl_android.YoutubeDLException
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import com.yausername.youtubedl_android.mapper.VideoFormat
 import com.yausername.youtubedl_android.mapper.VideoInfo
@@ -14,8 +15,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.util.UUID
-import kotlin.math.log
 
 class YoutubeRepository(
     private val context: Context
@@ -27,31 +26,52 @@ class YoutubeRepository(
         return youtubeDLClient.getInfo(YoutubeDLRequest(link)).formats
     }
 
-    fun startDownload(link: String, format: String): Flow<Float> = callbackFlow {
+    private fun getDownloadPath(title: String): String{
+        val downloadPath =
+            Environment.getExternalStorageDirectory()
+                .toString() + File.separator + "DemoYouTubeDownloader"
 
+        val folderPath = File(downloadPath, "YT_Hasan")
+        var file: File? = null
+        var videoFilePath = ""
+
+        if (!folderPath.exists()) {
+            if (folderPath.mkdirs()) {
+                file = File(downloadPath, "/YT_Downloader/$title.mp4")
+            } else {
+                Log.d("ahi3646", "startDownload: cannot create file directory ")
+            }
+        } else {
+            file = File(downloadPath, "/YT_Downloader/" + System.currentTimeMillis() + "mp4")
+        }
+        videoFilePath = file!!.absolutePath
+        return videoFilePath
+    }
+
+    fun startDownload(link: String, format: String): Flow<Float> = callbackFlow {
         val formatNote = format.filter {
             it.isDigit()
         }
 
         val youtubeDLRequest = YoutubeDLRequest(link)
 
-        val downloadsDir =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val uniqueID = UUID.randomUUID().toString()
-
         youtubeDLRequest
             .addOption("--no-mtime")
             .addOption("-f", "bestvideo[height<=${formatNote}][ext=mp4]+bestaudio")
             .addOption(
-                "-o", getDownloadLocation().absolutePath + "/$uniqueID/%(title)s.%(ext)s"
+                "-o", getDownloadLocation().absolutePath + "/%(title)s.%(ext)s"
             )
 
-        val filePath = File(downloadsDir, "${getDownloadLocation()}/$uniqueID/%(title)s.%(ext)s")
-        if (filePath.exists()) {
-            Log.d("ahi3646", "exists $filePath")
-        } else {
-            Log.d("ahi3646", "not found $filePath")
-        }
+        //Log.d("ahi3646", "startDownload: demo path - ${getDownloadPath("andrew_tate")} ")
+
+//        val downloadsDir =
+//            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+//        val filePath = File(downloadsDir, "hasan_YT_android")
+//        if (filePath.exists()) {
+//            Log.d("ahi3646", "exists $filePath")
+//        } else {
+//            Log.d("ahi3646", "not found $filePath")
+//        }
 
         val callback = object : DownloadProgressCallback {
             override fun onProgressUpdate(progress: Float, etaInSeconds: Long, line: String?) {
@@ -59,7 +79,7 @@ class YoutubeRepository(
             }
         }
 
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             try {
                 youtubeDLClient.execute(
                     request = youtubeDLRequest,
@@ -76,6 +96,8 @@ class YoutubeRepository(
 
                 Log.d("ahi3646", "startDownload: error - ${e.message}")
                 close()
+            }catch (e: YoutubeDLException){
+                Log.d("ahi3646", "startDownload: error - ${e.message}")
             }
         }
         awaitClose {
@@ -89,7 +111,6 @@ class YoutubeRepository(
 
     private fun getDownloadFile(info: VideoInfo, format: VideoFormat, folder: String): File {
         val filepath = File(folder, "${info.title} ${format.formatNote}.${info.ext}")
-
 
         (2..10_000).forEach { number ->
             val file = File(folder, "${info.title} ${format.formatNote} ($number).${info.ext}")
@@ -109,13 +130,24 @@ class YoutubeRepository(
     }
 
     private fun getDownloadLocation(): File {
-        val downloadsDir =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val youtubeDlDir = File(downloadsDir, "hasan_YT_android")
+        val downloadPath =
+            Environment.getExternalStorageDirectory()
+                .toString() + File.separator + "YouTubeDownloader"
+        val youtubeDlDir = File(downloadPath, "hasan_YT_android")
         if (!youtubeDlDir.exists()) {
             youtubeDlDir.mkdir()
         }
         return youtubeDlDir
     }
+
+//    private fun getDownloadLocation(): File {
+//        val downloadsDir =
+//            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+//        val youtubeDlDir = File(downloadsDir, "hasan_YT_android")
+//        if (!youtubeDlDir.exists()) {
+//            youtubeDlDir.mkdir()
+//        }
+//        return youtubeDlDir
+//    }
 
 }

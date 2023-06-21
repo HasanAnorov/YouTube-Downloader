@@ -36,6 +36,7 @@ class HomeViewModel @Inject constructor(private val repository: YoutubeRepositor
             }
             val sortedFormats = ArrayList<String>()
             formats?.forEach {
+                if(!sortedFormats.contains(it.formatNote))
                 sortedFormats.add(it.formatNote!!)
             }
             Resource.Success(sortedFormats)
