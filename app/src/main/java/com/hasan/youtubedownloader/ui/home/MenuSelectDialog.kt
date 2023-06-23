@@ -71,7 +71,7 @@ class MenuSelectDialog : BaseDialog() {
 
     private fun updateYouTubeDL() {
         if (isUpdating) {
-            Toast.makeText(requireContext(), "Update is already in progress", Toast.LENGTH_SHORT)
+            Toast.makeText(requireContext(), resources.getString(R.string.update_in_progress), Toast.LENGTH_SHORT)
                 .show()
         }
 
@@ -79,7 +79,7 @@ class MenuSelectDialog : BaseDialog() {
         loadingDialog = LoadingDialog(requireContext())
         loadingDialog.findViewById<Button>(R.id.cancel_loading).isGone = true
         loadingDialog.findViewById<Button>(R.id.hide_loading).isGone = true
-        loadingDialog.setContent("Wait, updating ...")
+        loadingDialog.setContent(resources.getString(R.string.wait_updating))
         loadingDialog.show()
 
         lifecycleScope.launch(Dispatchers.IO) {

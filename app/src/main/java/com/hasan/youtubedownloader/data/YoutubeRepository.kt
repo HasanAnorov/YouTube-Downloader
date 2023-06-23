@@ -1,20 +1,24 @@
 package com.hasan.youtubedownloader.data
 
+import android.content.ContentValues
 import android.content.Context
+import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.yausername.youtubedl_android.DownloadProgressCallback
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLException
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import com.yausername.youtubedl_android.mapper.VideoFormat
-import com.yausername.youtubedl_android.mapper.VideoInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.net.URL
 
 class YoutubeRepository(
     private val context: Context
@@ -26,27 +30,7 @@ class YoutubeRepository(
         return youtubeDLClient.getInfo(YoutubeDLRequest(link)).formats
     }
 
-    private fun getDownloadPath(title: String): String{
-        val downloadPath =
-            Environment.getExternalStorageDirectory()
-                .toString() + File.separator + "DemoYouTubeDownloader"
-
-        val folderPath = File(downloadPath, "YT_Hasan")
-        var file: File? = null
-
-        if (!folderPath.exists()) {
-            if (folderPath.mkdirs()) {
-                file = File(downloadPath, "/YT_Downloader/$title.mp4")
-            } else {
-                Log.d("ahi3646", "startDownload: cannot create file directory ")
-            }
-        } else {
-            file = File(downloadPath, "/YT_Downloader/" + System.currentTimeMillis() + "mp4")
-        }
-
-        return file!!.absolutePath
-    }
-
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun startDownload(link: String, format: String): Flow<Float> = callbackFlow {
         val formatNote = format.filter {
             it.isDigit()
@@ -58,19 +42,8 @@ class YoutubeRepository(
             .addOption("--no-mtime")
             .addOption("-f", "bestvideo[height<=${formatNote}][ext=mp4]+bestaudio")
             .addOption(
-                "-o", getDownloadLocation().absolutePath + "/%(title)s.%(ext)s"
+                "-o", getDownloadLocation().absolutePath  + "/%(title)s.%(ext)s"
             )
-
-        //Log.d("ahi3646", "startDownload: demo path - ${getDownloadPath("andrew_tate")} ")
-
-//        val downloadsDir =
-//            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-//        val filePath = File(downloadsDir, "hasan_YT_android")
-//        if (filePath.exists()) {
-//            Log.d("ahi3646", "exists $filePath")
-//        } else {
-//            Log.d("ahi3646", "not found $filePath")
-//        }
 
         val callback = object : DownloadProgressCallback {
             override fun onProgressUpdate(progress: Float, etaInSeconds: Long, line: String?) {
@@ -104,18 +77,6 @@ class YoutubeRepository(
         }
     }
 
-    private fun getDownloadFile(info: VideoInfo, format: VideoFormat, folder: String): File {
-        val filepath = File(folder, "${info.title} ${format.formatNote}.${info.ext}")
-
-        (2..10_000).forEach { number ->
-            val file = File(folder, "${info.title} ${format.formatNote} ($number).${info.ext}")
-            if (!file.exists()) return@forEach
-        }
-
-        return if (!filepath.exists()) filepath
-        else filepath
-    }
-
     override fun updateYoutubeDL(updateChannel: YoutubeDL.UpdateChannel): YoutubeDL.UpdateStatus? {
         return youtubeDLClient.updateYoutubeDL(context, updateChannel)
     }
@@ -124,23 +85,29 @@ class YoutubeRepository(
         return youtubeDLClient.destroyProcessById(taskId)
     }
 
-//    private fun getDownloadLocation(): File {
-//        val downloadPath =
-//            Environment.getExternalStorageDirectory()
-//                .toString() + File.separator + "YouTubeDownloader"
-//        val youtubeDlDir = File(downloadPath, "hasan_YT_android")
-//        if (!youtubeDlDir.exists()) {
-//            youtubeDlDir.mkdir()
-//        }
-//        return youtubeDlDir
-//    }
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private suspend fun saveFileUsingMediaStore(url: String, fileName: String) {
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+            put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+        }
+        val resolver = context.contentResolver
+        val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
+        if (uri != null) {
+            withContext(Dispatchers.IO){
+                URL(url).openStream().use { input ->
+                    resolver.openOutputStream(uri).use { output ->
+                        input.copyTo(output!!, DEFAULT_BUFFER_SIZE)
+                    }
+                }
+            }
+        }
+    }
 
     private fun getDownloadLocation(): File {
-//        val downloadsDir =
-//            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         val downloadsDir =
-            Environment.getExternalStorageDirectory()
-                .toString() + File.separator + "YouTubeDownloader"
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         val youtubeDlDir = File(downloadsDir, "hasan_YT_android")
         if (!youtubeDlDir.exists()) {
             youtubeDlDir.mkdir()

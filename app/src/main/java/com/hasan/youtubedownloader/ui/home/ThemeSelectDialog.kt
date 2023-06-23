@@ -20,7 +20,6 @@ class ThemeSelectDialog : BaseDialog() {
     private var _content: ThemeSelectDialogBinding? = null
     private val content get() = _content!!
 
-
     private var mode = "initial_app_theme"
 
     override fun getContent(inflater: LayoutInflater, container: ViewGroup?): View {
@@ -30,9 +29,7 @@ class ThemeSelectDialog : BaseDialog() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         onDark(PreferenceHelper.isLight(requireContext()))
-
     }
 
     private fun onDark(model: String) {

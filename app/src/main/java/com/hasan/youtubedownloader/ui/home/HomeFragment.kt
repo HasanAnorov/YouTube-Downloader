@@ -69,7 +69,7 @@ class HomeFragment : Fragment(), DialogForResultCallback {
             if (isGranted) {
                 prepareForDownload()
             } else {
-                Toast.makeText(requireContext(), "Permission denied !", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), resources.getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -355,7 +355,7 @@ class HomeFragment : Fragment(), DialogForResultCallback {
 
     override fun onResultFailed(ex: Exception) {
         Log.d(TAG, "onResultFailed: ${ex.message}")
-        toast("Something went wrong !")
+        toast(resources.getString(R.string.something_went_wrong))
     }
 
 }

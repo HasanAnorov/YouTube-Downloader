@@ -50,6 +50,11 @@
     <string name="please_hold_on_fetching_information">Подождите, получение информации...</string>
     <string name="please_wait">Пожалуйста, подождите ...</string>
 
+    <string name="something_went_wrong">Что-то пошло не так !</string>
+    <string name="permission_denied">Доступ запрещен !</string>
+    <string name="update_in_progress">Обновление уже выполняется !</string>
+    <string name="wait_updating">Подождите, обновление...</string>
+
 
 
 </resources>

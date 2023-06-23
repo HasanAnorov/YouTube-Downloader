@@ -1,6 +1,8 @@
 package com.hasan.youtubedownloader.ui.home
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -46,6 +48,7 @@ class HomeViewModel @Inject constructor(private val repository: YoutubeRepositor
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun startDownload(link: String, format: String, lifecycle: Lifecycle) {
         isDownloading = true
 

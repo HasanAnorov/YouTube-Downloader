@@ -47,6 +47,12 @@
     <string name="video_format">Video format</string>
     <string name="enter_link_to_download">Enter link to download!</string>
 
+    <string name="something_went_wrong">Something went wrong !</string>
+    <string name="permission_denied">Permission denied !</string>
+    <string name="update_in_progress">Update is already in progress !</string>
+    <string name="wait_updating">Wait, updating ...</string>
+
+
     <string-array name="formats">
         <item>144</item>
         <item>360</item>

@@ -93,9 +93,6 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.15.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
 
-    //progress bar minSdk 24
-    implementation 'com.github.techinessoverloaded:progress-dialog:1.5.1'
-
     //YT downloader library
     implementation 'com.github.yausername.youtubedl-android:library:-SNAPSHOT'
     implementation 'com.github.yausername.youtubedl-android:ffmpeg:-SNAPSHOT' // Optional

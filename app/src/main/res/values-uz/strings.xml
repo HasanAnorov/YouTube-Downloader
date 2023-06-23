@@ -50,5 +50,9 @@
     <string name="please_hold_on_fetching_information">Kutib turing, maʼlumot olinmoqda...</string>
     <string name="please_wait">Iltimos kuting ...</string>
 
+    <string name="something_went_wrong">Xatolik yuz berdi !</string>
+    <string name="permission_denied">Ruxsat berilmagan !</string>
+    <string name="update_in_progress">Yangilanish davom etmoqda !</string>
+    <string name="wait_updating">Yangilanmoqda ...</string>
 
 </resources>
