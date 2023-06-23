@@ -13,8 +13,6 @@ interface YoutubeRepositorySource {
 
     fun cancelDownload(taskId: String): Boolean
 
-    fun updateYoutubeDL(
-        updateChannel: YoutubeDL.UpdateChannel
-    ): YoutubeDL.UpdateStatus?
+    fun updateYoutubeDL(): YoutubeDL.UpdateStatus?
 
 }

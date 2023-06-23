@@ -13,7 +13,9 @@ import com.hasan.youtubedownloader.R
 import com.hasan.youtubedownloader.data.YoutubeRepository
 import com.hasan.youtubedownloader.databinding.HomeMenuDialogBinding
 import com.hasan.youtubedownloader.ui.base.BaseDialog
+import com.hasan.youtubedownloader.utils.toast
 import com.yausername.youtubedl_android.YoutubeDL
+import com.yausername.youtubedl_android.YoutubeDLException
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -83,7 +85,11 @@ class MenuSelectDialog : BaseDialog() {
         loadingDialog.show()
 
         lifecycleScope.launch(Dispatchers.IO) {
-            repository.updateYoutubeDL(YoutubeDL.UpdateChannel._STABLE)
+            try {
+                repository.updateYoutubeDL()
+            }catch (e: YoutubeDLException){
+                toast(e.message.toString())
+            }
             val result = YoutubeDL.getInstance().updateYoutubeDL(requireContext())
             if (result == YoutubeDL.UpdateStatus.ALREADY_UP_TO_DATE) {
                 closeDialog(resources.getString(R.string.already_up_to_date))

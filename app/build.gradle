@@ -94,9 +94,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
 
     //YT downloader library
-    implementation 'com.github.yausername.youtubedl-android:library:-SNAPSHOT'
-    implementation 'com.github.yausername.youtubedl-android:ffmpeg:-SNAPSHOT' // Optional
-    implementation 'com.github.yausername.youtubedl-android:aria2c:-SNAPSHOT' // Optional
+    implementation 'com.github.yausername.youtubedl-android:library:42c7dfcee1'
+    implementation 'com.github.yausername.youtubedl-android:ffmpeg:42c7dfcee1'
 
     //coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1"

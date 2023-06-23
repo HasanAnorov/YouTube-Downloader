@@ -22,7 +22,7 @@ import java.net.URL
 
 class YoutubeRepository(
     private val context: Context
-) : YoutubeRepositorySource{
+) : YoutubeRepositorySource {
 
     private val youtubeDLClient: YoutubeDL by lazy { YoutubeDL.getInstance() }
 
@@ -42,33 +42,30 @@ class YoutubeRepository(
             .addOption("--no-mtime")
             .addOption("-f", "bestvideo[height<=${formatNote}][ext=mp4]+bestaudio")
             .addOption(
-                "-o", getDownloadLocation().absolutePath  + "/%(title)s.%(ext)s"
+                "-o", getDownloadLocation().absolutePath + "/%(title)s.%(ext)s"
             )
 
-        val callback = object : DownloadProgressCallback {
-            override fun onProgressUpdate(progress: Float, etaInSeconds: Long, line: String?) {
-                trySend(progress)
-            }
-        }
+        val callback = DownloadProgressCallback { progress, _, _ -> trySend(progress) }
 
         withContext(Dispatchers.IO) {
             try {
-                youtubeDLClient.execute(
-                    request = youtubeDLRequest,
-                    processId = "taskId",
-                    callback = { progress, etaInSeconds, line ->
-                        callback.onProgressUpdate(
-                            progress,
-                            etaInSeconds,
-                            line
-                        )
-                    }
-                )
-            } catch (e: YoutubeDL.CanceledException) {
+                youtubeDLClient.execute(youtubeDLRequest, "taskId", callback)
+//                youtubeDLClient.execute(
+//                    request = youtubeDLRequest,
+//                    processId = "taskId",
+//                    callback = { progress, etaInSeconds, line ->
+//                        callback.onProgressUpdate(
+//                            progress,
+//                            etaInSeconds,
+//                            line
+//                        )
+//                    }
+//                )
+            } catch (e: InterruptedException) {
 
                 Log.d("ahi3646", "startDownload: error - ${e.message}")
                 close()
-            }catch (e: YoutubeDLException){
+            } catch (e: YoutubeDLException) {
                 Log.d("ahi3646", "startDownload: error - ${e.message}")
             }
         }
@@ -77,8 +74,8 @@ class YoutubeRepository(
         }
     }
 
-    override fun updateYoutubeDL(updateChannel: YoutubeDL.UpdateChannel): YoutubeDL.UpdateStatus? {
-        return youtubeDLClient.updateYoutubeDL(context, updateChannel)
+    override fun updateYoutubeDL(): YoutubeDL.UpdateStatus? {
+        return youtubeDLClient.updateYoutubeDL(context)
     }
 
     override fun cancelDownload(taskId: String): Boolean {
@@ -95,7 +92,7 @@ class YoutubeRepository(
         val resolver = context.contentResolver
         val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
         if (uri != null) {
-            withContext(Dispatchers.IO){
+            withContext(Dispatchers.IO) {
                 URL(url).openStream().use { input ->
                     resolver.openOutputStream(uri).use { output ->
                         input.copyTo(output!!, DEFAULT_BUFFER_SIZE)
