@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewModelScope
+import com.hasan.youtubedownloader.data.DbRepository
 import com.hasan.youtubedownloader.data.YoutubeRepository
 import com.hasan.youtubedownloader.utils.Resource
 import com.yausername.youtubedl_android.YoutubeDLException
@@ -20,8 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val repository: YoutubeRepository) : ViewModel() {
 
-//    @Inject
-//    late init var repository: YoutubeRepository
+    @Inject
+    lateinit var dbRepository: DbRepository
 
     private var _progress = MutableLiveData(0f)
     val progress: LiveData<Float> = _progress

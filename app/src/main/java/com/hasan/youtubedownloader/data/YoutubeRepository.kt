@@ -2,6 +2,7 @@ package com.hasan.youtubedownloader.data
 
 import android.content.ContentValues
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
@@ -24,6 +25,7 @@ class YoutubeRepository(
     private val context: Context
 ) : YoutubeRepositorySource {
 
+    private lateinit var destUri: Uri
     private val youtubeDLClient: YoutubeDL by lazy { YoutubeDL.getInstance() }
 
     override fun getFormats(link: String): ArrayList<VideoFormat>? {
@@ -38,11 +40,18 @@ class YoutubeRepository(
 
         val youtubeDLRequest = YoutubeDLRequest(link)
 
+//        var title = "something"
+//
+//        val tmpFile =File.createTempFile("yd_hasan", null, context.externalCacheDir)
+//        tmpFile.delete()
+//        tmpFile.mkdir()
+//        tmpFile.deleteOnExit()
+
         youtubeDLRequest
             .addOption("--no-mtime")
             .addOption("-f", "bestvideo[height<=${formatNote}][ext=mp4]+bestaudio")
             .addOption(
-                "-o", getDownloadLocation().absolutePath + "/%(title)s.%(ext)s"
+                "-o", "${getDownloadLocation()}/.%(ext)s"
             )
 
         val callback = DownloadProgressCallback { progress, _, _ -> trySend(progress) }
@@ -50,19 +59,7 @@ class YoutubeRepository(
         withContext(Dispatchers.IO) {
             try {
                 youtubeDLClient.execute(youtubeDLRequest, "taskId", callback)
-//                youtubeDLClient.execute(
-//                    request = youtubeDLRequest,
-//                    processId = "taskId",
-//                    callback = { progress, etaInSeconds, line ->
-//                        callback.onProgressUpdate(
-//                            progress,
-//                            etaInSeconds,
-//                            line
-//                        )
-//                    }
-//                )
             } catch (e: InterruptedException) {
-
                 Log.d("ahi3646", "startDownload: error - ${e.message}")
                 close()
             } catch (e: YoutubeDLException) {
