@@ -3,6 +3,7 @@ package com.hasan.youtubedownloader.ui.home
 import android.Manifest
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -39,7 +41,6 @@ import com.hasan.youtubedownloader.utils.Constants.SYSTEM
 import com.hasan.youtubedownloader.utils.DebouncingOnClickListener
 import com.hasan.youtubedownloader.utils.PreferenceHelper
 import com.hasan.youtubedownloader.utils.Resource
-import com.hasan.youtubedownloader.utils.closeKeyboard
 import com.hasan.youtubedownloader.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -69,7 +70,7 @@ class HomeFragment : Fragment(), DialogForResultCallback {
             if (isGranted) {
                 prepareForDownload()
             } else {
-                Toast.makeText(requireContext(), resources.getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Permission denied !", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -170,12 +171,11 @@ class HomeFragment : Fragment(), DialogForResultCallback {
         })
 
         binding.cardDownload.setOnClickListener {
-            closeKeyboard()
             urlCommand = binding.etPasteLinkt.text.toString().trim()
             if (urlCommand.isBlank()) {
-                toast(resources.getString(R.string.enter_link_to_download))
+                toast("Enter link to download!")
             } else {
-                permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE  )
+                permission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
         }
         return binding.root

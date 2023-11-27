@@ -30,7 +30,6 @@ class YoutubeRepository(
         return youtubeDLClient.getInfo(YoutubeDLRequest(link)).formats
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun startDownload(link: String, format: String): Flow<Float> = callbackFlow {
         val formatNote = format.filter {
             it.isDigit()
