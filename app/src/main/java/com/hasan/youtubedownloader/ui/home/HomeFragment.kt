@@ -355,7 +355,7 @@ class HomeFragment : Fragment(), DialogForResultCallback {
 
     override fun onResultFailed(ex: Exception) {
         Log.d(TAG, "onResultFailed: ${ex.message}")
-        toast(resources.getString(R.string.something_went_wrong))
+        toast("Something went wrong !")
     }
 
 }
